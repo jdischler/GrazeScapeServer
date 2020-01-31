@@ -1,0 +1,5 @@
+[0m[[0m[0mdebug[0m] [0m[0mCopy resource mappings: [0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/Users/jdischler/Projects/GrazeScape_svr/conf/logback.xml,/Users/jdischler/Projects/GrazeScape_svr/target/scala-2.13/classes/logback.xml)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/Users/jdischler/Projects/GrazeScape_svr/conf/application.conf,/Users/jdischler/Projects/GrazeScape_svr/target/scala-2.13/classes/application.conf)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/Users/jdischler/Projects/GrazeScape_svr/conf/routes,/Users/jdischler/Projects/GrazeScape_svr/target/scala-2.13/classes/routes)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/Users/jdischler/Projects/GrazeScape_svr/conf/evolutions/default/1.sql,/Users/jdischler/Projects/GrazeScape_svr/target/scala-2.13/classes/evolutions/default/1.sql)[0m
