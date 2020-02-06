@@ -1,5 +1,4 @@
-2020-01-31 16:02:22,344 [INFO] from play.api.http.EnabledFilters in play-dev-mode-akka.actor.default-dispatcher-3 - Enabled Filters (see <https://www.playframework.com/documentation/latest/Filters>):
+2020-02-06 10:12:13,753 [INFO] from play.api.http.EnabledFilters in play-dev-mode-akka.actor.default-dispatcher-3 - Enabled Filters (see <https://www.playframework.com/documentation/latest/Filters>):
 
 
-2020-01-31 16:02:22,448 [INFO] from play.api.Play in play-dev-mode-akka.actor.default-dispatcher-3 - Application started (Dev) (no global state)
-2020-01-31 16:08:00,013 [INFO] from play.core.server.AkkaHttpServer in pool-22-thread-11 - Stopping server...
+2020-02-06 10:12:13,908 [INFO] from play.api.Play in play-dev-mode-akka.actor.default-dispatcher-3 - Application started (Dev) (no global state)

@@ -3,6 +3,7 @@ var DSS_viewport = false;
 DSS.utils.addStyle('.x-btn-focus.x-btn-over.x-btn-default-toolbar-small {z-index:2000;overflow: visible;box-shadow: #4297d4 0 1px 0px 0 inset, #4297d4 0 -1px 0px 0 inset, #4297d4 -1px 0 0px 0 inset, #4297d4 1px 0 0px 0 inset, -2px 4px 4px rgba(0,0,0,0.5);}')
 DSS.utils.addStyle('.x-btn-default-toolbar-small {box-shadow: -1px 2px 2px rgba(0,0,0,0.25);}')
 DSS.utils.addStyle('.x-btn-pressed {z-index:2000; box-shadow: -2px 4px 4px rgba(0,0,0,0.4)!important;}')
+DSS.utils.addStyle('.x-btn-inner-default-small {font-size: 1rem}');
 
 //------------------------------------------------------------------------------
 Ext.define('DSS.view.AppViewport', {
@@ -12,7 +13,11 @@ Ext.define('DSS.view.AppViewport', {
 	requires: [
 		'DSS.app.MainMap',
 		'DSS.app.MapLayers',
-		'DSS.app.Farm_SelectOrCreate'
+		'DSS.pages.StartingPage',
+		'DSS.pages.NewOperationPage',
+		'DSS.pages.OperationBasePage',
+		'DSS.pages.CompareOperationsPage',
+		'DSS.pages.ManageAssumptionsPage'
 	],
 
 	minWidth: 480,
@@ -27,6 +32,11 @@ Ext.define('DSS.view.AppViewport', {
 		afterrender: function(self) {
 			// FIXME: TODO: responsive layouts weren't working until a page resize. why?
 			Ext.mixin.Responsive.notify();
+			setTimeout(function() {
+				Ext.mixin.Responsive.notify();
+			}, 200);
+			
+			DSS.mainViewport = self;
 		}
 	},
 	
@@ -36,167 +46,146 @@ Ext.define('DSS.view.AppViewport', {
 		
 		Ext.applyIf(me, {
 			items: [{
-				xtype: 'main_map',
-				region: 'center'
-			},{
-				xtype: 'map_layers',
-				region: 'south'
-			},{
-				xtype: 'panel',
-				region: 'west',
-				title: 'Farm Configuration',
-					titleAlign: 'center',
-				titleCollapse: false,
-				header: {
-					titleCollapse: false,
-					padding: '64 8 8 32',
-					title: 'Farm Configuration',
-				},
-				collapsible: true,
-				bodyPadding: '0 0 0 48',
-				width: 388,
-				minWidth: 388,
-				listeners:  {
-					beforecollapse: function() {
-						me.DSS_logoImage.animate({
-							duration: 300,
-							to: { x: 40, width: 150, height: 30, y:2, opacity: 0.75 }
-						})
-						me.DSS_toolbar.animate({
-							duration: 300,
-							to: { x:-80 }
-						})
-					},
-					beforeexpand: function() {
-						me.DSS_logoImage.animate({
-							duration: 400,
-							to: { x: 68, width: 250, height: 50, y:6, opacity: 1 }
-						})
-						me.DSS_toolbar.animate({
-							duration: 300,
-							to: { x:-16 }
-						})
-					}
-				},
+				xtype: 'container',
+				region: 'center',
+				layout: 'fit',
 				items: [{
-					xtype: 'farm_select_or_create'
-				}]
+					xtype: 'container',
+					autoDestroy: false,
+					layout: 'border',
+					items: [{
+						xtype: 'main_map',
+						region: 'center',
+					},{					
+						xtype: 'component',
+						width: 0,
+						style: ' background: white; background-image: url("assets/images/fake_dash.png"); background-size: contain; background-repeat: no-repeat;',
+						region: 'east',
+						listeners: {
+							afterrender: function(self) { me.DSS_realtimeDashboard = self; }
+						}
+					},{					
+						xtype: 'map_layers',
+						region: 'south'
+					}],
+					listeners: {
+						afterrender: function(self) { me.DSS_MapWidget = self; }
+					}
+				}],
+				listeners: {
+					afterrender: function(self) { me.DSS_WorkContainer = self; }
+				}
+			},{
+				xtype: 'container',
+				region: 'west',
+				style: 'background: #ede9d9',
+				width: 388,
+				layout: 'fit',
+				minWidth: 388,
+				items: [{
+					xtype: 'starting_page'
+//					xtype: 'new_operation_page'
+//					xtype: 'operation_base_page'
+					,
+					listeners: {
+						afterrender: function(self) { me.DSS_NavigationContent = self; }
+					}
+				}],
+				listeners: {
+					afterrender: function(self) { me.DSS_NavigationContainer = self; }
+				}
 			}]
 		});
 
-		me.createLogo();
-		me.createFloatingTools();
-		
 		me.callParent(arguments);
-		DSS_viewport = me;
+		DSS_viewport = me;	
 	},
 	
-	//--------------------------------------------------------------------------
-	createLogo: function() {
+	doChartWorkPanel: function() {
 		let me = this;
 		
-		me.DSS_logoImage = Ext.create('Ext.Img', {
-			xtype: 'image',
-			src: '/assets/images/graze-logo.png',
-			style: 'pointer-events: none',
-			width: 250,
-			height: 50,
-			floating: true,
-			x: 68, y: 6,
-			shadow: false
-		}).show();
-		//me.DSS_logoImage.show();		
+		if (!me.DSS_ChartWidget) {
+			me.DSS_ChartWidget = Ext.create({xtype: 'compare_operations_page'});
+		} else if (me.DSS_ChartWidget.isResident) {
+			return;
+		}
+		
+		me.DSS_WorkContainer.remove(me.DSS_MapWidget,false);
+		me.DSS_WorkContainer.add(me.DSS_ChartWidget)
+		
+		me.DSS_ChartWidget.isResident = true;
+		me.DSS_MapWidget.isResident = false;
+	},
+
+	doMapWorkPanel: function() {
+		let me = this;
+		
+		if (me.DSS_MapWidget.isResident) {
+			return;
+		}
+		
+		me.DSS_WorkContainer.remove(me.DSS_ChartWidget, false)
+		me.DSS_WorkContainer.add(me.DSS_MapWidget);
 	},
 	
-	//--------------------------------------------------------------------------
-	createFloatingTools: function() {
+	doNewOperationPage: function() {
 		let me = this;
+		me.DSS_NavigationContainer.remove(me.DSS_NavigationContent, false);
+		me.DSS_NavigationContent = Ext.create({xtype: 'new_operation_page'});
+		me.DSS_NavigationContainer.add(me.DSS_NavigationContent);
 		
-		me.DSS_toolbar = Ext.create('Ext.toolbar.Toolbar', {
-	        style: 'background-color: transparent; overflow: visible',
-	        border: false,
-			width: 74,
-			floating: true,
-			shadow: false,
-			x: -16,
-			y: 94,
-		    vertical: true,
-		    defaults: {
-		        text: 'B&nbsp;&nbsp;',
-		        margin: 0,
-		        toggleGroup: 'true',
-		        allowDepress: false,
-		        margin: '0 12 0 -12',
-		        padding: '0 4 0 16',
-		        width: 68, height: 64,
-		        style: 'overflow: visible;border-top-right-radius: 6px!important; border-bottom-right-radius: 6px!important;',
-		    },
-		    items: [{
-		    	text: 'Farm',
-		    	pressed:true,margin: 0,
-			        listeners: {
-			            toggle: function(self, pressed) {
-			                self.animate({
-			                    duration: 125,
-			                    to: {
-			                        left: pressed ? 0 : -12
-			                    }
-			                })
-			            }
-			        }
-		        },{
-			    	text: 'Crop',
-			        listeners: {
-			            toggle: function(self, pressed) {
-			                self.animate({
-			                    duration: 125,
-			                    to: {
-			                        left: pressed ? 0 : -12
-			                    }
-			                })
-			            }
-			        }
-		        },{
-			    	text: 'Cows',
-			        listeners: {
-			            toggle: function(self, pressed) {
-			                self.animate({
-			                    duration: 125,
-			                    to: {
-			                        left: pressed ? 0 : -12
-			                    }
-			                })
-			            }
-			        }
-		        },{
-			    	text: 'Clim',
-			        listeners: {
-			            toggle: function(self, pressed) {
-			                self.animate({
-			                    duration: 125,
-			                    to: {
-			                        left: pressed ? 0 : -12
-			                    }
-			                })
-			            }
-			        }
-		        },{
-			    	text: 'Assm',
-			        listeners: {
-			            toggle: function(self, pressed) {
-			                self.animate({
-			                    duration: 125,
-			                    to: {
-			                        left: pressed ? 0 : -12
-			                    }
-			                })
-			            }
-			        }
-		        },
-		    ]
-		});
+		me.doMapWorkPanel();
+    	DSS.layer.farms.setVisible(true);
+    	DSS.layer.farms.setOpacity(0.5);
+	},
+	
+	doStartingPage: function() {
+		let me = this;
+		me.DSS_NavigationContainer.remove(me.DSS_NavigationContent, false);
+		me.DSS_NavigationContent = Ext.create({xtype: 'starting_page'});
+		me.DSS_NavigationContainer.add(me.DSS_NavigationContent);
 		
-		me.DSS_toolbar.show();
+		me.doMapWorkPanel();
+    	DSS.layer.farms.setVisible(true);                    	
+    	DSS.layer.farms.setOpacity(1.0);
+    	DSS.layer.fields.setVisible(false);                    	
+    	
+		me.DSS_realtimeDashboard.animate({
+			dynamic: true, duration: 300,
+			to: {
+				width: 0
+			}
+		})
+		
+		DSS.map.getView().fit([-10126000, 5360000, -10110000, 5390000], {duration: 1000});
+	},
+	
+	doOperationBasePage: function() {
+		let me = this;
+		me.DSS_NavigationContainer.remove(me.DSS_NavigationContent, false);
+		me.DSS_NavigationContent = Ext.create({xtype: 'operation_base_page'});
+		me.DSS_NavigationContainer.add(me.DSS_NavigationContent);
+		
+		me.doMapWorkPanel();
+		
+    	DSS.layer.farms.setVisible(false);                    	
+    	DSS.layer.fields.setVisible(true);                    	
+
+		me.DSS_realtimeDashboard.animate({
+			dynamic: true, duration: 300,
+			to: {
+				width: 128
+			}
+		})
+	},
+	
+	doManageAssumptionsPage: function() {
+		let me = this;
+		me.DSS_NavigationContainer.remove(me.DSS_NavigationContent, false);
+		me.DSS_NavigationContent = Ext.create({xtype: 'manage_assumptions_page'});
+		me.DSS_NavigationContainer.add(me.DSS_NavigationContent);
+		
+		me.doChartWorkPanel();
 	}
-		
+	
 });

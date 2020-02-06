@@ -166,12 +166,7 @@
     padding: 2px;
     position: absolute
 }
-.x-grid {
-	border-radius: 12px;
-}
-.x-grid-view {
-	border-bottom-left-radius: 12px;
-}
+
 .inverted-close-icon {
     background-image: url(images/inverted-close-icon.png) !important;
     background-size: cover;

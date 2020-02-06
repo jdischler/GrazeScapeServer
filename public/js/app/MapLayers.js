@@ -2,31 +2,29 @@
 //------------------------------------------------------------------------------
 Ext.define('DSS.app.MapLayers', {
 //------------------------------------------------------------------------------
-	extend: 'Ext.panel.Panel',
+	extend: 'Ext.container.Container',
 	alias: 'widget.map_layers',
 	mixins: [
 		'Ext.mixin.Responsive'
 	],	
 
-	title: 'Map Layers',
-	titleAlign: 'center',
-	collapsible: true,
 	layout: {
 		type: 'hbox',
 		pack: 'center',
 		align: 'center'
 	},
 	
-	bodyPadding: 8,
-	style: 'background-color: #fff',
+	padding: 8,
+	style: 'background-color: #e9edd977; background-repeat: no-repeat; background-image: linear-gradient(to right, rgba(0,0,0,0.35), rgba(0,0,0,0.1), rgba(0,0,0,0.03), rgba(0,0,0,0)); background-size: 2rem 100%;',
+	
 		
 	// 'landscape', 'width', 'height', 'tall', 'wide', <platform> e.g, 'desktop',
 	//	examples: '!(desktop || width > 800)'
 	responsiveConfig: {
-		'width < 800': {
+		'width < 1050': {
 			vertical: true
 		},
-		'width >= 800': {
+		'width >= 1050': {
 			vertical: false
 		}
 	},
@@ -49,7 +47,8 @@ Ext.define('DSS.app.MapLayers', {
 				xtype: 'component',
 				flex: 1
 			},{
-				width: 400,
+				width: 300,
+				margin: '0 16',
 				defaults: {
 					xtype: 'radio',
 					name: 'base-layer',
@@ -63,18 +62,27 @@ Ext.define('DSS.app.MapLayers', {
 				},
 				items: [{
                     boxLabel: 'Bing Aerial',
-                    DSS_layer: 'bing-aerial'
+                    DSS_layer: 'bing-aerial',
+                    checked: true,
+                    handler: function(self, checked) {
+                    	DSS.layer.bingAerial.setVisible(checked);
+                    }
 				},{
                     boxLabel: 'Bing Road',
-                    DSS_layer: 'bing-aerial'
+                    DSS_layer: 'bing-aerial',
+                    handler: function(self, checked) {
+                    	DSS.layer.bingRoad.setVisible(checked);
+                    }
 				},{
                     boxLabel: 'Open-Street',
-                    DSS_layer: 'bing-aerial'
-				},{
-					xtype: 'component' // placeholder
+                    DSS_layer: 'bing-aerial',
+                    handler: function(self, checked) {
+                    	DSS.layer.osm.setVisible(checked);
+                    }
 				}]
 			},{
-				width: 400,
+				width: 300,
+				margin: '0 16',
 				defaults: {
 					xtype: 'checkbox',
 					flex: 1,
@@ -82,12 +90,21 @@ Ext.define('DSS.app.MapLayers', {
 				},
 				items: [{
                     boxLabel: 'Watershed',
-				},{
-                    boxLabel: 'Fields',					
+                    checked: true,
+                    handler: function(self,checked) {
+                    	DSS.layer.watershed.setVisible(checked);                    	
+                    }
 				},{
                     boxLabel: 'Contour',
+                    handler: function(self,checked) {
+                    	DSS.layer.contour.setVisible(checked);                    	
+                    }
 				},{
                     boxLabel: 'Hillshade',					
+                    checked: true,
+                    handler: function(self,checked) {
+                    	DSS.layer.hillshade.setVisible(checked);                    	
+                    }
 				}]
 			},{
 				xtype: 'component',
