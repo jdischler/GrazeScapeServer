@@ -8,6 +8,12 @@ Ext.define('DSS.controls.GrazingToolsBase', {
 	layout: DSS.utils.layout('vbox', 'center', 'stretch'),
 	cls: 'section',
 	
+	statics: {
+		get: function() {
+			return {xtype: 'grazing_tools_base'}
+		}
+	},
+	
 	//--------------------------------------------------------------------------
 	initComponent: function() {
 		let me = this;

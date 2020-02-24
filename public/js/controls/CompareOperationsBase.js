@@ -8,6 +8,19 @@ Ext.define('DSS.controls.CompareOperationsBase', {
 	layout: DSS.utils.layout('vbox', 'center', 'stretch'),
 	cls: 'section',
 	
+	statics: {
+		get: function() {
+			let totalFarmCount = 1;
+			if (totalFarmCount <= 1) {
+				return undefined;
+			}
+			
+			return {
+				xtype: 'compare_operations_base'
+			}
+		}
+	},
+	
 	//--------------------------------------------------------------------------
 	initComponent: function() {
 		let me = this;

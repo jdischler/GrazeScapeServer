@@ -3,3 +3,10 @@ project/target
 target/
 *.DS_Store
 logs/application.log
+conf/evolutions/
+layerData
+*.asc
+*.dss
+*.tif
+public/dynamicFiles
+target/.history

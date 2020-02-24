@@ -4,7 +4,12 @@
 GET     /                        	controllers.HomeController.app()
 GET     /app                        controllers.HomeController.app()
 GET		/get_farms					controllers.HomeController.getFarms()
+POST	/test_fetch					controllers.HomeController.testFetch(request: Request)
+POST	/fetch_image				controllers.HomeController.fetchImage(request: Request)
+GET		/get_fields					controllers.HomeController.getFields(farm: Long)
+POST	/create_operation			controllers.HomeController.createOperation(request: Request)
 
 # Map static resources from the /public folder to the /assets URL path
+GET		/renders/:file				controllers.FileService.getFile(file: String)
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 GET		/app/*file					controllers.Assets.at(path="/public/js", file)

@@ -11,6 +11,22 @@ Ext.define('DSS.controls.OperationsBase', {
 
 	layout: DSS.utils.layout('vbox', 'center', 'stretch'),
 	cls: 'section',
+
+	statics: {
+		get: function() {
+			let def = {
+					xtype: 'operations_base'
+			};
+			let totalFarmCount = 0;
+			if (totalFarmCount <= 0) {
+				def['DSS_text'] = 'Start by creating a new operation';
+			}
+			
+			return def;
+		}
+	},
+	
+	DSS_text: 'Select an existing operation on the map or create a new one',
 	
 	//--------------------------------------------------------------------------
 	initComponent: function() {
@@ -34,13 +50,13 @@ Ext.define('DSS.controls.OperationsBase', {
 				items: [{
 					xtype: 'component',
 					cls: 'information',
-					html: 'Select an existing operation on the map or create a new one'
+					html: me.DSS_text
 				},{
 					xtype: 'button',
 					text: 'Create New',
 					margin: '8 72',
 					handler: function() {
-						DSS.mainViewport.doNewOperationPage();
+						DSS.ApplicationFlow.instance.showNewOperationPage();
 					}
 				}]
 			}]

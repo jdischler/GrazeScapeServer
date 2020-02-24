@@ -59,6 +59,7 @@ public class Json
 	}
 	
 	// Handle casting values to the correct type for placement on the carrier object node
+	// TODO: consider adding arrayList support?
 	//--------------------------------------------------------------------------	
 	public static final void putKeyValue(ObjectNode carrierNode, String key, Object value) {
 	
@@ -83,7 +84,7 @@ public class Json
 		} else if (value instanceof String) {
 			carrierNode.put(key, value.toString());
 			
-		} else if (value instanceof String[]) {
+		} else if (value instanceof String[]) { // FIXME: any way to do more generic array handling?
 			ArrayNode ar = JsonNodeFactory.instance.arrayNode();
 			for (String v: (String[])value) {
 				ar.add(v);
@@ -311,8 +312,8 @@ public class Json
 			if (valNode == null) {
 				throw new RuntimeException("Json: safeGetDouble: key <" + key + "> doesn't exist in object node");
 			}
-			else if (!valNode.isNumber()) {
-				throw new RuntimeException("Json: safeGetDouble: key <" + key + "> could not be a double");
+			else if (!valNode.isDouble()) {
+				throw new RuntimeException("Json: safeGetDouble: key <" + key + "> could not be a double, it's a :" + valNode.toString());
 			}
 			return valNode.asDouble();
 		}
@@ -329,7 +330,7 @@ public class Json
 			if (valNode == null) {
 				throw new RuntimeException("Json: safeGetFloat: key <" + key + "> doesn't exist in object node");
 			}
-			else if (!valNode.isNumber()) {
+			else if (!valNode.isFloat()) {
 				throw new RuntimeException("Json: safeGetFloat: key <" + key + "> is not a valid float");
 			}
 			return valNode.floatValue();
@@ -347,7 +348,7 @@ public class Json
 			if (valNode == null || valNode.isNull()) {
 				return optionalValue;
 			}
-			else if (!valNode.isNumber()) {
+			else if (!valNode.isFloat()) {
 				throw new RuntimeException("Json: safeGetOptionalFloat: key <" + key + "> is not a valid float");
 			}
 			return valNode.floatValue();

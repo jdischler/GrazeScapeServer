@@ -1,4 +1,22 @@
 
+// wiscland 2.0 codes
+/*
+1	developed
+2	Cash Grain
+3	Continuous Corn
+4	Dairy Rotation
+5	Vegetables
+6	Hay
+7	Pasture
+8	Reed Canary Grass
+9	Cool-Season
+10	Warm-Season
+11	Water/Swamp
+12	Other (forest)
+13	Other
+*/
+
+
 //------------------------------------------------------------------------------
 Ext.define('DSS.app.MapLayers', {
 //------------------------------------------------------------------------------

@@ -2,9 +2,19 @@ package controllers;
 
 import javax.inject.Inject;
 
-import data_types.Farm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import play.api.libs.Files.TemporaryFile;
 import play.mvc.*;
+import utils.Json;
 import utils.ServerStartup;
+import query.Layer_Base;
+import data_types.Farm;
+import java.util.Map;
+import java.util.Map.Entry;
 
 //• On connect:
 //	• Create new user id if needed (stored in cookies)
@@ -71,7 +81,9 @@ Farms:
 
 //------------------------------------------------------------------
 public class HomeController extends Controller {
-	
+
+    private static final Logger logger = LoggerFactory.getLogger("app");
+
 	//------------------------------------------------------------------
 	@Inject
 	public HomeController(ServerStartup startup) {
@@ -82,8 +94,71 @@ public class HomeController extends Controller {
 
 		return ok(views.html.app.render());
 	}
+
+	//------------------------------------------------------------------
+	public Result createOperation(Http.Request request) {
+		
+		JsonNode dat = request.body().asJson();
+		logger.error(dat.toString());
+		String operation = Json.safeGetString(dat, "operation");
+		String owner = Json.safeGetString(dat, "owner");
+		String address = Json.safeGetOptionalString(dat, "address", "");
+		Float x = Float.parseFloat(Json.safeGetString(dat, "location_x"));
+		Float y = Float.parseFloat(Json.safeGetString(dat, "location_y"));
+		
+		/*Map<String,String[]> parms = request.body().asFormUrlEncoded();
+		
+		String location_x[] = parms.get("location_x");
+		String location_y[] = parms.get("location_y");*/
+
+		db.Farm f = new db.Farm().
+				name(operation).
+				owner(owner).
+				address(address).
+				location(x, y);
+		
+		f.save();
+		
+		// Must return "success": true for extjs form submission framework...
+		return ok(Json.pack("success",true, "farm", Json.pack("id", f.id)));
+	}
 	
+/*	//------------------------------------------------------------------
+	public Result uploadFileTest(Http.Request request) {
+	    Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
+	    Http.MultipartFormData.FilePart<TemporaryFile> picture = body.getFile("picture");
+	    if (picture != null) {
+	      String fileName = picture.getFilename();
+	      long fileSize = picture.getFileSize();
+	      String contentType = picture.getContentType();
+	      TemporaryFile file = picture.getRef();
+	      file.copyTo(Paths.get("/tmp/picture/destination.jpg"), true);
+	      return ok("File uploaded");
+	    } else {
+	      return badRequest().flashing("error", "Missing file");
+	    }	}
+*/	
 	public Result getFarms() {
 		return ok(Farm.getAllAsGeoJson());
 	}
+	
+	public Result getFields(Long farmId) {
+		
+		logger.info("Got a request for farm: " + farmId);
+		db.Farm f = db.Farm.find.byId(farmId);
+		if (f != null) {
+			logger.info(String.format("And that farm was found...<%s> <%s> <%s>", f.farmName, f.farmOwner, f.farmAddress));
+			return ok(f.getFieldShapesAsGeoJson());
+		}
+		return ok("Farm did not exist");
+	}
+	
+	public Result testFetch(Http.Request request) {
+		return ok();
+	}
+
+	public Result fetchImage(Http.Request request) {
+		return ok(Layer_Base.fetch_image(request));
+	}
+
 }

@@ -13,11 +13,9 @@ Ext.define('DSS.view.AppViewport', {
 	requires: [
 		'DSS.app.MainMap',
 		'DSS.app.MapLayers',
-		'DSS.pages.StartingPage',
-		'DSS.pages.NewOperationPage',
-		'DSS.pages.OperationBasePage',
 		'DSS.pages.CompareOperationsPage',
-		'DSS.pages.ManageAssumptionsPage'
+		'DSS.pages.ManageAssumptionsPage',
+		'DSS.controls.ApplicationFlow',
 	],
 
 	minWidth: 480,
@@ -31,10 +29,8 @@ Ext.define('DSS.view.AppViewport', {
 	listeners: {
 		afterrender: function(self) {
 			// FIXME: TODO: responsive layouts weren't working until a page resize. why?
-			Ext.mixin.Responsive.notify();
-			setTimeout(function() {
-				Ext.mixin.Responsive.notify();
-			}, 200);
+			// This also doesn't seem to do anything anyway?
+		//	Ext.mixin.Responsive.notify();
 			
 			DSS.mainViewport = self;
 		}
@@ -83,16 +79,13 @@ Ext.define('DSS.view.AppViewport', {
 				layout: 'fit',
 				minWidth: 388,
 				items: [{
-					xtype: 'starting_page'
-//					xtype: 'new_operation_page'
-//					xtype: 'operation_base_page'
-					,
+					xtype: 'application_flow',
 					listeners: {
-						afterrender: function(self) { me.DSS_NavigationContent = self; }
+						afterrender: function(self) { me.DSS_App = {Flow: {Content: self}} }
 					}
 				}],
 				listeners: {
-					afterrender: function(self) { me.DSS_NavigationContainer = self; }
+					afterrender: function(self) { me.DSS_App = {Flow: {Container: self}} }
 				}
 			}]
 		});
@@ -127,65 +120,5 @@ Ext.define('DSS.view.AppViewport', {
 		me.DSS_WorkContainer.remove(me.DSS_ChartWidget, false)
 		me.DSS_WorkContainer.add(me.DSS_MapWidget);
 	},
-	
-	doNewOperationPage: function() {
-		let me = this;
-		me.DSS_NavigationContainer.remove(me.DSS_NavigationContent, false);
-		me.DSS_NavigationContent = Ext.create({xtype: 'new_operation_page'});
-		me.DSS_NavigationContainer.add(me.DSS_NavigationContent);
-		
-		me.doMapWorkPanel();
-    	DSS.layer.farms.setVisible(true);
-    	DSS.layer.farms.setOpacity(0.5);
-	},
-	
-	doStartingPage: function() {
-		let me = this;
-		me.DSS_NavigationContainer.remove(me.DSS_NavigationContent, false);
-		me.DSS_NavigationContent = Ext.create({xtype: 'starting_page'});
-		me.DSS_NavigationContainer.add(me.DSS_NavigationContent);
-		
-		me.doMapWorkPanel();
-    	DSS.layer.farms.setVisible(true);                    	
-    	DSS.layer.farms.setOpacity(1.0);
-    	DSS.layer.fields.setVisible(false);                    	
-    	
-		me.DSS_realtimeDashboard.animate({
-			dynamic: true, duration: 300,
-			to: {
-				width: 0
-			}
-		})
-		
-		DSS.map.getView().fit([-10126000, 5360000, -10110000, 5390000], {duration: 1000});
-	},
-	
-	doOperationBasePage: function() {
-		let me = this;
-		me.DSS_NavigationContainer.remove(me.DSS_NavigationContent, false);
-		me.DSS_NavigationContent = Ext.create({xtype: 'operation_base_page'});
-		me.DSS_NavigationContainer.add(me.DSS_NavigationContent);
-		
-		me.doMapWorkPanel();
-		
-    	DSS.layer.farms.setVisible(false);                    	
-    	DSS.layer.fields.setVisible(true);                    	
-
-		me.DSS_realtimeDashboard.animate({
-			dynamic: true, duration: 300,
-			to: {
-				width: 128
-			}
-		})
-	},
-	
-	doManageAssumptionsPage: function() {
-		let me = this;
-		me.DSS_NavigationContainer.remove(me.DSS_NavigationContent, false);
-		me.DSS_NavigationContent = Ext.create({xtype: 'manage_assumptions_page'});
-		me.DSS_NavigationContainer.add(me.DSS_NavigationContent);
-		
-		me.doChartWorkPanel();
-	}
 	
 });

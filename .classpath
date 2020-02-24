@@ -1,813 +1,768 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="app"/>
-	<classpathentry kind="src" path="conf"/>
-	<classpathentry kind="src" path="target/scala-2.13/twirl/main"/>
-	<classpathentry kind="src" path="target/scala-2.13/routes/main"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/h2-1.4.180.jar"/>
-	<classpathentry kind="lib" path="lib/pngj.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.10/httpcore-4.4.10.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.10/httpcore-4.4.10-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.10/httpcore-4.4.10-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec/4.1.34.Final/netty-codec-4.1.34.Final.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec/4.1.34.Final/netty-codec-4.1.34.Final-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec/4.1.34.Final/netty-codec-4.1.34.Final-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-transport-native-epoll/4.1.34.Final/netty-transport-native-epoll-4.1.34.Final-linux-x86_64.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.12.v20180830/websocket-api-9.4.12.v20180830.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.12.v20180830/websocket-api-9.4.12.v20180830-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.12.v20180830/websocket-api-9.4.12.v20180830-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.6/httpclient-4.5.6.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.6/httpclient-4.5.6-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.6/httpclient-4.5.6-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/1.2.0/scala-xml_2.13-1.2.0.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/1.2.0/scala-xml_2.13-1.2.0-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/1.2.0/scala-xml_2.13-1.2.0-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-json_2.13/2.7.4/play-json_2.13-2.7.4.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-json_2.13/2.7.4/play-json_2.13-2.7.4-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-json_2.13/2.7.4/play-json_2.13-2.7.4-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parser-combinators_2.13/1.1.2/scala-parser-combinators_2.13-1.1.2.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parser-combinators_2.13/1.1.2/scala-parser-combinators_2.13-1.1.2-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parser-combinators_2.13/1.1.2/scala-parser-combinators_2.13-1.1.2-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/9.4.12.v20180830/jetty-util-9.4.12.v20180830.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/9.4.12.v20180830/jetty-util-9.4.12.v20180830-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/9.4.12.v20180830/jetty-util-9.4.12.v20180830-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-functional_2.13/2.7.4/play-functional_2.13-2.7.4.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-functional_2.13/2.7.4/play-functional_2.13-2.7.4-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-functional_2.13/2.7.4/play-functional_2.13-2.7.4-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/inject/extensions/guice-assistedinject/4.2.2/guice-assistedinject-4.2.2.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/inject/extensions/guice-assistedinject/4.2.2/guice-assistedinject-4.2.2-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/inject/extensions/guice-assistedinject/4.2.2/guice-assistedinject-4.2.2-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/hibernate/validator/hibernate-validator/6.0.16.Final/hibernate-validator-6.0.16.Final.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/hibernate/validator/hibernate-validator/6.0.16.Final/hibernate-validator-6.0.16.Final-sources.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/jcl-over-slf4j/1.7.26/jcl-over-slf4j-1.7.26.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/jcl-over-slf4j/1.7.26/jcl-over-slf4j-1.7.26-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/jcl-over-slf4j/1.7.26/jcl-over-slf4j-1.7.26-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/3.141.59/selenium-api-3.141.59.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/3.141.59/selenium-api-3.141.59-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/3.141.59/selenium-api-3.141.59-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/junit/junit/4.12/junit-4.12.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/junit/junit/4.12/junit-4.12-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/junit/junit/4.12/junit-4.12-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-parsing_2.13/10.1.8/akka-parsing_2.13-10.1.8.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-parsing_2.13/10.1.8/akka-parsing_2.13-10.1.8-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-parsing_2.13/10.1.8/akka-parsing_2.13-10.1.8-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/inject/guice/4.2.2/guice-4.2.2.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/inject/guice/4.2.2/guice-4.2.2-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/inject/guice/4.2.2/guice-4.2.2-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-resolver/4.1.34.Final/netty-resolver-4.1.34.Final.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-resolver/4.1.34.Final/netty-resolver-4.1.34.Final-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-resolver/4.1.34.Final/netty-resolver-4.1.34.Final-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.9.8/jackson-datatype-jdk8-2.9.8.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.9.8/jackson-datatype-jdk8-2.9.8-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.9.8/jackson-datatype-jdk8-2.9.8-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.33/htmlunit-2.33.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.33/htmlunit-2.33-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.33/htmlunit-2.33-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/classmate/1.3.4/classmate-1.3.4.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/classmate/1.3.4/classmate-1.3.4-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/classmate/1.3.4/classmate-1.3.4-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/jsonwebtoken/jjwt/0.9.1/jjwt-0.9.1.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/jsonwebtoken/jjwt/0.9.1/jjwt-0.9.1-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/jsonwebtoken/jjwt/0.9.1/jjwt-0.9.1-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/h2database/h2/1.4.199/h2-1.4.199.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/h2database/h2/1.4.199/h2-1.4.199-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/h2database/h2/1.4.199/h2-1.4.199-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play_2.13/2.7.3/play_2.13-2.7.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play_2.13/2.7.3/play_2.13-2.7.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play_2.13/2.7.3/play_2.13-2.7.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams-http/2.0.3/netty-reactive-streams-http-2.0.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams-http/2.0.3/netty-reactive-streams-http-2.0.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams-http/2.0.3/netty-reactive-streams-http-2.0.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-beans/5.1.5.RELEASE/spring-beans-5.1.5.RELEASE.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-beans/5.1.5.RELEASE/spring-beans-5.1.5.RELEASE-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-beans/5.1.5.RELEASE/spring-beans-5.1.5.RELEASE-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-api_2.13/1.4.2/twirl-api_2.13-1.4.2.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-api_2.13/1.4.2/twirl-api_2.13-1.4.2-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-api_2.13/1.4.2/twirl-api_2.13-1.4.2-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-support/3.141.59/selenium-support-3.141.59.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-support/3.141.59/selenium-support-3.141.59-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-support/3.141.59/selenium-support-3.141.59-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-io/commons-io/2.6/commons-io-2.6.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-io/commons-io/2.6/commons-io-2.6-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-io/commons-io/2.6/commons-io-2.6-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-java-forms_2.13/2.7.3/play-java-forms_2.13-2.7.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-java-forms_2.13/2.7.3/play-java-forms_2.13-2.7.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-java-forms_2.13/2.7.3/play-java-forms_2.13-2.7.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.9.8/jackson-core-2.9.8.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.9.8/jackson-core-2.9.8-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.9.8/jackson-core-2.9.8-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-http-core_2.13/10.1.8/akka-http-core_2.13-10.1.8.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-http-core_2.13/10.1.8/akka-http-core_2.13-10.1.8-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-http-core_2.13/10.1.8/akka-http-core_2.13-10.1.8-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/fluentlenium/fluentlenium-core/3.7.1/fluentlenium-core-3.7.1.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/fluentlenium/fluentlenium-core/3.7.1/fluentlenium-core-3.7.1-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/fluentlenium/fluentlenium-core/3.7.1/fluentlenium-core-3.7.1-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.33/htmlunit-core-js-2.33.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.33/htmlunit-core-js-2.33-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.33/htmlunit-core-js-2.33-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-netty-server_2.13/2.7.3/play-netty-server_2.13-2.7.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-netty-server_2.13/2.7.3/play-netty-server_2.13-2.7.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-netty-server_2.13/2.7.3/play-netty-server_2.13-2.7.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-common/4.1.34.Final/netty-common-4.1.34.Final.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-common/4.1.34.Final/netty-common-4.1.34.Final-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-common/4.1.34.Final/netty-common-4.1.34.Final-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/jodah/typetools/0.5.0/typetools-0.5.0.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/jodah/typetools/0.5.0/typetools-0.5.0-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/jodah/typetools/0.5.0/typetools-0.5.0-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.9.8/jackson-datatype-jsr310-2.9.8.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.9.8/jackson-datatype-jsr310-2.9.8-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.9.8/jackson-datatype-jsr310-2.9.8-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/9.4.12.v20180830/websocket-client-9.4.12.v20180830.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/9.4.12.v20180830/websocket-client-9.4.12.v20180830-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/9.4.12.v20180830/websocket-client-9.4.12.v20180830-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-firefox-driver/3.141.59/selenium-firefox-driver-3.141.59.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-firefox-driver/3.141.59/selenium-firefox-driver-3.141.59-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-firefox-driver/3.141.59/selenium-firefox-driver-3.141.59-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-exceptions/2.7.3/play-exceptions-2.7.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-exceptions/2.7.3/play-exceptions-2.7.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-exceptions/2.7.3/play-exceptions-2.7.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.1/j2objc-annotations-1.1.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.1/j2objc-annotations-1.1-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.1/j2objc-annotations-1.1-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-net/commons-net/3.6/commons-net-3.6.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-net/commons-net/3.6/commons-net-3.6-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-net/commons-net/3.6/commons-net-3.6-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-buffer/4.1.34.Final/netty-buffer-4.1.34.Final.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-buffer/4.1.34.Final/netty-buffer-4.1.34.Final-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-buffer/4.1.34.Final/netty-buffer-4.1.34.Final-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.5.6/httpmime-4.5.6.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.5.6/httpmime-4.5.6-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.5.6/httpmime-4.5.6-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.8/commons-lang3-3.8.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.8/commons-lang3-3.8-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.8/commons-lang3-3.8-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-akka-http-server_2.13/2.7.3/play-akka-http-server_2.13-2.7.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-akka-http-server_2.13/2.7.3/play-akka-http-server_2.13-2.7.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-akka-http-server_2.13/2.7.3/play-akka-http-server_2.13-2.7.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-java_2.13/2.7.3/play-java_2.13-2.7.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-java_2.13/2.7.3/play-java_2.13-2.7.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-java_2.13/2.7.3/play-java_2.13-2.7.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/squareup/okhttp3/okhttp/3.11.0/okhttp-3.11.0.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/squareup/okhttp3/okhttp/3.11.0/okhttp-3.11.0-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/squareup/okhttp3/okhttp/3.11.0/okhttp-3.11.0-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-core/5.1.5.RELEASE/spring-core-5.1.5.RELEASE.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-core/5.1.5.RELEASE/spring-core-5.1.5.RELEASE-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-core/5.1.5.RELEASE/spring-core-5.1.5.RELEASE-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-context/5.1.5.RELEASE/spring-context-5.1.5.RELEASE.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-context/5.1.5.RELEASE/spring-context-5.1.5.RELEASE-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-context/5.1.5.RELEASE/spring-context-5.1.5.RELEASE-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xalan/xalan/2.7.2/xalan-2.7.2.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xalan/xalan/2.7.2/xalan-2.7.2-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xalan/xalan/2.7.2/xalan-2.7.2-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-streams_2.13/2.7.3/play-streams_2.13-2.7.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-streams_2.13/2.7.3/play-streams_2.13-2.7.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-streams_2.13/2.7.3/play-streams_2.13-2.7.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.3/netty-reactive-streams-2.0.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.3/netty-reactive-streams-2.0.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.3/netty-reactive-streams-2.0.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/filters-helpers_2.13/2.7.3/filters-helpers_2.13-2.7.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/filters-helpers_2.13/2.7.3/filters-helpers_2.13-2.7.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/filters-helpers_2.13/2.7.3/filters-helpers_2.13-2.7.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-slf4j_2.13/2.5.23/akka-slf4j_2.13-2.5.23.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-slf4j_2.13/2.5.23/akka-slf4j_2.13-2.5.23-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-slf4j_2.13/2.5.23/akka-slf4j_2.13-2.5.23-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/checkerframework/checker-qual/2.5.2/checker-qual-2.5.2.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/checkerframework/checker-qual/2.5.2/checker-qual-2.5.2-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/checkerframework/checker-qual/2.5.2/checker-qual-2.5.2-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/guava/guava/27.1-jre/guava-27.1-jre.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/guava/guava/27.1-jre/guava-27.1-jre-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/guava/guava/27.1-jre/guava-27.1-jre-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.26/slf4j-api-1.7.26.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.26/slf4j-api-1.7.26-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.26/slf4j-api-1.7.26-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/ssl-config-core_2.13/0.4.0/ssl-config-core_2.13-0.4.0.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/ssl-config-core_2.13/0.4.0/ssl-config-core_2.13-0.4.0-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/ssl-config-core_2.13/0.4.0/ssl-config-core_2.13-0.4.0-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.9.8/jackson-annotations-2.9.8.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.9.8/jackson-annotations-2.9.8-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.9.8/jackson-annotations-2.9.8-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.2.0/error_prone_annotations-2.2.0.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.2.0/error_prone_annotations-2.2.0-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.2.0/error_prone_annotations-2.2.0-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.33/neko-htmlunit-2.33.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.33/neko-htmlunit-2.33-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.33/neko-htmlunit-2.33-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-xml/9.4.12.v20180830/jetty-xml-9.4.12.v20180830.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-xml/9.4.12.v20180830/jetty-xml-9.4.12.v20180830-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-xml/9.4.12.v20180830/jetty-xml-9.4.12.v20180830-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-handler/4.1.34.Final/netty-handler-4.1.34.Final.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-handler/4.1.34.Final/netty-handler-4.1.34.Final-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-handler/4.1.34.Final/netty-handler-4.1.34.Final-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.2/reactive-streams-1.0.2.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.2/reactive-streams-1.0.2-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.2/reactive-streams-1.0.2-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.12.v20180830/websocket-common-9.4.12.v20180830.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.12.v20180830/websocket-common-9.4.12.v20180830-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.12.v20180830/websocket-common-9.4.12.v20180830-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-test_2.13/2.7.3/play-test_2.13-2.7.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-test_2.13/2.7.3/play-test_2.13-2.7.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-test_2.13/2.7.3/play-test_2.13-2.7.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/mail/mail/1.4.5/mail-1.4.5.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/mail/mail/1.4.5/mail-1.4.5-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/mail/mail/1.4.5/mail-1.4.5-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-server_2.13/2.7.3/play-server_2.13-2.7.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-server_2.13/2.7.3/play-server_2.13-2.7.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-server_2.13/2.7.3/play-server_2.13-2.7.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/squareup/okio/okio/1.14.0/okio-1.14.0.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/squareup/okio/okio/1.14.0/okio-1.14.0-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/squareup/okio/okio/1.14.0/okio-1.14.0-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/atteo/classindex/classindex/3.4/classindex-3.4.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/atteo/classindex/classindex/3.4/classindex-3.4-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/atteo/classindex/classindex/3.4/classindex-3.4-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-logback_2.13/2.7.3/play-logback_2.13-2.7.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-logback_2.13/2.7.3/play-logback_2.13-2.7.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-logback_2.13/2.7.3/play-logback_2.13-2.7.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/inject/javax.inject/1/javax.inject-1.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/inject/javax.inject/1/javax.inject-1-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/inject/javax.inject/1/javax.inject-1-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.12.v20180830/jetty-http-9.4.12.v20180830.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.12.v20180830/jetty-http-9.4.12.v20180830-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.12.v20180830/jetty-http-9.4.12.v20180830-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/jboss/logging/jboss-logging/3.3.2.Final/jboss-logging-3.3.2.Final.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/jboss/logging/jboss-logging/3.3.2.Final/jboss-logging-3.3.2.Final-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/jboss/logging/jboss-logging/3.3.2.Final/jboss-logging-3.3.2.Final-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-java8-compat_2.13/0.9.0/scala-java8-compat_2.13-0.9.0.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-java8-compat_2.13/0.9.0/scala-java8-compat_2.13-0.9.0-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-java8-compat_2.13/0.9.0/scala-java8-compat_2.13-0.9.0-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-io/9.4.12.v20180830/jetty-io-9.4.12.v20180830.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-io/9.4.12.v20180830/jetty-io-9.4.12.v20180830-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-io/9.4.12.v20180830/jetty-io-9.4.12.v20180830-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/9.4.12.v20180830/jetty-client-9.4.12.v20180830.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/9.4.12.v20180830/jetty-client-9.4.12.v20180830-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/9.4.12.v20180830/jetty-client-9.4.12.v20180830-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-exec/1.3/commons-exec-1.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-exec/1.3/commons-exec-1.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-exec/1.3/commons-exec-1.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/novocode/junit-interface/0.11/junit-interface-0.11.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/novocode/junit-interface/0.11/junit-interface-0.11-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/novocode/junit-interface/0.11/junit-interface-0.11-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec-http/4.1.34.Final/netty-codec-http-4.1.34.Final.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec-http/4.1.34.Final/netty-codec-http-4.1.34.Final-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec-http/4.1.34.Final/netty-codec-http-4.1.34.Final-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/config/1.3.3/config-1.3.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/config/1.3.3/config-1.3.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/config/1.3.3/config-1.3.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.4/commons-text-1.4.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.4/commons-text-1.4-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.4/commons-text-1.4-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.2.0/htmlunit-cssparser-1.2.0.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.2.0/htmlunit-cssparser-1.2.0-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.2.0/htmlunit-cssparser-1.2.0-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/4.1.34.Final/netty-transport-native-unix-common-4.1.34.Final.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/4.1.34.Final/netty-transport-native-unix-common-4.1.34.Final-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/4.1.34.Final/netty-transport-native-unix-common-4.1.34.Final-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/jul-to-slf4j/1.7.26/jul-to-slf4j-1.7.26.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/jul-to-slf4j/1.7.26/jul-to-slf4j-1.7.26-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/jul-to-slf4j/1.7.26/jul-to-slf4j-1.7.26-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-protobuf_2.13/2.5.23/akka-protobuf_2.13-2.5.23.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-protobuf_2.13/2.5.23/akka-protobuf_2.13-2.5.23-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-protobuf_2.13/2.5.23/akka-protobuf_2.13-2.5.23-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.9.8/jackson-databind-2.9.8.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.9.8/jackson-databind-2.9.8-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.9.8/jackson-databind-2.9.8-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-guice_2.13/2.7.3/play-guice_2.13-2.7.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-guice_2.13/2.7.3/play-guice_2.13-2.7.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-guice_2.13/2.7.3/play-guice_2.13-2.7.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-transport/4.1.34.Final/netty-transport-4.1.34.Final.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-transport/4.1.34.Final/netty-transport-4.1.34.Final-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-transport/4.1.34.Final/netty-transport-4.1.34.Final-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xerces/xercesImpl/2.12.0/xercesImpl-2.12.0.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xerces/xercesImpl/2.12.0/xercesImpl-2.12.0-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xerces/xercesImpl/2.12.0/xercesImpl-2.12.0-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/activation/activation/1.1.1/activation-1.1.1.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/activation/activation/1.1.1/activation-1.1.1-sources.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/htmlunit-driver/2.33.3/htmlunit-driver-2.33.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/htmlunit-driver/2.33.3/htmlunit-driver-2.33.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/htmlunit-driver/2.33.3/htmlunit-driver-2.33.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xalan/serializer/2.7.2/serializer-2.7.2.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xalan/serializer/2.7.2/serializer-2.7.2-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xalan/serializer/2.7.2/serializer-2.7.2-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-remote-driver/3.141.59/selenium-remote-driver-3.141.59.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-remote-driver/3.141.59/selenium-remote-driver-3.141.59-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-remote-driver/3.141.59/selenium-remote-driver-3.141.59-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/transaction/jta/1.1/jta-1.1.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/transaction/jta/1.1/jta-1.1-sources.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.13/2.5.23/akka-actor_2.13-2.5.23.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.13/2.5.23/akka-actor_2.13-2.5.23-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.13/2.5.23/akka-actor_2.13-2.5.23-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-email/1.3.3/commons-email-1.3.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-email/1.3.3/commons-email-1.3.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-email/1.3.3/commons-email-1.3.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/build-link/2.7.3/build-link-2.7.3.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/build-link/2.7.3/build-link-2.7.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/build-link/2.7.3/build-link-2.7.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-stream_2.13/2.5.23/akka-stream_2.13-2.5.23.jar" sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-stream_2.13/2.5.23/akka-stream_2.13-2.5.23-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-stream_2.13/2.5.23/akka-stream_2.13-2.5.23-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/ant-1.8.1.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/aws-java-sdk-s3-1.11.36.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/batik-transcoder-1.10.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/bridj-0.6-c-only.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/bufr-4.6.11.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/cdm-4.6.11.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/commons-beanutils-1.9.2-noclassprop.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/commons-cli-1.4.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/commons-collections-3.2.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/commons-dbcp-1.4.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/commons-digester-1.7.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/commons-httpclient-3.1.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/commons-io-2.6.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/commons-jxpath-1.3.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/commons-lang3-3.8.1.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/commons-pool-1.5.4.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/commons-text-1.6.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/disruptor-1.2.13.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/eastwood-1.1.1-20090908.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/ehcache-2.10.3.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/ejml-ddense-0.34.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gdal-2.2.0.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/geodb-0.9.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/GeographicLib-Java-1.49.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/grib-4.6.11.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-app-schema-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-app-schema-resolver-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-arcgrid-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-arcsde-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-arcsde-common-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-brewer-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-charts-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-complex-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-coverage-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-coverage-api-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-cql-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-css-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-csv-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-epsg-extension-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-epsg-hsql-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-epsg-postgresql-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-epsg-wkt-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-feature-pregeneralized-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-geobuf-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-geojson-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-geojsondatastore-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-geometry-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-geopkg-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-geotiff-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-graph-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-grassraster-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-grib-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-grid-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-gtopo30-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-image-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-imageio-ext-gdal-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-imagemosaic-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-imagemosaic-jdbc-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-imagepyramid-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-jdbc-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-jdbc-db2-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-jdbc-h2-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-jdbc-hana-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-jdbc-mysql-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-jdbc-oracle-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-jdbc-postgis-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-jdbc-sqlserver-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-jdbc-teradata-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-jp2k-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-jts-wrapper-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-main-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-mbstyle-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-mbtiles-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-metadata-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-mongodb-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-netcdf-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-ogr-bridj-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-ogr-core-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-ogr-jni-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-opengis-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-postgis-raster-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-process-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-process-feature-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-process-geometry-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-process-raster-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-property-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-referencing-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-render-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-s3-geotiff-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-sample-data-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-sample-data-access-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-shapefile-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-solr-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-svg-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-swing-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-tile-client-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-transform-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-validation-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-vpf-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-wfs-ng-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-wms-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-wmts-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-wps-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-xml-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-xsd-core-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-xsd-csw-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-xsd-fes-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-xsd-filter-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-xsd-gml2-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-xsd-gml3-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-xsd-kml-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-xsd-ows-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-xsd-sld-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-xsd-wcs-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-xsd-wfs-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-xsd-wms-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-xsd-wmts-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-xsd-wps-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/gt-ysld-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/h2-1.1.119.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/hsqldb-2.4.1.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/icu4j-3.4.4.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-arcgrid-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-gdalarcbinarygrid-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-gdaldted-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-gdalecw-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-gdalecwjp2-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-gdalehdr-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-gdalenvihdr-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-gdalerdasimg-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-gdalidrisi-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-gdalkakadujp2-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-gdalmrsid-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-gdalmrsidjp2-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-gdalnitf-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-gdalrpftoc-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-gdalsrp-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-gdalvrt-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-geocore-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-imagereadmt-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-kakadu-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-streams-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-tiff-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/imageio-ext-utilities-1.3.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jackson-core-2.10.1.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jai_codec-1.1.3.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jai_core-1.1.3.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jai_imageio-1.1.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/javacsv-2.0.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/javax.activation-api-1.2.0.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jaxb-api-2.4.0-b180830.0359.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jaxb-runtime-2.4.0-b180830.0438.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jaxen-1.1.6.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jdom2-2.0.6.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jgridshift-core-1.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/json-simple-1.1.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jsqlparser-0.3.14.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jsr305-3.0.0.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-affine-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-algebra-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-bandcombine-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-bandmerge-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-bandselect-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-binarize-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-border-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-buffer-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-classbreaks-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-classifier-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-colorconvert-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-colorindexer-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-contour-1.5.0.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-crop-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-errordiffusion-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-format-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-imagefunction-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-iterators-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-jiffle-op-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-lookup-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-mosaic-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-nullop-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-orderdither-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-piecewise-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-rangelookup-1.5.0.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-rescale-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-rlookup-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-scale-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-scale2-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-shadedrelief-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-stats-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-translate-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-utilities-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-utils-1.5.0.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-vectorbin-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-vectorbinarize-1.5.0.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-vectorize-1.5.0.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-warp-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-zonal-1.1.12.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jt-zonalstats-1.5.0.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jtds-1.3.1.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/jts-core-1.16.1.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/log4j-over-slf4j-1.6.4.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/miglayout-3.7-swing.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/mongo-java-driver-3.3.0.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/mysql-connector-java-5.1.46.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/net.opengis.csw-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/net.opengis.fes-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/net.opengis.ows-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/net.opengis.wcs-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/net.opengis.wfs-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/net.opengis.wmts-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/net.opengis.wps-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/netcdf4-4.6.11.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/opendap-2.1.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/org.eclipse.emf.common-2.15.0.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/org.eclipse.emf.ecore-2.15.0.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/org.eclipse.emf.ecore.xmi-2.15.0.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/org.eclipse.xsd-2.12.0.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/org.w3.xlink-22.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/parboiled-java-1.2.0.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/picocontainer-1.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/postgresql-42.2.5.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/protobuf-java-3.4.0.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/slf4j-log4j12-1.6.4.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/snakeyaml-1.23.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/solr-solrj-7.2.1.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/spotbugs-annotations-4.0.0-RC1.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/sqlite-jdbc-3.27.2.1.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/systems-common-java8-0.7.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/xml-commons-resolver-1.2.jar"/>
-	<classpathentry kind="lib" path="/Users/jdischler/Projects/GrazeScape_svr/lib/geotools-22.2/xpp3_min-1.1.4c.jar"/>
-	<classpathentry kind="output" path="bin"/>
+  <classpathentry kind="src" path="app"/>
+  <classpathentry kind="src" path="conf"/>
+  <classpathentry kind="src" path="target/scala-2.13/twirl/main"/>
+  <classpathentry kind="src" path="target/scala-2.13/routes/main"/>
+  <classpathentry kind="lib" path="./lib/h2-1.4.180.jar"/>
+  <classpathentry kind="lib" path="./lib/pngj.jar"/>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.10/httpcore-4.4.10-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.10/httpcore-4.4.10.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.10/httpcore-4.4.10-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec/4.1.34.Final/netty-codec-4.1.34.Final-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec/4.1.34.Final/netty-codec-4.1.34.Final.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec/4.1.34.Final/netty-codec-4.1.34.Final-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean-agent/11.27.1/ebean-agent-11.27.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean-agent/11.27.1/ebean-agent-11.27.1.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean-agent/11.27.1/ebean-agent-11.27.1-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean-datasource-api/4.3/ebean-datasource-api-4.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean-datasource-api/4.3/ebean-datasource-api-4.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean-datasource-api/4.3/ebean-datasource-api-4.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-transport-native-epoll/4.1.34.Final/netty-transport-native-epoll-4.1.34.Final-linux-x86_64.jar"/>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.12.v20180830/websocket-api-9.4.12.v20180830-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.12.v20180830/websocket-api-9.4.12.v20180830.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.12.v20180830/websocket-api-9.4.12.v20180830-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.6/httpclient-4.5.6-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.6/httpclient-4.5.6.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.6/httpclient-4.5.6-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/si/uom/si-units-java8/0.7.1/si-units-java8-0.7.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/si/uom/si-units-java8/0.7.1/si-units-java8-0.7.1.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/si/uom/si-units-java8/0.7.1/si-units-java8-0.7.1-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/1.2.0/scala-xml_2.13-1.2.0-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/1.2.0/scala-xml_2.13-1.2.0.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/1.2.0/scala-xml_2.13-1.2.0-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-json_2.13/2.7.4/play-json_2.13-2.7.4-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-json_2.13/2.7.4/play-json_2.13-2.7.4.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-json_2.13/2.7.4/play-json_2.13-2.7.4-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/javassist/javassist/3.21.0-GA/javassist-3.21.0-GA-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/javassist/javassist/3.21.0-GA/javassist-3.21.0-GA.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/javassist/javassist/3.21.0-GA/javassist-3.21.0-GA-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parser-combinators_2.13/1.1.2/scala-parser-combinators_2.13-1.1.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parser-combinators_2.13/1.1.2/scala-parser-combinators_2.13-1.1.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parser-combinators_2.13/1.1.2/scala-parser-combinators_2.13-1.1.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/9.4.12.v20180830/jetty-util-9.4.12.v20180830-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/9.4.12.v20180830/jetty-util-9.4.12.v20180830.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/9.4.12.v20180830/jetty-util-9.4.12.v20180830-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-functional_2.13/2.7.4/play-functional_2.13-2.7.4-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-functional_2.13/2.7.4/play-functional_2.13-2.7.4.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-functional_2.13/2.7.4/play-functional_2.13-2.7.4-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/inject/extensions/guice-assistedinject/4.2.2/guice-assistedinject-4.2.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/inject/extensions/guice-assistedinject/4.2.2/guice-assistedinject-4.2.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/inject/extensions/guice-assistedinject/4.2.2/guice-assistedinject-4.2.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.7.2/antlr4-runtime-4.7.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.7.2/antlr4-runtime-4.7.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.7.2/antlr4-runtime-4.7.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/hibernate/validator/hibernate-validator/6.0.16.Final/hibernate-validator-6.0.16.Final-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/hibernate/validator/hibernate-validator/6.0.16.Final/hibernate-validator-6.0.16.Final.jar"/>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/jcl-over-slf4j/1.7.26/jcl-over-slf4j-1.7.26-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/jcl-over-slf4j/1.7.26/jcl-over-slf4j-1.7.26.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/jcl-over-slf4j/1.7.26/jcl-over-slf4j-1.7.26-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/3.141.59/selenium-api-3.141.59-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/3.141.59/selenium-api-3.141.59.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/3.141.59/selenium-api-3.141.59-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/download.osgeo.org/webdav/geotools/jgridshift/jgridshift-core/1.2/jgridshift-core-1.2.jar"/>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/tec/uom/uom-se/1.0.8/uom-se-1.0.8-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/tec/uom/uom-se/1.0.8/uom-se-1.0.8.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/tec/uom/uom-se/1.0.8/uom-se-1.0.8-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/junit/junit/4.12/junit-4.12-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/junit/junit/4.12/junit-4.12.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/junit/junit/4.12/junit-4.12-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-parsing_2.13/10.1.8/akka-parsing_2.13-10.1.8-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-parsing_2.13/10.1.8/akka-parsing_2.13-10.1.8.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-parsing_2.13/10.1.8/akka-parsing_2.13-10.1.8-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/inject/guice/4.2.2/guice-4.2.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/inject/guice/4.2.2/guice-4.2.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/inject/guice/4.2.2/guice-4.2.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-resolver/4.1.34.Final/netty-resolver-4.1.34.Final-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-resolver/4.1.34.Final/netty-resolver-4.1.34.Final.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-resolver/4.1.34.Final/netty-resolver-4.1.34.Final-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.9.8/jackson-datatype-jdk8-2.9.8-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.9.8/jackson-datatype-jdk8-2.9.8.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.9.8/jackson-datatype-jdk8-2.9.8-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.33/htmlunit-2.33-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.33/htmlunit-2.33.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.33/htmlunit-2.33-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/classmate/1.3.4/classmate-1.3.4-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/classmate/1.3.4/classmate-1.3.4.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/classmate/1.3.4/classmate-1.3.4-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/jsonwebtoken/jjwt/0.9.1/jjwt-0.9.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/jsonwebtoken/jjwt/0.9.1/jjwt-0.9.1.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/jsonwebtoken/jjwt/0.9.1/jjwt-0.9.1-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/download.osgeo.org/webdav/geotools/org/geotools/gt-opengis/22.3/gt-opengis-22.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/download.osgeo.org/webdav/geotools/org/geotools/gt-opengis/22.3/gt-opengis-22.3.jar"/>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/h2database/h2/1.4.199/h2-1.4.199-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/h2database/h2/1.4.199/h2-1.4.199.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/h2database/h2/1.4.199/h2-1.4.199-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play_2.13/2.7.3/play_2.13-2.7.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play_2.13/2.7.3/play_2.13-2.7.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play_2.13/2.7.3/play_2.13-2.7.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-jdbc-evolutions_2.13/2.7.3/play-jdbc-evolutions_2.13-2.7.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-jdbc-evolutions_2.13/2.7.3/play-jdbc-evolutions_2.13-2.7.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-jdbc-evolutions_2.13/2.7.3/play-jdbc-evolutions_2.13-2.7.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams-http/2.0.3/netty-reactive-streams-http-2.0.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams-http/2.0.3/netty-reactive-streams-http-2.0.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams-http/2.0.3/netty-reactive-streams-http-2.0.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/download.osgeo.org/webdav/geotools/org/geotools/gt-main/22.3/gt-main-22.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/download.osgeo.org/webdav/geotools/org/geotools/gt-main/22.3/gt-main-22.3.jar"/>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/systems/uom/systems-common-java8/0.7.2/systems-common-java8-0.7.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/systems/uom/systems-common-java8/0.7.2/systems-common-java8-0.7.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/systems/uom/systems-common-java8/0.7.2/systems-common-java8-0.7.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-beans/5.1.5.RELEASE/spring-beans-5.1.5.RELEASE-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-beans/5.1.5.RELEASE/spring-beans-5.1.5.RELEASE.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-beans/5.1.5.RELEASE/spring-beans-5.1.5.RELEASE-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/zaxxer/HikariCP/3.3.1/HikariCP-3.3.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/zaxxer/HikariCP/3.3.1/HikariCP-3.3.1.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/zaxxer/HikariCP/3.3.1/HikariCP-3.3.1-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-api_2.13/1.4.2/twirl-api_2.13-1.4.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-api_2.13/1.4.2/twirl-api_2.13-1.4.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-api_2.13/1.4.2/twirl-api_2.13-1.4.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean-datasource/4.3.2/ebean-datasource-4.3.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean-datasource/4.3.2/ebean-datasource-4.3.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean-datasource/4.3.2/ebean-datasource-4.3.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-support/3.141.59/selenium-support-3.141.59-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-support/3.141.59/selenium-support-3.141.59.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-support/3.141.59/selenium-support-3.141.59-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-io/commons-io/2.6/commons-io-2.6-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-io/commons-io/2.6/commons-io-2.6.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-io/commons-io/2.6/commons-io-2.6-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/download.osgeo.org/webdav/geotools/org/geotools/gt-metadata/22.3/gt-metadata-22.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/download.osgeo.org/webdav/geotools/org/geotools/gt-metadata/22.3/gt-metadata-22.3.jar"/>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-java-forms_2.13/2.7.3/play-java-forms_2.13-2.7.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-java-forms_2.13/2.7.3/play-java-forms_2.13-2.7.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-java-forms_2.13/2.7.3/play-java-forms_2.13-2.7.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-http-core_2.13/10.1.8/akka-http-core_2.13-10.1.8-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-http-core_2.13/10.1.8/akka-http-core_2.13-10.1.8.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-http-core_2.13/10.1.8/akka-http-core_2.13-10.1.8-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/ejml/ejml-ddense/0.34/ejml-ddense-0.34-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/ejml/ejml-ddense/0.34/ejml-ddense-0.34.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/ejml/ejml-ddense/0.34/ejml-ddense-0.34-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/fluentlenium/fluentlenium-core/3.7.1/fluentlenium-core-3.7.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/fluentlenium/fluentlenium-core/3.7.1/fluentlenium-core-3.7.1.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/fluentlenium/fluentlenium-core/3.7.1/fluentlenium-core-3.7.1-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.33/htmlunit-core-js-2.33-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.33/htmlunit-core-js-2.33.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.33/htmlunit-core-js-2.33-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/gdal/gdal/3.0.0/gdal-3.0.0-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/gdal/gdal/3.0.0/gdal-3.0.0.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/gdal/gdal/3.0.0/gdal-3.0.0-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-netty-server_2.13/2.7.3/play-netty-server_2.13-2.7.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-netty-server_2.13/2.7.3/play-netty-server_2.13-2.7.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-netty-server_2.13/2.7.3/play-netty-server_2.13-2.7.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-common/4.1.34.Final/netty-common-4.1.34.Final-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-common/4.1.34.Final/netty-common-4.1.34.Final.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-common/4.1.34.Final/netty-common-4.1.34.Final-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/jodah/typetools/0.5.0/typetools-0.5.0-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/jodah/typetools/0.5.0/typetools-0.5.0.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/jodah/typetools/0.5.0/typetools-0.5.0-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.9.8/jackson-datatype-jsr310-2.9.8-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.9.8/jackson-datatype-jsr310-2.9.8.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.9.8/jackson-datatype-jsr310-2.9.8-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/9.4.12.v20180830/websocket-client-9.4.12.v20180830-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/9.4.12.v20180830/websocket-client-9.4.12.v20180830.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/9.4.12.v20180830/websocket-client-9.4.12.v20180830-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-firefox-driver/3.141.59/selenium-firefox-driver-3.141.59-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-firefox-driver/3.141.59/selenium-firefox-driver-3.141.59.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-firefox-driver/3.141.59/selenium-firefox-driver-3.141.59-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-exceptions/2.7.3/play-exceptions-2.7.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-exceptions/2.7.3/play-exceptions-2.7.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-exceptions/2.7.3/play-exceptions-2.7.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sf/geographiclib/GeographicLib-Java/1.49/GeographicLib-Java-1.49-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sf/geographiclib/GeographicLib-Java/1.49/GeographicLib-Java-1.49.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sf/geographiclib/GeographicLib-Java/1.49/GeographicLib-Java-1.49-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/locationtech/jts/jts-core/1.16.1/jts-core-1.16.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/locationtech/jts/jts-core/1.16.1/jts-core-1.16.1.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/locationtech/jts/jts-core/1.16.1/jts-core-1.16.1-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.1/j2objc-annotations-1.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.1/j2objc-annotations-1.1.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.1/j2objc-annotations-1.1-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-net/commons-net/3.6/commons-net-3.6-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-net/commons-net/3.6/commons-net-3.6.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-net/commons-net/3.6/commons-net-3.6-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-buffer/4.1.34.Final/netty-buffer-4.1.34.Final-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-buffer/4.1.34.Final/netty-buffer-4.1.34.Final.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-buffer/4.1.34.Final/netty-buffer-4.1.34.Final-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.5.6/httpmime-4.5.6-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.5.6/httpmime-4.5.6.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.5.6/httpmime-4.5.6-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0.jar"/>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/tec/uom/lib/uom-lib-common/1.0.2/uom-lib-common-1.0.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/tec/uom/lib/uom-lib-common/1.0.2/uom-lib-common-1.0.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/tec/uom/lib/uom-lib-common/1.0.2/uom-lib-common-1.0.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.10.1/jackson-core-2.10.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.10.1/jackson-core-2.10.1.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.10.1/jackson-core-2.10.1-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-akka-http-server_2.13/2.7.3/play-akka-http-server_2.13-2.7.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-akka-http-server_2.13/2.7.3/play-akka-http-server_2.13-2.7.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-akka-http-server_2.13/2.7.3/play-akka-http-server_2.13-2.7.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.21/snakeyaml-1.21-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.21/snakeyaml-1.21.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.21/snakeyaml-1.21-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/persistence-api/2.2.1/persistence-api-2.2.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/persistence-api/2.2.1/persistence-api-2.2.1.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/persistence-api/2.2.1/persistence-api-2.2.1-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"></classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-java_2.13/2.7.3/play-java_2.13-2.7.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-java_2.13/2.7.3/play-java_2.13-2.7.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-java_2.13/2.7.3/play-java_2.13-2.7.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/squareup/okhttp3/okhttp/3.11.0/okhttp-3.11.0-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/squareup/okhttp3/okhttp/3.11.0/okhttp-3.11.0.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/squareup/okhttp3/okhttp/3.11.0/okhttp-3.11.0-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-core/5.1.5.RELEASE/spring-core-5.1.5.RELEASE-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-core/5.1.5.RELEASE/spring-core-5.1.5.RELEASE.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-core/5.1.5.RELEASE/spring-core-5.1.5.RELEASE-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-context/5.1.5.RELEASE/spring-context-5.1.5.RELEASE-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-context/5.1.5.RELEASE/spring-context-5.1.5.RELEASE.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/springframework/spring-context/5.1.5.RELEASE/spring-context-5.1.5.RELEASE-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xalan/xalan/2.7.2/xalan-2.7.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xalan/xalan/2.7.2/xalan-2.7.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xalan/xalan/2.7.2/xalan-2.7.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-streams_2.13/2.7.3/play-streams_2.13-2.7.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-streams_2.13/2.7.3/play-streams_2.13-2.7.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-streams_2.13/2.7.3/play-streams_2.13-2.7.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.3/netty-reactive-streams-2.0.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.3/netty-reactive-streams-2.0.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.3/netty-reactive-streams-2.0.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/filters-helpers_2.13/2.7.3/filters-helpers_2.13-2.7.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/filters-helpers_2.13/2.7.3/filters-helpers_2.13-2.7.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/filters-helpers_2.13/2.7.3/filters-helpers_2.13-2.7.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/avaje/avaje-classpath-scanner/3.1.1/avaje-classpath-scanner-3.1.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/avaje/avaje-classpath-scanner/3.1.1/avaje-classpath-scanner-3.1.1.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/avaje/avaje-classpath-scanner/3.1.1/avaje-classpath-scanner-3.1.1-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-slf4j_2.13/2.5.23/akka-slf4j_2.13-2.5.23-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-slf4j_2.13/2.5.23/akka-slf4j_2.13-2.5.23.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-slf4j_2.13/2.5.23/akka-slf4j_2.13-2.5.23-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/checkerframework/checker-qual/2.5.2/checker-qual-2.5.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/checkerframework/checker-qual/2.5.2/checker-qual-2.5.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/checkerframework/checker-qual/2.5.2/checker-qual-2.5.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/guava/guava/27.1-jre/guava-27.1-jre-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/guava/guava/27.1-jre/guava-27.1-jre.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/guava/guava/27.1-jre/guava-27.1-jre-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.26/slf4j-api-1.7.26-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.26/slf4j-api-1.7.26.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.26/slf4j-api-1.7.26-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/ssl-config-core_2.13/0.4.0/ssl-config-core_2.13-0.4.0-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/ssl-config-core_2.13/0.4.0/ssl-config-core_2.13-0.4.0.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/ssl-config-core_2.13/0.4.0/ssl-config-core_2.13-0.4.0-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean-migration/11.13.1/ebean-migration-11.13.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean-migration/11.13.1/ebean-migration-11.13.1.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean-migration/11.13.1/ebean-migration-11.13.1-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.9.8/jackson-annotations-2.9.8-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.9.8/jackson-annotations-2.9.8.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.9.8/jackson-annotations-2.9.8-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar"/>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/measure/unit-api/1.0/unit-api-1.0-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/measure/unit-api/1.0/unit-api-1.0.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/measure/unit-api/1.0/unit-api-1.0-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.2.0/error_prone_annotations-2.2.0-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.2.0/error_prone_annotations-2.2.0.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.2.0/error_prone_annotations-2.2.0-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.33/neko-htmlunit-2.33-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.33/neko-htmlunit-2.33.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.33/neko-htmlunit-2.33-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/ejml/ejml-core/0.34/ejml-core-0.34-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/ejml/ejml-core/0.34/ejml-core-0.34.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/ejml/ejml-core/0.34/ejml-core-0.34-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-ebean_2.13/5.0.2/play-ebean_2.13-5.0.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-ebean_2.13/5.0.2/play-ebean_2.13-5.0.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-ebean_2.13/5.0.2/play-ebean_2.13-5.0.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-xml/9.4.12.v20180830/jetty-xml-9.4.12.v20180830-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-xml/9.4.12.v20180830/jetty-xml-9.4.12.v20180830.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-xml/9.4.12.v20180830/jetty-xml-9.4.12.v20180830-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-handler/4.1.34.Final/netty-handler-4.1.34.Final-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-handler/4.1.34.Final/netty-handler-4.1.34.Final.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-handler/4.1.34.Final/netty-handler-4.1.34.Final-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.2/reactive-streams-1.0.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.2/reactive-streams-1.0.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.2/reactive-streams-1.0.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.12.v20180830/websocket-common-9.4.12.v20180830-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.12.v20180830/websocket-common-9.4.12.v20180830.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.12.v20180830/websocket-common-9.4.12.v20180830-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-test_2.13/2.7.3/play-test_2.13-2.7.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-test_2.13/2.7.3/play-test_2.13-2.7.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-test_2.13/2.7.3/play-test_2.13-2.7.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/mail/mail/1.4.5/mail-1.4.5-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/mail/mail/1.4.5/mail-1.4.5.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/mail/mail/1.4.5/mail-1.4.5-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.6/commons-text-1.6-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.6/commons-text-1.6.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.6/commons-text-1.6-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-jdbc_2.13/2.7.3/play-jdbc_2.13-2.7.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-jdbc_2.13/2.7.3/play-jdbc_2.13-2.7.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-jdbc_2.13/2.7.3/play-jdbc_2.13-2.7.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-server_2.13/2.7.3/play-server_2.13-2.7.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-server_2.13/2.7.3/play-server_2.13-2.7.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-server_2.13/2.7.3/play-server_2.13-2.7.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/squareup/okio/okio/1.14.0/okio-1.14.0-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/squareup/okio/okio/1.14.0/okio-1.14.0.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/squareup/okio/okio/1.14.0/okio-1.14.0-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/atteo/classindex/classindex/3.4/classindex-3.4-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/atteo/classindex/classindex/3.4/classindex-3.4.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/atteo/classindex/classindex/3.4/classindex-3.4-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/sun/mail/javax.mail/1.5.0/javax.mail-1.5.0-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/sun/mail/javax.mail/1.5.0/javax.mail-1.5.0.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/sun/mail/javax.mail/1.5.0/javax.mail-1.5.0-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-enhancer/1.2.2/play-enhancer-1.2.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-enhancer/1.2.2/play-enhancer-1.2.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-enhancer/1.2.2/play-enhancer-1.2.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-logback_2.13/2.7.3/play-logback_2.13-2.7.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-logback_2.13/2.7.3/play-logback_2.13-2.7.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-logback_2.13/2.7.3/play-logback_2.13-2.7.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/jdom/jdom2/2.0.6/jdom2-2.0.6-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/jdom/jdom2/2.0.6/jdom2-2.0.6.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/jdom/jdom2/2.0.6/jdom2-2.0.6-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/inject/javax.inject/1/javax.inject-1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/inject/javax.inject/1/javax.inject-1.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/inject/javax.inject/1/javax.inject-1-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.12.v20180830/jetty-http-9.4.12.v20180830-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.12.v20180830/jetty-http-9.4.12.v20180830.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.12.v20180830/jetty-http-9.4.12.v20180830-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/si/uom/si-quantity/0.7.1/si-quantity-0.7.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/si/uom/si-quantity/0.7.1/si-quantity-0.7.1.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/si/uom/si-quantity/0.7.1/si-quantity-0.7.1-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/download.osgeo.org/webdav/geotools/org/geotools/gt-referencing/22.3/gt-referencing-22.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/download.osgeo.org/webdav/geotools/org/geotools/gt-referencing/22.3/gt-referencing-22.3.jar"/>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean-annotation/4.5/ebean-annotation-4.5-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean-annotation/4.5/ebean-annotation-4.5.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean-annotation/4.5/ebean-annotation-4.5-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/jboss/logging/jboss-logging/3.3.2.Final/jboss-logging-3.3.2.Final-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/jboss/logging/jboss-logging/3.3.2.Final/jboss-logging-3.3.2.Final.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/jboss/logging/jboss-logging/3.3.2.Final/jboss-logging-3.3.2.Final-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-java8-compat_2.13/0.9.0/scala-java8-compat_2.13-0.9.0-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-java8-compat_2.13/0.9.0/scala-java8-compat_2.13-0.9.0.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-java8-compat_2.13/0.9.0/scala-java8-compat_2.13-0.9.0-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/avaje/avaje-classpath-scanner-api/2.2/avaje-classpath-scanner-api-2.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/avaje/avaje-classpath-scanner-api/2.2/avaje-classpath-scanner-api-2.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/avaje/avaje-classpath-scanner-api/2.2/avaje-classpath-scanner-api-2.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-io/9.4.12.v20180830/jetty-io-9.4.12.v20180830-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-io/9.4.12.v20180830/jetty-io-9.4.12.v20180830.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-io/9.4.12.v20180830/jetty-io-9.4.12.v20180830-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/9.4.12.v20180830/jetty-client-9.4.12.v20180830-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/9.4.12.v20180830/jetty-client-9.4.12.v20180830.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/9.4.12.v20180830/jetty-client-9.4.12.v20180830-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-exec/1.3/commons-exec-1.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-exec/1.3/commons-exec-1.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-exec/1.3/commons-exec-1.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/novocode/junit-interface/0.11/junit-interface-0.11-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/novocode/junit-interface/0.11/junit-interface-0.11.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/novocode/junit-interface/0.11/junit-interface-0.11-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec-http/4.1.34.Final/netty-codec-http-4.1.34.Final-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec-http/4.1.34.Final/netty-codec-http-4.1.34.Final.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec-http/4.1.34.Final/netty-codec-http-4.1.34.Final-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/config/1.3.3/config-1.3.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/config/1.3.3/config-1.3.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/config/1.3.3/config-1.3.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/tyrex/tyrex/1.0.1/tyrex-1.0.1.jar"/>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-jdbc-api_2.13/2.7.3/play-jdbc-api_2.13-2.7.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-jdbc-api_2.13/2.7.3/play-jdbc-api_2.13-2.7.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-jdbc-api_2.13/2.7.3/play-jdbc-api_2.13-2.7.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean/11.33.2/ebean-11.33.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean/11.33.2/ebean-11.33.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/ebean/ebean/11.33.2/ebean-11.33.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.2.0/htmlunit-cssparser-1.2.0-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.2.0/htmlunit-cssparser-1.2.0.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.2.0/htmlunit-cssparser-1.2.0-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/4.1.34.Final/netty-transport-native-unix-common-4.1.34.Final-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/4.1.34.Final/netty-transport-native-unix-common-4.1.34.Final.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/4.1.34.Final/netty-transport-native-unix-common-4.1.34.Final-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/jul-to-slf4j/1.7.26/jul-to-slf4j-1.7.26-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/jul-to-slf4j/1.7.26/jul-to-slf4j-1.7.26.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/jul-to-slf4j/1.7.26/jul-to-slf4j-1.7.26-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/javaee-api/7.0/javaee-api-7.0-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/javaee-api/7.0/javaee-api-7.0.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/javaee-api/7.0/javaee-api-7.0-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/reflections/reflections/0.9.11/reflections-0.9.11-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/reflections/reflections/0.9.11/reflections-0.9.11.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/reflections/reflections/0.9.11/reflections-0.9.11-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-protobuf_2.13/2.5.23/akka-protobuf_2.13-2.5.23-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-protobuf_2.13/2.5.23/akka-protobuf_2.13-2.5.23.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-protobuf_2.13/2.5.23/akka-protobuf_2.13-2.5.23-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.9.8/jackson-databind-2.9.8-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.9.8/jackson-databind-2.9.8.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.9.8/jackson-databind-2.9.8-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-guice_2.13/2.7.3/play-guice_2.13-2.7.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-guice_2.13/2.7.3/play-guice_2.13-2.7.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-guice_2.13/2.7.3/play-guice_2.13-2.7.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-transport/4.1.34.Final/netty-transport-4.1.34.Final-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-transport/4.1.34.Final/netty-transport-4.1.34.Final.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-transport/4.1.34.Final/netty-transport-4.1.34.Final-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/googlecode/usc/jdbcdslog/1.0.6.2/jdbcdslog-1.0.6.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/googlecode/usc/jdbcdslog/1.0.6.2/jdbcdslog-1.0.6.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/googlecode/usc/jdbcdslog/1.0.6.2/jdbcdslog-1.0.6.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xerces/xercesImpl/2.12.0/xercesImpl-2.12.0-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xerces/xercesImpl/2.12.0/xercesImpl-2.12.0.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xerces/xercesImpl/2.12.0/xercesImpl-2.12.0-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/activation/activation/1.1.1/activation-1.1.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/activation/activation/1.1.1/activation-1.1.1.jar"/>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/postgresql/postgresql/42.2.10/postgresql-42.2.10-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/postgresql/postgresql/42.2.10/postgresql-42.2.10.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/postgresql/postgresql/42.2.10/postgresql-42.2.10-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/htmlunit-driver/2.33.3/htmlunit-driver-2.33.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/htmlunit-driver/2.33.3/htmlunit-driver-2.33.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/htmlunit-driver/2.33.3/htmlunit-driver-2.33.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xalan/serializer/2.7.2/serializer-2.7.2-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xalan/serializer/2.7.2/serializer-2.7.2.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/xalan/serializer/2.7.2/serializer-2.7.2-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-remote-driver/3.141.59/selenium-remote-driver-3.141.59-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-remote-driver/3.141.59/selenium-remote-driver-3.141.59.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-remote-driver/3.141.59/selenium-remote-driver-3.141.59-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-java-jdbc_2.13/2.7.3/play-java-jdbc_2.13-2.7.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-java-jdbc_2.13/2.7.3/play-java-jdbc_2.13-2.7.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-java-jdbc_2.13/2.7.3/play-java-jdbc_2.13-2.7.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/transaction/jta/1.1/jta-1.1-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/javax/transaction/jta/1.1/jta-1.1.jar"/>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.13/2.5.23/akka-actor_2.13-2.5.23-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.13/2.5.23/akka-actor_2.13-2.5.23.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.13/2.5.23/akka-actor_2.13-2.5.23-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-email/1.3.3/commons-email-1.3.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-email/1.3.3/commons-email-1.3.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-email/1.3.3/commons-email-1.3.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/build-link/2.7.3/build-link-2.7.3-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/build-link/2.7.3/build-link-2.7.3.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/build-link/2.7.3/build-link-2.7.3-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-stream_2.13/2.5.23/akka-stream_2.13-2.5.23-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-stream_2.13/2.5.23/akka-stream_2.13-2.5.23.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-stream_2.13/2.5.23/akka-stream_2.13-2.5.23-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry sourcepath="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-pool/commons-pool/1.5.4/commons-pool-1.5.4-sources.jar" kind="lib" path="/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-pool/commons-pool/1.5.4/commons-pool-1.5.4.jar">
+    <attributes>
+      <attribute name="javadoc_location" value="jar:file:/Users/jdischler/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-pool/commons-pool/1.5.4/commons-pool-1.5.4-javadoc.jar!/"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="output" path="bin"/>
 </classpath>
