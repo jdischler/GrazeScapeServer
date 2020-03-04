@@ -160,6 +160,23 @@
     background-color: rgba(50, 80, 166, .7);
 }
 
+.ol-scale-bar {
+	background-color: rgba(0,0,0,0.4);
+	padding: 12px;
+	border-radius: 6px;
+	border: 1px solid rgba(0,0,0,0.5);
+}
+.ol-scale-singlebar {
+	border-color: rgba(255,255,255,0.7);
+}
+.ol-scale-step-text {
+	color: #fff;
+	bottom: 0px;
+	text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000, 0 2px 2px #000; 	
+}
+.ol-scale-step-marker {
+	background-color: #fff;
+}
 .ol-custom-button {
 	bottom: 0.5em;
 	left: 0.5em;

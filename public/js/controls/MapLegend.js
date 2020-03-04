@@ -26,7 +26,7 @@ Ext.define('DSS.controls.MapLegend', {
 		let usableWidth = me.width - 6 * 2;
 		
 		let chipHeight = usableHeight / me.DSS_colors.length;
-		let atX = 6, atY = 12;
+		let atX = 6, atY = /*12*/usableHeight - chipHeight + 12;
 		
 		let elements = [];
 		Ext.each(me.DSS_colors, function(it) {
@@ -38,10 +38,10 @@ Ext.define('DSS.controls.MapLegend', {
 				width: usableWidth,
 				height: chipHeight
 			});
-			atY += chipHeight;
+			atY -= chipHeight;
 		})
 
-		atY = 3;
+		atY = /*3*/usableHeight + 3;
 		Ext.each(me.DSS_values, function(it) {
 			elements.push({
 				xtype: 'component',
@@ -52,7 +52,7 @@ Ext.define('DSS.controls.MapLegend', {
 				height: chipHeight,
 				html: Ext.util.Format.number(it, '0.0#')
 			});
-			atY += chipHeight;
+			atY -= chipHeight;
 		})
 		
 		Ext.applyIf(me, {

@@ -420,22 +420,6 @@ public abstract class Layer_Base
 		return list;
 	}	
 	
-	/*
-	1	developed
-	2	Cash Grain
-	3	Continuous Corn
-	4	Dairy Rotation
-	5	Vegetables
-	6	Hay
-	7	Pasture
-	8	Reed Canary Grass
-	9	Cool-Season
-	10	Warm-Season
-	11	Water/Swamp
-	12	Other (forest)
-	13	Other
-	*/	
-	
 	//--------------------------------------------------------------------------
 	public static Layer_Float newFloatLayer(String name) {
 		Layer_Float layer = new Layer_Float(name);
@@ -469,14 +453,13 @@ public abstract class Layer_Base
 			
 			newIntegerLayer("wisc_land_2").init();	// Wisc Land 2.0 - 2016
 			
+			newIntegerLayer("road_mask").init();	
+			newIntegerLayer("water_mask").init();	
+			
 			newFloatLayer("dem").init();				// Derived from the US Geological Survey's 10-meter National Elevation Dataset (NED)
 			newFloatLayer("slope").init();				// Derived from the US Geological Survey's 10-meter National Elevation Dataset (NED)
 			newFloatLayer("distance_to_water").init();	// 24k Hydro Waterbodies, WI DNR: Merged Open Water + Streams [including ephemeral streams]
 			
-			
-//			newIntegerLayer("road_mask",EType.ERaw).init();	
-//			newIntegerLayer("water_mask",EType.ERaw).init();	
-
 //			newIntegerLayer("non_ag_mask",EType.ERaw).init();	// Hybrid of Wisc-Land, DNR perennial streams, DNR open water, and DMV road data
 			
 			// SSURGO-Derived layers: topmost horizon only
@@ -520,206 +503,6 @@ public abstract class Layer_Base
 		}
 
 		return ret;
-	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	private static Integer ctr = 1;
-	
-	//--------------------------------------------------------------------------
-	public static JsonNode fetch_image(Http.Request request) {
-		
-		JsonNode node = request.body().asJson();
-//		logger.error("raw" + node.toString());
-		
-		ArrayNode extent = (ArrayNode)node.get("extent");
-
-		// topLeftX, topLeftY, bottomRightX, bottomRightY
-		Integer areaExtents[] = {
-			440000, 340000,
-			455000, 314000
-		};
-	
-		// Align selection to 10m grid
-		// The openLayers extent has the Y values reversed from the convention I prefer
-		Integer selExtents[] = {
-			Math.round(extent.get(0).floatValue() / 10.0f) * 10, Math.round(extent.get(3).floatValue() / 10.0f) * 10,
-			Math.round(extent.get(2).floatValue() / 10.0f) * 10, Math.round(extent.get(1).floatValue() / 10.0f) * 10
-		};
-		
-		// Clip Selection to area
-		if (selExtents[0] < areaExtents[0]) 		selExtents[0] = areaExtents[0];
-		else if (selExtents[0] > areaExtents[2]) 	selExtents[0] = areaExtents[2];
-		
-		if (selExtents[2] < areaExtents[0]) 		selExtents[2] = areaExtents[0];
-		else if (selExtents[2] > areaExtents[2]) 	selExtents[2] = areaExtents[2];
-
-		if (selExtents[1] > areaExtents[1]) 		selExtents[1] = areaExtents[1];
-		else if (selExtents[1] < areaExtents[3]) 	selExtents[1] = areaExtents[3];
-		
-		if (selExtents[3] > areaExtents[1]) 		selExtents[3] = areaExtents[1];
-		else if (selExtents[3] < areaExtents[3]) 	selExtents[3] = areaExtents[3];
-//		logger.error("clipped [" + selExtents[0] + "," + selExtents[1] + "][" + selExtents[2] + "," + selExtents[3] + "]");
-
-		int rasterWidth = 1500, rasterHeight = 2600;
-		
-		// re-index
-		Integer indexX = (selExtents[0] - areaExtents[0]) / 10;
-		Integer indexY = -(selExtents[1] - areaExtents[1]) / 10;
-		
-		Integer indexX2 = (selExtents[2] - areaExtents[0]) / 10;
-		Integer indexY2 = -(selExtents[3] - areaExtents[1]) / 10;
-		
-		Integer ww = indexX2 - indexX;
-		Integer hh = indexY2 - indexY;
-		
-
-		Layer_Integer wl = Layer_CDL.get(); 
-		int wl_data[][] = wl.getIntData();
-		int mask = Layer_Integer.indexToMask(2, 3); 		// row crops: 
-		
-//		int width = 1250, height = 2370;
-		float slope[][] = Layer_Base.getLayer("slope").getFloatData();		
-/*		
-		float silt[][] = Layer_Base.getLayer("silt_perc").getFloatData();
-		float depth[][] = Layer_Base.getLayer("soil_depth").getFloatData();
-		float cec[][] = Layer_Base.getLayer("cec").getFloatData();*/
-		float [][] cornYield = new float[rasterHeight][rasterWidth];
-/*		
-		float cornCoefficient = 1.30f 	// correction for technological advances 
-//				* 2.0f 					// contribution of stover 
-				* 0.053f; 				// conversion to Mg per Ha 
-		
-		float soyCoefficient = 1.2f		// Correct for techno advances
-//				* 2.5f					// contribution of soy residue
-				* 0.0585f;				// conversion to Mg per Ha
-		
-		for (int y = 0; y < rasterHeight; y++) {
-			for (int x = 0; x < rasterWidth; x++) {
-				
-				float _slope = slope[y][x], _depth = depth[y][x], _silt = silt[y][x], _cec = cec[y][x];
-				
-				if (_depth > 60) _depth = 60;
-				float cornY =  22.0f - 1.05f * _slope + 0.19f * _depth + (0.817f / 100.0f) * _silt + 1.32f * _cec
-						* cornCoefficient ;
-				
-				float soyY = 6.37f - 0.34f * _slope + 0.065f * _depth + (0.278f / 100.0f) * _silt + 0.437f * _cec 
-						* soyCoefficient;
-				
-				if (cornY < 3) cornY = 3;//-9999.0f;
-				else if (cornY > 36) cornY = 36;
-				
-				if (soyY < 1) soyY = 1;//-9999.0f;
-				else if (soyY > 36) soyY = 36;
-				
-				cornYield[y][x] = cornY;
-			}
-		}
-*/		
-		for (int y = 0; y < rasterHeight; y++) {
-			for (int x = 0; x < rasterWidth; x++) {
-				cornYield[y][x] = slope[y][x] * 0.2f;
-			}
-		}
-		
-		float layer[][] = cornYield;
-
-		
-		AreaStats fs = new AreaStats(layer).compute();
-		try {
-			Stats stats = fs.getAreaStats();
-				
-			Integer noDataCt = stats.getNoDataCount();
-			Float noDataPerc = stats.getFractionNoData();
-
-			String results = "\n─────────────────────────────────────────────────────\n" +
-					"¤Area STATISTICS\n" +
-						"  NoDataCells: " + noDataCt + "\n" +
-						"  NoData%:     " + String.format("%.1f%%", noDataPerc * 100) + "\n";
-
-			if (stats.hasStatistics()) {
-				Integer histogramCt = 20;
-				AreaStats.Histogram hs = stats.getHistogram(histogramCt, stats.getMin(), stats.getMax()); 
-				Integer ct = stats.getCounted();
-				Float area = ct * 100.0f;
-				Double sum = stats.getSum();
-				Float min = stats.getMin();
-				Float max = stats.getMax();
-				Float mean = stats.getMean();
-				Float median = stats.getMedian();
-				results += " »FIELD CELLS: " + ct + "\n";
-				results += String.format("  Area: %.2f(ac)   %.2f(km2) \n", area / 4047.0f, area / 1000000.0f);
-				results += " »YIELD STATS \n";
-				results += String.format("  Total Yield: %.2f\n", sum);
-				results += String.format("  Min: %.2f    Max: %.2f \n", min, max);
-				results += String.format("  Mean: %.2f\n", mean);
-				results += String.format("  Median: %.2f\n", median);
-				results += " »HISTOGRAM (" + histogramCt + " bins) \n";
-				results += hs.toString();
-			}
-			results += "─────────────────────────────────────────────────────\n";
-			
-			logger.info(results);
-		}
-		catch(Exception e) {
-			
-		}
-		
-		// FIXME: TODO: may want to just clip processing area BEFORE and not computing everything.
-		float clipped[][] = Extract.now(layer, indexX, indexY, ww, hh);
-
-		
-		
-		int maxSize = 1600;
-		// restrict output size and resample
-		if (ww > maxSize || hh > maxSize) {
-			int newW = ww, newH = hh;
-			if (ww > hh) {
-				newW = maxSize;
-				newH = Math.round((hh / (float)ww) * maxSize);
-			}
-			else if (ww < hh) {
-				newW = Math.round((ww / (float)hh) * maxSize);
-				newH = maxSize;
-			}
-			else {
-				newW = newH = maxSize;
-			}
-			
-			logger.info("wh [" + ww + "," + hh + "] new wh [" + newW + "," + newH + "]");
-			try {
-				clipped = Downsampler.mean(clipped, ww, hh, newW, newH);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			hh = newH;
-			ww = newW;
-		}
-		
-		ctr++;
-		File fp = new File("./public/dynamicFiles/yes" + ctr + ".png");
-		ObjectNode res = (ObjectNode)RasterToPNG.save(clipped, ww, hh, fp);
-				
-		// Reverse Y ordering for openlayers
-		return Json.addToPack(res,"url", "renders/yes" + ctr + ".png", 
-						"extent", Json.array(selExtents[0],selExtents[3],
-											selExtents[2],selExtents[1]));
 	}
 	
 }

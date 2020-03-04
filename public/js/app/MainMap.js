@@ -241,12 +241,16 @@ Ext.define('DSS.app.MainMap', {
 			//	constrainRotation: false,
 			//	rotation: 0.009,
 				constrainOnlyCenter: true,
-				extent:[-10130000, 5355000, -10105000, 5395000]
+				extent:[-10132000, 5353000, -10103000, 5397000]
 			})
 		});
 
-		me.map.addControl(new ol.control.ScaleLine());
-//		me.map.addInteraction(new ol.interaction.DragRotateAndZoom());
+		me.map.addControl(new ol.control.ScaleLine({
+			bar: true, 
+			minWidth: 112,
+			units: 'us',
+//			units: 'metric'
+		}));
 		
 		me.popup = DSS.popupContainer = Ext.create('Ext.Container', {
 			minWidth: 200,
@@ -347,11 +351,22 @@ Ext.define('DSS.app.MainMap', {
 
 			ex = [pt1[0], pt1[1], pt2[0], pt2[1]];
 			
+			let data = {
+				"extent" : ex,
+				"model": Ext.getCmp('DSS_cheat').getValue()['model']
+			};
+			if (Ext.getCmp('DSS_cheatRestrictFarm').getValue() && DSS.activeFarm) {
+				data["farm_id"] = DSS.activeFarm;
+				data["mode"] = Ext.getCmp('DSS_cheatFieldAggregate').getValue() ? 2 : 1;
+			}
+			if (Ext.getCmp('DSS_maskByCDL').getValue()) {
+				data['row_crops'] = Ext.getCmp('DSS_cheatRowCropMask').getValue() ? true : false;
+				data['grasses'] = Ext.getCmp('DSS_cheatGrassMask').getValue() ? true : false;
+			}
+			
 			var obj = Ext.Ajax.request({
 				url: location.href + 'fetch_image',
-				jsonData: {
-					"extent" : ex
-				},
+				jsonData: data,
 				timeout: 10000,
 				success: function(response, opts) {
 					var obj = JSON.parse(response.responseText);
@@ -575,11 +590,11 @@ Ext.define('DSS.app.MainMap', {
 		
 		let multiPoly = [[ 
 			[
-				[ -10210000, 5290000 ], 
-				[ -10210000, 5460000 ], 
-				[ -10010000, 5460000 ], 
-				[ -10010000, 5290000 ], 
-				[ -10210000, 5290000 ] 
+				[ -10220000, 5280000 ], 
+				[ -10220000, 5470000 ], 
+				[ -10000000, 5470000 ], 
+				[ -10000000, 5280000 ], 
+				[ -10220000, 5280000 ] 
 			],[ // inner - counter-clockwise
 				[ -10128539.23, 5356917.38 ], 
 				[ -10128962.9, 5392788.13 ], 

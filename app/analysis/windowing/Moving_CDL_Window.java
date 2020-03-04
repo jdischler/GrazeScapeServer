@@ -35,8 +35,13 @@ while (!moreCells) {
 //------------------------------------------------------------------------------
 public abstract class Moving_CDL_Window extends Moving_Window
 {
-	public Moving_CDL_Window(int win_sz, int raster_w, int raster_h) {
-		super(win_sz, raster_w, raster_h);
+	// Raster size for CDL-type windowing is restricted to the CDL data layer size.
+	public Moving_CDL_Window(int win_sz) {
+		super(win_sz);
+		
+		Layer_Integer cdl = Layer_CDL.get();
+		mRasterWidth = mFinalX = cdl.getWidth();
+		mRasterHeight = mFinalY = cdl.getHeight();
 	}
 
 	protected int[][] mRasterData;
@@ -67,7 +72,7 @@ public abstract class Moving_CDL_Window extends Moving_Window
 		return this;
 	}
 	
-	// Called internally off the constructor
+	// Called internally only
 	//--------------------------------------------------------------------------
 	protected void initCounts() {
 		

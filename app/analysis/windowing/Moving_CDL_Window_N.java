@@ -36,8 +36,8 @@ public final class Moving_CDL_Window_N extends Moving_CDL_Window
 	private boolean mbShouldAdvance_X = false; 	// set when the next move should be a RIGHT movement
 	
 	//--------------------------------------------------------------------------
-	public Moving_CDL_Window_N(int win_sz, int raster_w, int raster_h) {
-		super(win_sz, raster_w, raster_h);
+	public Moving_CDL_Window_N(int win_sz) {
+		super(win_sz);
 	}
 	
 	// Each call to run advances one cell in the direction the Z-win is moving in...

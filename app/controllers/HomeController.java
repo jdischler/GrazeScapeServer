@@ -7,9 +7,12 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import analysis.AreaStats;
+import analysis.Downsampler;
+import analysis.Extract;
 import analysis.RasterToPNG;
 import analysis.RasterizeFeature;
 import analysis.AreaStats.Stats;
@@ -101,7 +104,7 @@ Farms:
 public class HomeController extends Controller {
 
     private static final Logger logger = LoggerFactory.getLogger("app");
-    private static Integer yuckCounter = 1;
+    private static Integer pngCounter = 1;
 
 	//------------------------------------------------------------------
 	@Inject
@@ -245,10 +248,6 @@ public class HomeController extends Controller {
 		return ok();
 	}
 
-	public Result fetchImage(Http.Request request) {
-		return ok(Layer_Base.fetch_image(request));
-	}
-	
 	public Result addField(Http.Request request) {
 		JsonNode res = db.Farm.addField(request);
 		return ok(res);
@@ -258,7 +257,21 @@ public class HomeController extends Controller {
 		JsonNode res = db.FieldGeometry.modifyFields(request);
 		return ok(res);
 	}
-	
+
+	public Result fetchImage(Http.Request request) {
+		
+		JsonNode node = request.body().asJson();
+		String model = Json.safeGetOptionalString(node, "model", "bird");
+		
+		ModelComputation mc = null;
+		if (model.equalsIgnoreCase("bird")) mc = new BirdModel();
+		else if (model.equalsIgnoreCase("corn")) mc = new CornModel();
+		else if (model.equalsIgnoreCase("slope")) mc = new SlopeModel();
+		
+		return computeModel(request, mc);
+//		return ok(Layer_Base.fetch_image(request));
+	}
+
 	//-----------------------------------------------------------------------------
 	public Result computeSlope(Http.Request request) {
 		return computeModel(request, new SlopeModel());
@@ -279,12 +292,75 @@ public class HomeController extends Controller {
 	// Model interface
 	//-------------------------------------------------------
 	private interface ModelComputation {
-		public float[][] compute(int rasterWidth, int rasterHeight); 
+		public float[][] compute(Clipper computationArea); 
 	};
-	
+
+	public class Clipper {
+		Integer mExtent[] = {0,0,0,0};
+		Integer mX1, mY1, mX2, mY2;
+		Integer mWidth, mHeight;
+
+		// Node should be an arrayNode of OL extent values, but it can be a NULL node in which case the area extents becomes the clip extent
+		public Clipper initFromJson(JsonNode node) {
+			
+			ArrayNode extent = (ArrayNode)node;
+			final Integer areaExtents[] = {
+				440000, 340000,
+				455000, 314000
+			};
+			
+			// Align selection to 10m grid
+			// The openLayers extent has the Y values reversed from the convention I prefer
+			if (extent != null) {
+//				logger.info(" Clipper has an extent node...." + extent.toString());
+				mExtent[0] = Math.round(extent.get(0).floatValue() / 10.0f) * 10;
+				mExtent[1] = Math.round(extent.get(3).floatValue() / 10.0f) * 10;
+				mExtent[2] = Math.round(extent.get(2).floatValue() / 10.0f) * 10;
+				mExtent[3] = Math.round(extent.get(1).floatValue() / 10.0f) * 10;
+			
+				// Clip Selection to area
+				if (mExtent[0] < areaExtents[0]) 		mExtent[0] = areaExtents[0];
+				else if (mExtent[0] > areaExtents[2]) 	mExtent[0] = areaExtents[2];
+				
+				if (mExtent[2] < areaExtents[0]) 		mExtent[2] = areaExtents[0];
+				else if (mExtent[2] > areaExtents[2]) 	mExtent[2] = areaExtents[2];
+			
+				if (mExtent[1] > areaExtents[1]) 		mExtent[1] = areaExtents[1];
+				else if (mExtent[1] < areaExtents[3]) 	mExtent[1] = areaExtents[3];
+				
+				if (mExtent[3] > areaExtents[1]) 		mExtent[3] = areaExtents[1];
+				else if (mExtent[3] < areaExtents[3]) 	mExtent[3] = areaExtents[3];
+			}
+			else {
+				mExtent[0] = areaExtents[0];
+				mExtent[1] = areaExtents[1];
+				mExtent[2] = areaExtents[2];
+				mExtent[3] = areaExtents[3];
+			}
+//			logger.error(" clipped extents are [" + mExtent[0] + "," + mExtent[1] + "][" + mExtent[2] + "," + mExtent[3] + "]");
+		
+			// re-index
+			mX1 = (mExtent[0] - areaExtents[0]) / 10;
+			mY1 = -(mExtent[1] - areaExtents[1]) / 10;
+			
+			mX2 = (mExtent[2] - areaExtents[0]) / 10;
+			mY2 = -(mExtent[3] - areaExtents[1]) / 10;
+			
+			mWidth = mX2 - mX1;
+			mHeight = mY2 - mY1;
+			
+			return this;
+		}
+	}
+
 	
 	//-------------------------------------------------------
 	public Result computeModel(Http.Request request, ModelComputation modelFunction) {
+	
+		JsonNode node = request.body().asJson();
+		
+		// Extent array node can be missing, in which case we get a clipper that extracts the entire area
+		Clipper ext = new Clipper().initFromJson(node.get("extent"));
 		
 		final Integer rasterHeight = 2600, rasterWidth = 1500;
 		final Integer areaExtents[] = {
@@ -293,116 +369,171 @@ public class HomeController extends Controller {
 		};
 		ObjectNode result = null;
 		
-		JsonNode node = request.body().asJson();
+		float [][] modelResults = modelFunction.compute(ext);
 		
-		Long farmId = utils.Json.safeGetLong(node, "farm_id");
-		int mapMode = utils.Json.safeGetInteger(node, "mode");  // 0, 1, or 2
-		
-		db.Farm f = db.Farm.find.byId(farmId);
-		if (f != null) {
-			List<JsonNode> features = new ArrayList<>();
+		Long farmId = utils.Json.safeGetOptionalLong(node, "farm_id");
+		int mapMode = utils.Json.safeGetOptionalInteger(node, "mode", 1);  // 0, 1, or 2
+
+		Boolean restrictionToRowCrops = utils.Json.safeGetOptionalBoolean(node, "row_crops", false);
+		Boolean restrictionToGrasses = utils.Json.safeGetOptionalBoolean(node, "grasses", false);
+
+		if (restrictionToRowCrops || restrictionToGrasses) {
+			Layer_Integer wl = Layer_CDL.get();
+			int wl_data[][] = wl.getIntData();
+			int road_mask[][] = Layer_Base.getLayer("road_mask").getIntData();
+			int water_mask[][] = Layer_Base.getLayer("water_mask").getIntData();
 			
-			for (FieldGeometry fd: f.mFieldGeometry) {
-				SqlRow sw = Ebean.createSqlQuery("SELECT ST_AsGeoJson(ST_Transform(ST_GeomFromText( ?, 3857 ),3071)) as gjson")
-					.setParameter(1, fd.geom)
-					.findOne();
-			
-				JsonNode res = play.libs.Json.parse(sw.getString("gjson"));
-				features.add(Json.pack("type", "Feature",
-						"geometry", res,
-						"properties", Json.pack("f_id", fd.id)));
+			int mask = 0;
+			if (restrictionToRowCrops) {
+				mask |= wl.stringToMask("Cash Grain","Continuous Corn","Dairy Rotation","Other Crops");
+			}
+			if (restrictionToGrasses) {
+				mask |= wl.stringToMask("Hay","Pasture","Reed Canary Grass","Cool-Season Grass","Warm-Season Grass");
 			}
 			
-			int layer[][] = RasterizeFeature.testToInt(features);
-
-			float [][] modelResults = modelFunction.compute(rasterWidth, rasterHeight);
-			
-			AreaStats fs = new AreaStats(modelResults).forRasterizedFields(layer).compute();
-			
-			try {
-				for (FieldGeometry fd: f.mFieldGeometry) {
-					Long fs_idx = fd.id;
-					Stats stats = fs.getFieldStats(fs_idx);
-					
-					if (stats == null) {
-						logger.error("Stats are null for field_id: " + fs_idx);
-						continue;
-					}
-					Integer noDataCt = stats.getNoDataCount();
-					Float noDataPerc = stats.getFractionNoData();
-
-					String results = "\n─────────────────────────────────────────────────────\n" +
-							"¤STATISTICS for FieldID: " + fs_idx + "\n" +
-							"  NoDataCells: " + noDataCt + "\n" +
-							"  NoData%:     " + String.format("%.1f%%", noDataPerc * 100) + "\n";
-
-					
-					if (stats.hasStatistics()) {
-						Integer histogramCt = 20;
-						AreaStats.Histogram hs = stats.getHistogram(histogramCt, stats.getMin(), stats.getMax()); 
-						Integer ct = stats.getCounted();
-						Float area = ct * 100.0f;
-						Double sum = stats.getSum();
-						Float min = stats.getMin();
-						Float max = stats.getMax();
-						Float mean = stats.getMean();
-						Float median = stats.getMedian();
-						results += " »FIELD CELLS: " + ct + "\n";
-						results += String.format("  Area: %.2f(ac)   %.2f(km2) \n", area / 4047.0f, area / 1000000.0f);
-						results += " »YIELD STATS \n";
-						results += String.format("  Total Yield: %.2f\n", sum);
-						results += String.format("  Min: %.2f    Max: %.2f \n", min, max);
-						results += String.format("  Mean: %.2f\n", mean);
-						results += String.format("  Median: %.2f\n", median);
-						results += " »HISTOGRAM (" + histogramCt + " bins) \n";
-						results += hs.toString();
-					}
-					results += "─────────────────────────────────────────────────────\n";
-					
-					logger.info(results);
+			for (int y = 0; y < rasterHeight; y++) {
+				for (int x = 0; x < rasterWidth; x++) {
+					if ((wl_data[y][x] & mask) <= 0) modelResults[y][x] = -9999.0f;
+					else if (road_mask[y][x] > 0 || water_mask[y][x] > 0) modelResults[y][x] = -9999.0f;
 				}
 			}
-			catch(Exception e) {
-				e.printStackTrace();
-				logger.error(e.toString());
-			}
+		}
+		
+		if (farmId != null) {
+			db.Farm f = db.Farm.find.byId(farmId);
+			if (f != null) {
+				List<JsonNode> features = new ArrayList<>();
+				
+				for (FieldGeometry fd: f.mFieldGeometry) {
+					SqlRow sw = Ebean.createSqlQuery("SELECT ST_AsGeoJson(ST_Transform(ST_GeomFromText( ?, 3857 ),3071)) as gjson")
+						.setParameter(1, fd.geom)
+						.findOne();
+				
+					JsonNode res = play.libs.Json.parse(sw.getString("gjson"));
+					features.add(Json.pack("type", "Feature",
+							"geometry", res,
+							"properties", Json.pack("f_id", fd.id)));
+				}
+				
+				int layer[][] = RasterizeFeature.testToInt(features);
 			
-			if (mapMode > 0) {
+				for (int y = 0; y < rasterHeight; y++) {
+					for (int x = 0; x < rasterWidth; x++) {
+						if (layer[y][x] <= 0) modelResults[y][x] = -9999.0f;
+					}
+				}
+				
+				AreaStats fs = new AreaStats(modelResults).forRasterizedFields(layer).compute();
+				
 				try {
-					for (int y = 0; y < rasterHeight; y++) {
-						for (int x = 0; x < rasterWidth; x++) {
-							if (layer[y][x] <= 0) modelResults[y][x] = -9999.0f;
-							else if (mapMode == 2) {
-								Stats stats = fs.getFieldStats((long)layer[y][x]);
-								if (stats.hasStatistics()) {
-									modelResults[y][x] = stats.getMean();
-								}
-								else {
-									modelResults[y][x] = 0;
-								}
-							}
-							else if (mapMode == 3) {
-								if (false) { //noAgMask[y][x] > 0) {
-									modelResults[y][x] = -9999.0f;
+					for (FieldGeometry fd: f.mFieldGeometry) {
+						Long fs_idx = fd.id;
+						Stats stats = fs.getFieldStats(fs_idx);
+						
+						if (stats == null) {
+							logger.error("Stats are null for field_id: " + fs_idx);
+							continue;
+						}
+						Integer noDataCt = stats.getNoDataCount();
+						Float noDataPerc = stats.getFractionNoData();
+	
+						String results = "\n─────────────────────────────────────────────────────\n" +
+								"¤STATISTICS for FieldID: " + fs_idx + "\n" +
+								"  NoDataCells: " + noDataCt + "\n" +
+								"  NoData%:     " + String.format("%.1f%%", noDataPerc * 100) + "\n";
+	
+						
+						if (stats.hasStatistics()) {
+							Integer histogramCt = 20;
+							AreaStats.Histogram hs = stats.getHistogram(histogramCt, stats.getMin(), stats.getMax()); 
+							Integer ct = stats.getCounted();
+							Float area = ct * 100.0f;
+							Double sum = stats.getSum();
+							Float min = stats.getMin();
+							Float max = stats.getMax();
+							Float mean = stats.getMean();
+							Float median = stats.getMedian();
+							results += " »FIELD CELLS: " + ct + "\n";
+							results += String.format("  Area: %.2f(ac)   %.2f(km2) \n", area / 4047.0f, area / 1000000.0f);
+							results += " »YIELD STATS \n";
+							results += String.format("  Total Yield: %.2f\n", sum);
+							results += String.format("  Min: %.2f    Max: %.2f \n", min, max);
+							results += String.format("  Mean: %.2f\n", mean);
+							results += String.format("  Median: %.2f\n", median);
+							results += " »HISTOGRAM (" + histogramCt + " bins) \n";
+							results += hs.toString();
+						}
+						results += "─────────────────────────────────────────────────────\n";
+						
+						logger.info(results);
+					}
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+					logger.error(e.toString());
+				}
+				if (mapMode == 2) {
+					try {
+						for (int y = 0; y < rasterHeight; y++) {
+							for (int x = 0; x < rasterWidth; x++) {
+								if (layer[y][x] > 0) {
+									Stats stats = fs.getFieldStats((long)layer[y][x]);
+									if (stats.hasStatistics()) {
+										modelResults[y][x] = stats.getMean();
+									}
+									else {
+										modelResults[y][x] = 0;
+									}
 								}
 							}
 						}
 					}
-				}
-				catch (Exception e) {
-					e.printStackTrace();
+					catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
-			File fp = new File("./public/dynamicFiles/yes" + yuckCounter + ".png");
-			result  = (ObjectNode)RasterToPNG.save(modelResults, rasterWidth, rasterHeight, fp);
 		}
+		// TODO: may want to skip clipping process if raster modelResults is the full raster...
+		float clipped[][] = Extract.now(modelResults, ext.mX1, ext.mY1, ext.mWidth, ext.mHeight);
+
+		// Downsampler...
+/*		int maxSize = 1600;
+		// restrict output size and resample
+		if (ww > maxSize || hh > maxSize) {
+			int newW = ww, newH = hh;
+			if (ww > hh) {
+				newW = maxSize;
+				newH = Math.round((hh / (float)ww) * maxSize);
+			}
+			else if (ww < hh) {
+				newW = Math.round((ww / (float)hh) * maxSize);
+				newH = maxSize;
+			}
+			else {
+				newW = newH = maxSize;
+			}
+			
+			logger.info("wh [" + ww + "," + hh + "] new wh [" + newW + "," + newH + "]");
+			try {
+				clipped = Downsampler.mean(clipped, ww, hh, newW, newH);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			hh = newH;
+			ww = newW;
+		}
+		*/		
+		File fp = new File("./public/dynamicFiles/yes" + pngCounter + ".png");
+		result  = (ObjectNode)RasterToPNG.save(clipped, ext.mWidth, ext.mHeight, fp);
 		
 		// Reverse Y ordering for openlayers
-		Json.addToPack(result, "url", "renders/yes" + yuckCounter + ".png", 
-						"extent", Json.array(areaExtents[0],areaExtents[3],
-								areaExtents[2],areaExtents[1]));	
+		Json.addToPack(result, "url", "renders/yes" + pngCounter + ".png", 
+						"extent", Json.array(ext.mExtent[0],ext.mExtent[3],
+								ext.mExtent[2],ext.mExtent[1]));	
 		
-		yuckCounter++;
+		pngCounter++;
 		return ok(result);
 	}
 	
@@ -410,15 +541,17 @@ public class HomeController extends Controller {
 	//-------------------------------------------------------------------------------------
 	public class SlopeModel implements ModelComputation {
 		
-		public float[][] compute(int rasterWidth, int rasterHeight)  { 
+		// ext is the computation extent
+		public float[][] compute(Clipper ext)  { 
 			
-			float slope[][] = Layer_Base.getLayer("slope").getFloatData();
-			float [][] slopeOut = new float[rasterHeight][rasterWidth];
+			Layer_Base slope = Layer_Base.getLayer("slope");
+			float slopeData[][] = slope.getFloatData();
+			float [][] slopeOut = new float[slope.getHeight()][slope.getWidth()];
 			
-			for (int y = 0; y < rasterHeight; y++) {
-				for (int x = 0; x < rasterWidth; x++) {
+			for (int y = ext.mY1; y < ext.mY2; y++) {
+				for (int x = ext.mX1; x < ext.mX2; x++) {
 					
-					slopeOut[y][x] = slope[y][x];
+					slopeOut[y][x] = slopeData[y][x];
 				}
 			}
 			
@@ -429,13 +562,14 @@ public class HomeController extends Controller {
 	//-------------------------------------------------------------------------------------
 	public class CornModel implements ModelComputation {
 		
-		public float[][] compute(int rasterWidth, int rasterHeight)  { 
+		public float[][] compute(Clipper ext)  { 
 			
-			float slope[][] = Layer_Base.getLayer("slope").getFloatData();
+			Layer_Base slope = Layer_Base.getLayer("slope");
+			float slopeData[][] = slope.getFloatData();
 			float silt[][] = Layer_Base.getLayer("silt_perc").getFloatData();
 //			float depth[][] = Layer_Base.getLayer("soil_depth").getFloatData();
 			float cec[][] = Layer_Base.getLayer("cec").getFloatData();
-			float [][] cornYield = new float[rasterHeight][rasterWidth];
+			float [][] cornYield = new float[slope.getHeight()][slope.getWidth()];
 			
 			float cornCoefficient = 1.30f 	// correction for technological advances 
 					* 0.053f; 				// conversion to Mg per Ha 
@@ -443,10 +577,10 @@ public class HomeController extends Controller {
 			float soyCoefficient = 1.2f		// Correct for techno advances
 					* 0.0585f;				// conversion to Mg per Ha
 			
-			for (int y = 0; y < rasterHeight; y++) {
-				for (int x = 0; x < rasterWidth; x++) {
+			for (int y = ext.mY1; y < ext.mY2; y++) {
+				for (int x = ext.mX1; x < ext.mX2; x++) {
 					
-					float _slope = slope[y][x], /*_depth = depth[y][x],*/ _silt = silt[y][x], _cec = cec[y][x];
+					float _slope = slopeData[y][x], /*_depth = depth[y][x],*/ _silt = silt[y][x], _cec = cec[y][x];
 					
 //					if (_depth > 60) _depth = 60;
 					float cornY =  22.0f - 1.05f * _slope + /*0.19f * _depth +*/ (0.817f / 100.0f) * _silt + 1.32f * _cec
@@ -455,7 +589,7 @@ public class HomeController extends Controller {
 //					float soyY = 6.37f - 0.34f * _slope + 0.065f * _depth + (0.278f / 100.0f) * _silt + 0.437f * _cec 
 //							* soyCoefficient;
 					
-					if (cornY < 3) cornY = 3;//-9999.0f;
+					if (cornY < 1) cornY = 1;//-9999.0f;
 					else if (cornY > 36) cornY = 36;
 					
 //					if (soyY < 1) soyY = 1;//-9999.0f;
@@ -473,16 +607,15 @@ public class HomeController extends Controller {
 	//-------------------------------------------------------------------------------------
 	public class BirdModel implements ModelComputation {
 		
-		public float[][] compute(int rasterWidth, int rasterHeight)  { 
-			
-			float [][] habitatData = new float[rasterHeight][rasterWidth];
+		public float[][] compute(Clipper ext)  { 
 			
 			Layer_Integer wl = Layer_CDL.get();
 			int wl_data[][] = wl.getIntData();
+			float [][] habitatData = new float[wl.getHeight()][wl.getWidth()];
 			
-			Moving_CDL_Window win = (Moving_CDL_Window)new Moving_CDL_Window_Z(400/10, rasterWidth, rasterHeight).
-					restrict(0, 0, 
-					rasterWidth, rasterHeight).initialize();
+			Moving_CDL_Window win = (Moving_CDL_Window)new Moving_CDL_Window_Z(400/10).
+					restrict(ext.mX1, ext.mY1,
+					ext.mX2, ext.mY2).initialize();
 			
 			Moving_Window.WindowPoint point = win.getPoint();
 			

@@ -14,7 +14,7 @@ package analysis.windowing;
 
 // Simple usage example
 /*
-Moving_CDL_Window win = new Moving_CDL_Window_Z(windowSize, rasterWidth, rasterHeight).initialize();
+Moving_CDL_Window win = new Moving_CDL_Window_Z(windowSize).initialize();
 
 boolean moreCells = true;
 while (!moreCells) {
@@ -32,8 +32,8 @@ while (!moreCells) {
 //------------------------------------------------------------------------------
 public final class Moving_CDL_Window_Z extends Moving_CDL_Window
 {
-	public Moving_CDL_Window_Z(int win_sz, int raster_w, int raster_h) {
-		super(win_sz, raster_w, raster_h);
+	public Moving_CDL_Window_Z(int win_sz) {
+		super(win_sz);
 	}
 
 	private boolean mbMovingLeft = false; 		// set when the window should be moving LEFT

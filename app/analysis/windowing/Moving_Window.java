@@ -43,6 +43,14 @@ public abstract class Moving_Window
 		mAt_Y = 0;	
 	}
 	
+	// CDL window only...
+	protected Moving_Window(int win_sz) {
+		mHalfWindowSize = win_sz / 2;
+		
+		mAt_X = 0;
+		mAt_Y = 0;	
+	}
+	
 	// chain this on after the constructor to restrict processing to a subset
 	//--------------------------------------------------------------------------
 	public Moving_Window restrict(int startX, int startY, int finalX, int finalY) {

@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.*;
 
+import analysis.AreaStats;
+
 //------------------------------------------------------------------------------
 public class Layer_Float extends Layer_Base
 {
@@ -112,16 +114,40 @@ public class Layer_Float extends Layer_Base
 	//--------------------------------------------------------------------------
 	protected void onLoadEnd() {
 		
-		for (int y = 0; y < mHeight; y++) {
-			for (int x = 0; x < mWidth; x++) {
-				cacheMinMax(mFloatData[y][x]);
-			}
-		}
+		AreaStats fs = new AreaStats(mFloatData).compute();
 		
-		logger.info("  Value range is: " + Float.toString(mMin) + 
-						" to " + Float.toString(mMax));
-		logger.info("  Num Cells with NO_DATA: " + Integer.toString(mCountNoDataCells));
-		logger.info("  % Cells with NO_DATA: %" + Float.toString(mCountNoDataCells / (float)(mHeight * mWidth) * 100.0f));
+		try {
+			AreaStats.Stats stats = fs.getAreaStats();
+			Integer noDataCt = stats.getNoDataCount();
+			Float noDataPerc = stats.getFractionNoData();
+	
+			String results = "\n" + //─────────────────────────────────────────────────────\n" +
+					"¤STATISTICS\n" +
+					"  NoDataCells: " + noDataCt + "\n" +
+					"  NoData%:     " + String.format("%.1f%%", noDataPerc * 100) + "\n";
+	
+			
+			if (stats.hasStatistics()) {
+				Integer histogramCt = 40;
+				AreaStats.Histogram hs = stats.getHistogram(histogramCt, stats.getMin(), stats.getMax()); 
+				Float min = stats.getMin();
+				Float max = stats.getMax();
+				Float mean = stats.getMean();
+				Float median = stats.getMedian();
+				results += " »Value STATS \n";
+				results += String.format("  Min: %.2f    Max: %.2f \n", min, max);
+				results += String.format("  Mean: %.2f\n", mean);
+				results += String.format("  Median: %.2f\n", median);
+				results += " »HISTOGRAM (" + histogramCt + " bins) \n";
+				results += hs.toString();
+			}
+			results += "─────────────────────────────────────────────────────\n";
+			
+			logger.info(results);
+		}
+		catch(Exception e) {
+			
+		}
 	}
 	
 	//--------------------------------------------------------------------------

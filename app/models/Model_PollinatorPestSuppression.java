@@ -49,7 +49,7 @@ public class Model_PollinatorPestSuppression extends Model_Base {
 		float [][] pestData = new float[height][width];
 		float [][] pollinatorData = new float[height][width];
 		
-		Moving_CDL_Window win = (Moving_CDL_Window) new Moving_CDL_Window_N(mWindowSizeInCells, width, height).initialize();
+		Moving_CDL_Window win = (Moving_CDL_Window) new Moving_CDL_Window_N(mWindowSizeInCells).initialize();
 		Moving_Window.WindowPoint point;
 
 		// derived from pollinatorIndex formula. 

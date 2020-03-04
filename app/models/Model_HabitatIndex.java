@@ -43,7 +43,7 @@ public class Model_HabitatIndex extends Model_Base
 				"continuous corn","cash grain","dairy rotation","other crops");
 
 		// --- Model specific code starts here
-		Moving_CDL_Window win = (Moving_CDL_Window) new Moving_CDL_Window_N(mWindowSizeInCells, width, height).initialize();
+		Moving_CDL_Window win = (Moving_CDL_Window) new Moving_CDL_Window_N(mWindowSizeInCells).initialize();
 		Moving_Window.WindowPoint point;
 		
 		boolean moreCells = true;
