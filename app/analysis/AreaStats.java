@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 //------------------------------------------------------------------------------
-public class FieldStats
+public class AreaStats
 {
 //    private static final Logger logger = LoggerFactory.getLogger(FieldStats.class);
 
@@ -205,9 +205,9 @@ public class FieldStats
     		
     		return new Histogram(bins).compute(mValues, mMin, mMax);
     	}
-    	// FIXME: TODO: overriding min and max will required the histogram engine to add extra safety checking (which is not currently there)
+    	// FIXME: TODO: overriding min and max will require the histogram engine to add extra safety checking (which is not currently there)
     	//---------------------------------------------
-    	public Histogram getHistogram(int bins, int min, int max) throws Exception {
+    	public Histogram getHistogram(int bins, float min, float max) throws Exception {
     		if (!mbForFullStats) throw new Exception("Stats object was only created with simple analysis features");
     		
     		return new Histogram(bins).compute(mValues, min, max);
@@ -215,54 +215,87 @@ public class FieldStats
     }
     
     //------------------------------------------------------------
-    private Map<Integer,Stats> mFieldStats = null;
+    private Map<Long,Stats> mFieldStats = null;
     
     // TODO: wrap these to reduce sending around raw 2D arrays?
     private int[][] 	mFieldIDs = null;
     private float[][]	mFieldData = null;
     
     
-    public FieldStats(int[][] fieldIDs, float[][] data) {
+    //----------------------------------------------------------------
+    public AreaStats(float[][] data) {
     	mFieldStats = new HashMap<>();
-    	mFieldIDs = fieldIDs;
     	mFieldData = data;
     	
     	// set default analysis extents
     }
     
-    public FieldStats forExtents(int x, int y, int width, int height) {
+    //----------------------------------------------------------------
+    public AreaStats forRasterizedFields(int[][] fieldIDs) {
+    	mFieldIDs = fieldIDs;
+    	return this;
+    }
+    
+    //----------------------------------------------------------------
+    public AreaStats forExtents(int x, int y, int width, int height) {
     	// TODO: this.set up analysis extents
     	return this;
     }
     
-    public FieldStats compute() {
+    //----------------------------------------------------------------
+    public AreaStats compute() {
 
-		int rasterWidth = 1900, rasterHeight = 3400;
-    	for (int y = 0; y < rasterHeight; y++) {
-        	for (int x = 0; x < rasterWidth; x++) {
-        		
-        		int f_id = mFieldIDs[y][x];
-        		if (f_id <= 0) continue;
-        		
-    			Stats s = mFieldStats.get(f_id);
-    			if (s == null) {
-    				s = new Stats(true);
-    				mFieldStats.put(f_id, s);
-    			}
-        		
-    			s.record(mFieldData[y][x]);
-        	}
-    	}
+		int rasterWidth = 1500, rasterHeight = 2600;
+		
+		if (mFieldIDs == null) {
+			
+			Stats s = new Stats(true);
+			mFieldStats.put(0L, s);
+			
+	    	for (int y = 0; y < rasterHeight; y++) {
+	        	for (int x = 0; x < rasterWidth; x++) {
+	    			s.record(mFieldData[y][x]);
+	        	}
+	    	}
+		}
+		else {
+	    	for (int y = 0; y < rasterHeight; y++) {
+	        	for (int x = 0; x < rasterWidth; x++) {
+	        		
+	        		int f_id = mFieldIDs[y][x];
+	        		if (f_id <= 0) continue;
+	        		
+	    			Stats s = mFieldStats.get((long)f_id);
+	    			if (s == null) {
+	    				s = new Stats(true);
+	    				mFieldStats.put((long) f_id, s);
+	    			}
+	        		
+	    			s.record(mFieldData[y][x]);
+	        	}
+	    	}
+		}
     	return this;
     }
     
-    public Stats getFieldStats(int fieldID) {
-    	return mFieldStats.get(fieldID);
+    //----------------------------------------------------------------
+    public Stats getFieldStats(Long fs_idx) throws Exception {
+		
+		if (mFieldIDs == null) throw new Exception("AreaStats: was not configured for field level compution");
+		return mFieldStats.get(fs_idx);
     }
     
+    // TODO: area stats may also be wanted?
+    //----------------------------------------------------------------
+    public Stats getAreaStats() throws Exception {
+		if (mFieldIDs != null) throw new Exception("AreaStats: was configured for field level compution so total area stats are not available");
+		return mFieldStats.get(0L);
+    }
     
+    // 
 	//--------------------------------------------------------------------------
-	public static void fetch_image() {
+    @Deprecated // I have no idea what this is....
+	public static void huh_fetch_image() {
 		
 		// topLeftX, topLeftY, bottomRightX, bottomRightY
 		Integer areaExtents[] = {

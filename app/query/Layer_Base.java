@@ -19,14 +19,15 @@ import com.fasterxml.jackson.databind.node.*;
 
 import analysis.Downsampler;
 import analysis.Extract;
-import analysis.FieldStats;
+import analysis.AreaStats;
 import analysis.RasterToPNG;
 import analysis.RasterizeFeature;
-import analysis.FieldStats.Stats;
+import analysis.AreaStats.Stats;
 import analysis.windowing.Moving_CDL_Window;
 import analysis.windowing.Moving_CDL_Window_N;
 import analysis.windowing.Moving_CDL_Window_Z;
 import analysis.windowing.Moving_Window;
+import db.FieldGeometry;
 import fileHandling.Asc_Writer;
 
 //------------------------------------------------------------------------------
@@ -232,7 +233,8 @@ public abstract class Layer_Base
 			}
 		}
 		catch (Exception e) {
-			logger.info(e.toString());
+			e.printStackTrace();
+		//	logger.info(e.toString());
 		}
 		
 		onLoadEnd();
@@ -467,17 +469,24 @@ public abstract class Layer_Base
 			
 			newIntegerLayer("wisc_land_2").init();	// Wisc Land 2.0 - 2016
 			
-			newFloatLayer("slope").init();			// Derived from the US Geological Survey's 10-meter National Elevation Dataset (NED)
-			newFloatLayer("dist_to_water").init();	// 24k Hydro Waterbodies, WI DNR: Merged Open Water + Streams [including ephemeral streams]
+			newFloatLayer("dem").init();				// Derived from the US Geological Survey's 10-meter National Elevation Dataset (NED)
+			newFloatLayer("slope").init();				// Derived from the US Geological Survey's 10-meter National Elevation Dataset (NED)
+			newFloatLayer("distance_to_water").init();	// 24k Hydro Waterbodies, WI DNR: Merged Open Water + Streams [including ephemeral streams]
+			
+			
+//			newIntegerLayer("road_mask",EType.ERaw).init();	
+//			newIntegerLayer("water_mask",EType.ERaw).init();	
+
+//			newIntegerLayer("non_ag_mask",EType.ERaw).init();	// Hybrid of Wisc-Land, DNR perennial streams, DNR open water, and DMV road data
 			
 			// SSURGO-Derived layers: topmost horizon only
-			newFloatLayer("k_fact").init();			// SSURGO: kffact
-			newFloatLayer("soil_depth").init();		// SSURGO: hzdept_r
-			newFloatLayer("clay_perc").init();		// SSURGO: claytotal_r
+//			newFloatLayer("k_fact").init();			// SSURGO: kffact
+//			newFloatLayer("soil_depth").init();		// SSURGO: hzdept_r
+//			newFloatLayer("clay_perc").init();		// SSURGO: claytotal_r
 			newFloatLayer("sand_perc").init();		// SSURGO: sandtotal_r
 			newFloatLayer("silt_perc").init();		// SSURGO: silttotal_r			
 			newFloatLayer("cec").init();			// SSURGO: cec7_r
-			newFloatLayer("om_perc").init();		// SSURGO: om_r
+//			newFloatLayer("om_perc").init();		// SSURGO: om_r
 		}
 		catch (Exception e) {
 			logger.error(e.toString());
@@ -542,8 +551,8 @@ public abstract class Layer_Base
 
 		// topLeftX, topLeftY, bottomRightX, bottomRightY
 		Integer areaExtents[] = {
-			-10128000, 5392000,
-			-10109000, 5358000
+			440000, 340000,
+			455000, 314000
 		};
 	
 		// Align selection to 10m grid
@@ -567,7 +576,7 @@ public abstract class Layer_Base
 		else if (selExtents[3] < areaExtents[3]) 	selExtents[3] = areaExtents[3];
 //		logger.error("clipped [" + selExtents[0] + "," + selExtents[1] + "][" + selExtents[2] + "," + selExtents[3] + "]");
 
-		int rasterWidth = 1900, rasterHeight = 3400;
+		int rasterWidth = 1500, rasterHeight = 2600;
 		
 		// re-index
 		Integer indexX = (selExtents[0] - areaExtents[0]) / 10;
@@ -585,12 +594,13 @@ public abstract class Layer_Base
 		int mask = Layer_Integer.indexToMask(2, 3); 		// row crops: 
 		
 //		int width = 1250, height = 2370;
-		float slope[][] = Layer_Base.getLayer("slope").getFloatData();
+		float slope[][] = Layer_Base.getLayer("slope").getFloatData();		
+/*		
 		float silt[][] = Layer_Base.getLayer("silt_perc").getFloatData();
 		float depth[][] = Layer_Base.getLayer("soil_depth").getFloatData();
-		float cec[][] = Layer_Base.getLayer("cec").getFloatData();
+		float cec[][] = Layer_Base.getLayer("cec").getFloatData();*/
 		float [][] cornYield = new float[rasterHeight][rasterWidth];
-		
+/*		
 		float cornCoefficient = 1.30f 	// correction for technological advances 
 //				* 2.0f 					// contribution of stover 
 				* 0.053f; 				// conversion to Mg per Ha 
@@ -620,134 +630,61 @@ public abstract class Layer_Base
 				cornYield[y][x] = cornY;
 			}
 		}
-		
-/*		// Aggregate test
-		int step = 10;
-		for (int y = 0; y < rasterHeight; y += step) {
-			for (int x = 0; x < rasterWidth; x += step) {
-				
-				Float sum = 0.0f;
-				for (int yy = 0; yy < step; yy++) {
-					for (int xx = 0; xx < step; xx++) {
-						sum += cornYield[y+yy][x+xx];
-					}
-				}
-				sum = sum / (step * step);
-				for (int yy = 0; yy < step; yy++) {
-					for (int xx = 0; xx < step; xx++) {
-						cornYield[y+yy][x+xx] = sum;
-					}
-				}
+*/		
+		for (int y = 0; y < rasterHeight; y++) {
+			for (int x = 0; x < rasterWidth; x++) {
+				cornYield[y][x] = slope[y][x] * 0.2f;
 			}
-		} 
-*/		
-		//float layer[][] = cornYield;
+		}
 		
-/*		float [][] habitatData = new float[rasterHeight][rasterWidth];
-	
-		Moving_CDL_Window win = new Moving_CDL_Window_Z(400/10, wl_data, rasterWidth, rasterHeight, indexX, indexY, indexX2, indexY2);
-		Moving_Window.WindowPoint point = win.getPoint();
+		float layer[][] = cornYield;
+
 		
+		AreaStats fs = new AreaStats(layer).compute();
 		try {
-			boolean moreCells = true;
-			while (moreCells) {
-				point = win.getPoint();
+			Stats stats = fs.getAreaStats();
 				
-				if (win.canGetProportions()) {
-					float proportionAg = win.getProportionAg();
-					float proportionGrass = win.getProportionGrass();
-					
-					// Habitat Index
-					float lambda = -4.47f + (2.95f * proportionAg) + (5.17f * proportionGrass); 
-					float habitatIndex = (float)((1.0f / (1.0f / Math.exp(lambda) + 1.0f )) / 0.67f);
-	
-					if (habitatIndex < 0.1) habitatIndex = -9999.0f;
-					habitatData[point.mY][point.mX] = habitatIndex;
-				}
-				else {
-					habitatData[point.mY][point.mX] = -9999.0f; // NO DATA
-				}
-				
-				moreCells = win.advance();
-			}	
-		}
-		catch(Exception e) {
-			logger.error(e.toString());
-			logger.error(" mx: " + ((Integer)point.mX) + "   my: " + ((Integer)point.mY) );
-		}
-*/		
-		int layer[][] = RasterizeFeature.toInt(true);
+			Integer noDataCt = stats.getNoDataCount();
+			Float noDataPerc = stats.getFractionNoData();
 
-//		Asc_Writer.quickDump(cornYield);
-		
-		FieldStats fs = new FieldStats(layer, cornYield).compute();
-		
-		for (Integer fs_idx = 1; fs_idx <= 33; fs_idx++) {
-			Stats stats = fs.getFieldStats(fs_idx);
-			try {
-				Integer noDataCt = stats.getNoDataCount();
-				Float noDataPerc = stats.getFractionNoData();
-
-				String results = "\n─────────────────────────────────────────────────────\n" +
-						"¤STATISTICS for FieldID: " + fs_idx + "\n" +
+			String results = "\n─────────────────────────────────────────────────────\n" +
+					"¤Area STATISTICS\n" +
 						"  NoDataCells: " + noDataCt + "\n" +
 						"  NoData%:     " + String.format("%.1f%%", noDataPerc * 100) + "\n";
 
-				
-				if (stats.hasStatistics()) {
-					Integer histogramCt = 40;
-					FieldStats.Histogram hs = stats.getHistogram(histogramCt, 3, 35); 
-					Integer ct = stats.getCounted();
-					Float area = ct * 100.0f;
-					Double sum = stats.getSum();
-					Float min = stats.getMin();
-					Float max = stats.getMax();
-					Float mean = stats.getMean();
-					Float median = stats.getMedian();
-					results += " »FIELD CELLS: " + ct + "\n";
-					results += String.format("  Area: %.2f(ac)   %.2f(km2) \n", area / 4047.0f, area / 100000.0f);
-					results += " »YIELD STATS \n";
-					results += String.format("  Total Yield: %.2f\n", sum);
-					results += String.format("  Min: %.2f    Max: %.2f \n", min, max);
-					results += String.format("  Mean: %.2f\n", mean);
-					results += String.format("  Median: %.2f\n", median);
-					results += " »HISTOGRAM (" + histogramCt + " bins) \n";
-					results += hs.toString();
-				}
-				results += "─────────────────────────────────────────────────────\n";
-				
-				logger.info(results);
+			if (stats.hasStatistics()) {
+				Integer histogramCt = 20;
+				AreaStats.Histogram hs = stats.getHistogram(histogramCt, stats.getMin(), stats.getMax()); 
+				Integer ct = stats.getCounted();
+				Float area = ct * 100.0f;
+				Double sum = stats.getSum();
+				Float min = stats.getMin();
+				Float max = stats.getMax();
+				Float mean = stats.getMean();
+				Float median = stats.getMedian();
+				results += " »FIELD CELLS: " + ct + "\n";
+				results += String.format("  Area: %.2f(ac)   %.2f(km2) \n", area / 4047.0f, area / 1000000.0f);
+				results += " »YIELD STATS \n";
+				results += String.format("  Total Yield: %.2f\n", sum);
+				results += String.format("  Min: %.2f    Max: %.2f \n", min, max);
+				results += String.format("  Mean: %.2f\n", mean);
+				results += String.format("  Median: %.2f\n", median);
+				results += " »HISTOGRAM (" + histogramCt + " bins) \n";
+				results += hs.toString();
 			}
-			catch(Exception e) {
-				logger.error(e.toString());
-			}
-		}
-		
-		// recoded slope
-		// TODO: this would only need to be conditionally done if wanting to recode to field level stat rendering
-		//	otherwise, it's just passing the original layer through
-		float [][] aveSlope = new float[rasterHeight][rasterWidth];
-		try {
-			for (int y = 0; y < rasterHeight; y++) {
-				for (int x = 0; x < rasterWidth; x++) {
-					int f_id = layer[y][x]; 
-					if ( f_id > 0) {
-						aveSlope[y][x] = cornYield[y][x];
-//						aveSlope[y][x] = fs.getFieldStats(f_id).getMean();
-					}
-					else {
-						aveSlope[y][x] = -9999.0f;
-					}
-				}
-			}
+			results += "─────────────────────────────────────────────────────\n";
+			
+			logger.info(results);
 		}
 		catch(Exception e) {
 			
 		}
 		
 		// FIXME: TODO: may want to just clip processing area BEFORE and not computing everything.
-		float clipped[][] = Extract.now(aveSlope, indexX, indexY, ww, hh);
+		float clipped[][] = Extract.now(layer, indexX, indexY, ww, hh);
 
+		
+		
 		int maxSize = 1600;
 		// restrict output size and resample
 		if (ww > maxSize || hh > maxSize) {
@@ -777,10 +714,10 @@ public abstract class Layer_Base
 		
 		ctr++;
 		File fp = new File("./public/dynamicFiles/yes" + ctr + ".png");
-		RasterToPNG.save(clipped, ww, hh, fp);
+		ObjectNode res = (ObjectNode)RasterToPNG.save(clipped, ww, hh, fp);
 				
 		// Reverse Y ordering for openlayers
-		return Json.pack("url", "renders/yes" + ctr + ".png", 
+		return Json.addToPack(res,"url", "renders/yes" + ctr + ".png", 
 						"extent", Json.array(selExtents[0],selExtents[3],
 											selExtents[2],selExtents[1]));
 	}

@@ -14,7 +14,7 @@ package analysis.windowing;
 
 // Simple usage example
 /*
-Moving_CDL_Window win = new Moving_CDL_Window_Z(windowSize, rasterData, rasterWidth, rasterHeight);
+Moving_CDL_Window win = new Moving_CDL_Window_Z(windowSize, rasterWidth, rasterHeight).initialize();
 
 boolean moreCells = true;
 while (!moreCells) {
@@ -32,24 +32,12 @@ while (!moreCells) {
 //------------------------------------------------------------------------------
 public final class Moving_CDL_Window_Z extends Moving_CDL_Window
 {
-	private boolean mbMovingLeft; // set when the window should be moving LEFT
-	private boolean mbShouldAdvance_Y; // set when the next move should be a DOWN movement
-	
-	// Define moving Z window - it assumes starting at (x,y) = (0,0) - but that could be changed if needed
-	//--------------------------------------------------------------------------
-	public Moving_CDL_Window_Z(int win_sz, int [][] rasterData, int raster_w, int raster_h) {
-		super(win_sz, rasterData, raster_w, raster_h);
-
-		mbMovingLeft = false; // window moves right first...
-		mbShouldAdvance_Y = false; // only gets set once per line once an edge is hit
+	public Moving_CDL_Window_Z(int win_sz, int raster_w, int raster_h) {
+		super(win_sz, raster_w, raster_h);
 	}
-	//--------------------------------------------------------------------------
-	public Moving_CDL_Window_Z(int win_sz, int [][] rasterData, int raster_w, int raster_h, int startX, int startY, int finalX, int finalY) {
-		super(win_sz, rasterData, raster_w, raster_h, startX, startY, finalX, finalY);
 
-		mbMovingLeft = false; // window moves right first...
-		mbShouldAdvance_Y = false; // only gets set once per line once an edge is hit
-	}
+	private boolean mbMovingLeft = false; 		// set when the window should be moving LEFT
+	private boolean mbShouldAdvance_Y = false; 	// set when the next move should be a DOWN movement
 	
 	// Each call to run advances one cell in the direction the Z-win is moving in...
 	//	since it uses a somewhat irregular pattern to move, this function will

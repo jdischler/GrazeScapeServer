@@ -30,8 +30,9 @@ public abstract class Moving_Window
 	// Same as raster width/height when doing a full layer sweep. Exists to allow computing a subset
 	protected int mFinalX, mFinalY; 
 	protected WindowPoint mPoint;
-	
-	// Full layer process
+
+	// Defaults to full layer processing...chain restrict() to limit the extents
+	//--------------------------------------------------------------------------
 	public Moving_Window(int win_sz, int raster_w, int raster_h) {
 		
 		mRasterWidth = mFinalX = raster_w;
@@ -40,28 +41,28 @@ public abstract class Moving_Window
 		
 		mAt_X = 0;
 		mAt_Y = 0;	
-		initInternal();
 	}
-	// Subset layer process
-	public Moving_Window(int win_sz, int raster_w, int raster_h, int startX, int startY, int finalX, int finalY) {
-		
-		mRasterWidth = raster_w;
-		mRasterHeight = raster_h;
-		mHalfWindowSize = win_sz / 2;
+	
+	// chain this on after the constructor to restrict processing to a subset
+	//--------------------------------------------------------------------------
+	public Moving_Window restrict(int startX, int startY, int finalX, int finalY) {
 		
 		mAt_X = startX;
 		mAt_Y = startY;	
 		mFinalX = finalX;
 		mFinalY = finalY;
 		
-		initInternal();
+		return this;
 	}
 
-	
-	private void initInternal() {
+	// must be called last...
+	//--------------------------------------------------------------------------
+	public Moving_Window initialize() {
 		
 		mPoint = new WindowPoint(mAt_X, mAt_Y);
 		calcWindowBounds();
+		
+		return this;
 	}
 	
 	//--------------------------------------------------------------------------

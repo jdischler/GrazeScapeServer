@@ -8,6 +8,12 @@ POST	/test_fetch					controllers.HomeController.testFetch(request: Request)
 POST	/fetch_image				controllers.HomeController.fetchImage(request: Request)
 GET		/get_fields					controllers.HomeController.getFields(farm: Long)
 POST	/create_operation			controllers.HomeController.createOperation(request: Request)
+POST	/add_field					controllers.HomeController.addField(request: Request)
+POST 	/modify_fields				controllers.HomeController.modifyFields(request: Request)
+POST 	/compute_bird_model			controllers.HomeController.computeBirdModel(request: Request)
+POST 	/compute_corn_model			controllers.HomeController.computeCornModel(request: Request)
+POST 	/compute_slope				controllers.HomeController.computeSlope(request: Request)
+POST 	/data_from_point			controllers.HomeController.getDataFromClickPoint(request: Request)
 
 # Map static resources from the /public folder to the /assets URL path
 GET		/renders/:file				controllers.FileService.getFile(file: String)

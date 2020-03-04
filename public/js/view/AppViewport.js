@@ -2,7 +2,7 @@ var DSS_viewport = false;
 
 DSS.utils.addStyle('.x-btn-focus.x-btn-over.x-btn-default-toolbar-small {z-index:2000;overflow: visible;box-shadow: #4297d4 0 1px 0px 0 inset, #4297d4 0 -1px 0px 0 inset, #4297d4 -1px 0 0px 0 inset, #4297d4 1px 0 0px 0 inset, -2px 4px 4px rgba(0,0,0,0.5);}')
 DSS.utils.addStyle('.x-btn-default-toolbar-small {box-shadow: -1px 2px 2px rgba(0,0,0,0.25);}')
-DSS.utils.addStyle('.x-btn-pressed {z-index:2000; box-shadow: -2px 4px 4px rgba(0,0,0,0.4)!important;}')
+DSS.utils.addStyle('.x-btn-pressed {z-index:2000; box-shadow: 0 4px 6px rgba(0,0,0,0.4)!important;}')
 DSS.utils.addStyle('.x-btn-inner-default-small {font-size: 1rem}');
 
 //------------------------------------------------------------------------------
@@ -11,6 +11,7 @@ Ext.define('DSS.view.AppViewport', {
 	extend: 'Ext.container.Viewport',
 	
 	requires: [
+		'DSS.data.ApplicationState',
 		'DSS.app.MainMap',
 		'DSS.app.MapLayers',
 		'DSS.pages.CompareOperationsPage',
@@ -74,7 +75,7 @@ Ext.define('DSS.view.AppViewport', {
 			},{
 				xtype: 'container',
 				region: 'west',
-				style: 'background: #ede9d9',
+				style: 'background: #ede9d9; border-right: 1px solid rgba(0,0,0,0.25);',
 				width: 388,
 				layout: 'fit',
 				minWidth: 388,

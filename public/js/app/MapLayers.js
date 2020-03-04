@@ -33,7 +33,7 @@ Ext.define('DSS.app.MapLayers', {
 	},
 	
 	padding: 8,
-	style: 'background-color: #e9edd977; background-repeat: no-repeat; background-image: linear-gradient(to right, rgba(0,0,0,0.35), rgba(0,0,0,0.1), rgba(0,0,0,0.03), rgba(0,0,0,0)); background-size: 2rem 100%;',
+	style: 'border-top: 1px solid rgba(255,255,255,0.5); border-bottom: 1px solid rgba(0,0,0,0.5); background-color: #e9edd977; background-repeat: no-repeat; background-image: linear-gradient(to right, rgba(0,0,0,0.35), rgba(0,0,0,0.1), rgba(0,0,0,0.03), rgba(0,0,0,0)); background-size: 2rem 100%;',
 	
 		
 	// 'landscape', 'width', 'height', 'tall', 'wide', <platform> e.g, 'desktop',

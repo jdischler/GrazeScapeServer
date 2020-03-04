@@ -35,9 +35,9 @@ Ext.define('DSS.controls.GrazingToolsBase', {
 					html: 'Access tools and calculators not related to a specific operation',
 				},{
 					xtype: 'button',
-					cls: 'information',
+					cls: 'button-text-pad',
+					componentCls: 'button-margin',
 					text: 'Open Toolbox',
-					margin: '8 72'
 				}]
 			}]
 		});

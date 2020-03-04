@@ -37,7 +37,7 @@ Ext.define('DSS.controls.OperationInfo', {
 			items: [{
 				xtype: 'component',
 				cls: 'information',
-				html: '<b style="color:#27b">Select</b> a location for this operation on the map'
+				html: '<b style="color:#27b">Select <i class="fas fa-map-marker-alt"></i></b> a location for this operation on the map'
 			},{
 				xtype: 'form',
 				url: 'create_operation',
@@ -47,53 +47,68 @@ Ext.define('DSS.controls.OperationInfo', {
 				border: false,
 				layout: DSS.utils.layout('vbox', 'center', 'stretch'),
 				margin: '8 0',
-				defaults: {
+				items: [{
 					xtype: 'textfield',
+					fieldLabel: 'Operation',
+					name: 'operation',
+					allowBlank: false,
+					value: me.DSS_operation,
 					labelAlign: 'right',
 					labelWidth: 80,
 					triggerWrapCls: 'underlined-input',
 					width: 280,
 					margin: '12 0',
 					padding: 4,
-				},
-				items: [{
-					fieldLabel: 'Operation',
-					name: 'operation',
-					allowBlank: false,
-					value: me.DSS_operation,
 				},{
+					xtype: 'textfield',
 					fieldLabel: 'Owner',
 					name: 'owner',
 					allowBlank: false,
+					labelAlign: 'right',
+					labelWidth: 80,
+					triggerWrapCls: 'underlined-input',
+					width: 280,
+					margin: '12 0',
+					padding: 4,
 				},{
+					xtype: 'textfield',
 					fieldLabel: 'Address',
 					name: 'address',
+					labelAlign: 'right',
+					labelWidth: 80,
+					triggerWrapCls: 'underlined-input',
+					width: 280,
+					margin: '12 0',
+					padding: 4,
 				},{
-					// FIXME: TODO: Activate map in click point mode....
+					xtype: 'textfield',
+					itemId: 'location_x',
 					fieldLabel: 'Location x',
 					name: 'location_x',
-					value: '-10118408.1516699',
 					allowBlank: false,
 					hidden: true,
 				},{
-					// FIXME: TODO: Activate map in click point mode....
+					xtype: 'textfield',
+					itemId: 'location_y',
 					fieldLabel: 'Location y',
 					name: 'location_y',
-					value: '5370123.626836921',
 					allowBlank: false,
 					hidden: true,
 				},{
 					xtype: 'button',
+					cls: 'button-text-pad',
+					componentCls: 'button-margin',
 					text: 'Create',
 					formBind: true,
-					margin: '24 72 12 72',
 					handler: function() {
 						var form = this.up('form').getForm();
 						if (form.isValid()) {
 							form.submit({
 								success: function(form, action) {
-									console.log( action.response.responseText);
-									DSS.ApplicationFlow.showManageOperationPage();
+									var obj = JSON.parse(action.response.responseText);
+									
+									DSS.activeFarm = obj.farm.id;
+									DSS.ApplicationFlow.instance.showManageOperationPage();
 								},
 								failure: function(form, action) {
 									console.log(form, action);
@@ -106,7 +121,24 @@ Ext.define('DSS.controls.OperationInfo', {
 		});
 		
 		me.callParent(arguments);
+		me.controlMap();
+	},
+	
+	controlMap: function() {
+		let me = this;
+		
+		DSS.mouseMoveFunction = DSS.MapState.mouseoverFarmHandler();
+		DSS.mapClickFunction = function(evt, coords) {
+			
+			me.down('#location_x').setValue(coords[0]); 
+			me.down('#location_y').setValue(coords[1]);
+			DSS.MapState.setPinMarker(coords, 1);
+		}
+
+		DSS.layer.farms.setOpacity(0.5);
+		
 	}
+		
 
 });
 

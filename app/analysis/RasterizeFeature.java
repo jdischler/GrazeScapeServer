@@ -49,22 +49,18 @@ public class RasterizeFeature {
     //-----------------------------------------------------------------------------
 	private static RPoint alignPoint(float x, float y) {
 		
-    	/*Integer areaExtents[] = {
-    			-10128000, 5392000,
-    			-10109000, 5358000
-    		};*/
-    	x = -10128000 - x;
-    	y = 5392000 - y;
+    	x = x - 440000;
+    	y = 340000 - y;
     	
-		return new RPoint(Math.round(x / -10.0f), 
+		return new RPoint(Math.round(x / 10.0f), 
 					Math.round(y / 10.0f));	
 	}
 
-	
+	@Deprecated
     //-----------------------------------------------------------------------------
     public static int[][] toInt(boolean someInputs) {
 
-		int rasterWidth = 1900, rasterHeight = 3400;
+		int rasterWidth = 1500, rasterHeight = 2600;
 		BufferedImage bi = new BufferedImage(rasterWidth, rasterHeight, BufferedImage.TYPE_INT_RGB); 
 		Graphics g = bi.getGraphics();
     	
@@ -121,14 +117,14 @@ public class RasterizeFeature {
 	   */ 	
 		}
     	
-		int [][] array = new int[3400][1900];
+		int [][] array = new int[rasterHeight][rasterWidth];
 		int width = bi.getWidth();
 
 		WritableRaster wr = bi.getRaster();
 		DataBufferInt db = (DataBufferInt)wr.getDataBuffer();
 		
 		Integer stride = wr.getNumDataElements();
-		Integer bufferSz = 1900 * 3400 * stride;
+		Integer bufferSz = rasterWidth * rasterHeight * stride;
 		
 		int[] pixels = db.getData();
 		
@@ -145,6 +141,68 @@ public class RasterizeFeature {
 		}		
 		return array;
     }
+    
+    //-----------------------------------------------------------------------------
+    public static int[][] testToInt(List<JsonNode> geoJsonFeatures) {
+
+		int rasterWidth = 1500, rasterHeight = 2600;
+		BufferedImage bi = new BufferedImage(rasterWidth, rasterHeight, BufferedImage.TYPE_INT_RGB); 
+		Graphics g = bi.getGraphics();
+    	
+		for (JsonNode f: geoJsonFeatures) {
+			int f_id = 0;
+			JsonNode props = f.get("properties");
+			if (props != null) {
+				f_id = props.get("f_id").asInt();
+			}
+			
+			JsonNode geo = f.get("geometry");
+			ArrayNode coords = (ArrayNode)geo.get("coordinates");
+			coords = (ArrayNode)coords.get(0);
+			
+	    	List<Integer> lx = new ArrayList<Integer>();
+	    	List<Integer> ly = new ArrayList<Integer>();
+			
+			for (int a_idx = 0; a_idx < coords.size(); a_idx++) {
+				ArrayNode duple = (ArrayNode)coords.get(a_idx);
+				
+	    		RPoint rp = alignPoint((float)duple.get(0).asDouble(), (float)duple.get(1).asDouble());
+	    		lx.add(rp.mX);
+	    		ly.add(rp.mY);
+			}
+			
+	    	int xs3[] = lx.stream().mapToInt(i->i).toArray();
+	    	int ys3[] = ly.stream().mapToInt(i->i).toArray();
+	    	
+	    	g.setColor(new Color(f_id));
+	    	g.fillPolygon(xs3, ys3, xs3.length);
+		}
+    	
+		int [][] array = new int[rasterHeight][rasterWidth];
+		int width = bi.getWidth();
+
+		WritableRaster wr = bi.getRaster();
+		DataBufferInt db = (DataBufferInt)wr.getDataBuffer();
+		
+		Integer stride = wr.getNumDataElements();
+		Integer bufferSz = rasterWidth * rasterHeight * stride;
+		
+		int[] pixels = db.getData();
+		
+		for (int pixel = 0, y = 0, x = 0; pixel < bufferSz; pixel += stride) {
+			Integer argb = pixels[pixel]; argb &= 0x00ffffff;
+			
+			if (argb < 1) argb = -9999;
+			array[y][x] = argb;
+			x++;
+			if (x == width) {
+				x = 0;
+				y++;
+			}
+		}		
+		return array;
+    }
+    
 }
  
 

@@ -16,10 +16,15 @@ import javax.persistence.ManyToOne;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+
 import io.ebean.Ebean;
+import io.ebean.Finder;
 import io.ebean.Model;
 import io.ebean.SqlQuery;
 import io.ebean.SqlRow;
+import play.mvc.Http.Request;
 
 @Entity
 public class FieldGeometry extends Model {
@@ -119,6 +124,25 @@ public class FieldGeometry extends Model {
 	}
 
     private static final Logger logger = LoggerFactory.getLogger("app");
+
+    public static final Finder<Long, FieldGeometry> find = new Finder<>(FieldGeometry.class);
+
+	public static JsonNode modifyFields(Request request) {
+			
+		ArrayNode ar = (ArrayNode)request.body().asJson();
+
+		logger.info(ar.toString());
+		for (JsonNode jn: ar) {
+			Long field_id = utils.Json.safeGetLong(jn, "field_id");
+			String wkt = utils.Json.safeGetString(jn, "wkt");
+			
+			db.FieldGeometry fg = db.FieldGeometry.find.byId(field_id);
+			fg.geom = wkt;
+			fg.save();
+		}
+		
+		return utils.Json.pack("result", "ok");
+	}
 	
 }
 /*

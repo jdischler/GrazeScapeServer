@@ -10,14 +10,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import utils.Json;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-
-import play.libs.Json;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,11 +25,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 import io.ebean.Ebean;
 import io.ebean.Finder;
 import io.ebean.Model;
 import io.ebean.SqlRow;
+import play.mvc.Http.Request;
 
 @Entity
 public class Farm extends Model {
@@ -83,7 +84,7 @@ public class Farm extends Model {
     			address("1034 Friar Ln.");
     	
     	try (FileInputStream fis = new FileInputStream(file)) {
-    		fasJson = Json.parse(fis);
+    		fasJson = play.libs.Json.parse(fis);
             f.createFieldsFrom(fasJson);
     	}
     	catch(Exception e) {
@@ -91,7 +92,8 @@ public class Farm extends Model {
     	}
     	f.save();
     }
-    
+   
+    //------------------------------------------------------------
     public void createFieldsFrom(JsonNode geom) {
 
 		ArrayNode featureList = (ArrayNode)geom.get("features");
@@ -142,9 +144,31 @@ public class Farm extends Model {
     		
     		sb.append("{\"type\":\"Feature\",\"geometry\":");
     		
-    		SqlRow sw = Ebean.createSqlQuery("SELECT ST_AsGeoJSON(ST_GeomFromText( ? )) as gjson")
+    		SqlRow sw;
+/*    		sw = Ebean.createSqlQuery("SELECT ST_AsGeoJSON(ST_Transform(ST_SetSRID(ST_GeomFromText( ? ),3857),3071)) as gjson")
     				.setParameter(1, fg.geom)
     				.findOne();
+    		
+    		JsonNode jn = play.libs.Json.parse(sw.getString("gjson"));
+    		ArrayNode an = (ArrayNode)jn.get("coordinates");
+    		an = (ArrayNode) an.get(0);
+    		
+    		String polygon = "Polygon((";
+    		for (int idx = 0; idx < an.size(); idx++) {
+    			if (idx > 0) polygon += ",";
+    			ArrayNode coord = (ArrayNode)an.get(idx);
+    			Long x = Math.round(coord.get(0).asDouble() / 10.0) * 10;
+    			Long y = Math.round(coord.get(1).asDouble() / 10.0) * 10;
+    			polygon += x + " " + y;
+    		}
+    		polygon += "))";
+    		sw = Ebean.createSqlQuery("SELECT ST_AsGeoJSON(ST_Transform(ST_SetSRID(ST_GeomFromText( ? ),3071),3857)) as gjson")
+    				.setParameter(1, polygon)
+    				.findOne();*/
+    		sw = Ebean.createSqlQuery("SELECT ST_AsGeoJSON(ST_GeomFromText( ? )) as gjson")
+    				.setParameter(1, fg.geom)
+    				.findOne();
+    		
     		String properties = "\"properties\":{\"f_id\":" + fg.id + "}";
     		sb.append(sw.getString("gjson"));
     		sb.append("," + properties + "}");
@@ -153,6 +177,54 @@ public class Farm extends Model {
     	sb.append("]}");
 
     	return sb.toString();
+    }
+    
+    //----------------------------------------------------
+	public JsonNode getProperties() {
+		return Json.pack("id",this.id,
+			"name", this.farmName,
+			"owner", this.farmOwner,
+			"address", this.farmAddress
+		);
+				
+	}
+    //----------------------------------------------------
+	public JsonNode getFeature() {
+		SqlRow sw = Ebean.createSqlQuery("SELECT ST_AsGeoJSON(ST_GeomFromText(?)) as json")
+				.setParameter(1, this.location)
+				.findOne();
+		
+		JsonNode geoJson = play.libs.Json.parse(sw.getString("json"));
+		
+		return Json.pack("type", "Feature",
+			"geometry", geoJson,
+			"properties", this.getProperties()
+		);
+	}
+    
+    //----------------------------------------------------
+    public static JsonNode getAllAsGeoJson() {
+		JsonNode crs = Json.pack(
+				"type", "name",
+				"properties", Json.pack(
+					"name", "urn:ogc:def:crs:EPSG::3857"
+				)
+			);
+
+			ArrayNode features = JsonNodeFactory.instance.arrayNode();
+			
+			List<Farm> fs = Farm.find.all();
+			for (Farm f: fs) {
+				features.add(f.getFeature());
+			}
+			
+			return Json.pack(
+				"type", "FeatureCollection",
+				"name", "farmSet",//"TainterSimpleBoundary",
+				"crs", crs,
+				"features", features
+			);		
+    	
     }
     
     public static final Finder<Long, Farm> find = new Finder<>(Farm.class);
@@ -214,7 +286,7 @@ public class Farm extends Model {
     	f.save();
     	
     	try (FileInputStream fis = new FileInputStream(file)) {
-    		fasJson = Json.parse(fis);
+    		fasJson =  play.libs.Json.parse(fis);
             f.old_createFieldsFrom(fasJson);
     	}
     	catch(Exception e) {
@@ -310,4 +382,26 @@ public class Farm extends Model {
 	}
     
     private static final Logger logger = LoggerFactory.getLogger("app");
+
+    //------------------------------------------------------
+	public static JsonNode addField(Request request) {
+		
+		JsonNode node = request.body().asJson();
+
+		Long farmId = utils.Json.safeGetLong(node, "farm_id");
+		String wkt = utils.Json.safeGetString(node, "wkt");
+		
+		Long field_id = -1L;
+		
+		db.Farm f = db.Farm.find.byId(farmId);
+		if (f != null) {
+			FieldGeometry fg = new FieldGeometry();
+			fg.fromWKT(wkt);
+			f.mFieldGeometry.add(fg);
+			f.save();
+			field_id = fg.id;
+		}
+		
+		return utils.Json.pack("f_id", field_id);
+	}
 }

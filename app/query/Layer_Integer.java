@@ -72,6 +72,7 @@ public class Layer_Integer extends Layer_Base
 		public boolean tryLoad(String layerName) {
 			File keyFile = new File("./layerData/" + layerName + ".key");
 			if (!keyFile.exists()) {
+				logger.warn(" Layer_Integer: tryLoad: no key file found");
 				return false;
 			}
 			
@@ -282,7 +283,7 @@ public class Layer_Integer extends Layer_Base
 		
 		for (int x = 0; x < width; x++) {
 			dataBuffer.putInt(mIntData[atY][x]);
-		}
+		} 
 	}
 	
 	//--------------------------------------------------------------------------
@@ -290,13 +291,18 @@ public class Layer_Integer extends Layer_Base
 		
 		boolean erred = false;
 		for (int x = 0; x < lineElementsArray.length; x++) {
-			int val = Integer.parseInt(lineElementsArray[x]);
-			if (val == mNoDataValue) {
+			Integer val = Integer.parseInt(lineElementsArray[x]);
+			if (val <= 0) {// mNoDataValue) {
 				val = mConvertedNoDataValue;
 			}
 			else {
-				// TODO: support translation only when needed
-				val = mLayerKey.mTranslationMap.get(val);
+				// FIXME: TODO: support translation only when needed, otherwise null pointer exceptions happen...
+				try {
+					val = mLayerKey.mTranslationMap.get(val);
+				}
+				catch(Exception e) {
+					logger.error(" val:" + val);
+				}
 				cacheMinMax(val);
 				// Optionally convert to a bit style value for fast/simultaneous compares
 				if (mLayerDataFormat == EType.ELoadShiftedIndex) {

@@ -14,7 +14,7 @@ package analysis.windowing;
 
 // Simple usage example
 /*
-Moving_CDL_Window win = new Moving_Z_CDL_Window(windowSize, rasterData, rasterWidth, rasterHeight);
+Moving_CDL_Window win = new Moving_Z_CDL_Window(windowSize, rasterWidth, rasterHeight).initialize();
 
 boolean moreCells = true;
 while (!moreCells) {
@@ -32,17 +32,12 @@ while (!moreCells) {
 //------------------------------------------------------------------------------
 public final class Moving_CDL_Window_N extends Moving_CDL_Window
 {
-	private boolean mbMovingUp; // set when the window should be moving UP
-	private boolean mbShouldAdvance_X; // set when the next move should be a RIGHT movement
+	private boolean mbMovingUp = false; 		// set when the window should be moving UP
+	private boolean mbShouldAdvance_X = false; 	// set when the next move should be a RIGHT movement
 	
-	// Define moving N window - it assumes starting at (x,y) = (0,0) - but that could be changed if needed
 	//--------------------------------------------------------------------------
-	public Moving_CDL_Window_N(int win_sz, int [][] rasterData, int raster_w, int raster_h) {
-		
-		super(win_sz, rasterData, raster_w, raster_h);
-
-		mbMovingUp = false; // window moves down first...
-		mbShouldAdvance_X = false; // only gets set once per line once an edge is hit
+	public Moving_CDL_Window_N(int win_sz, int raster_w, int raster_h) {
+		super(win_sz, raster_w, raster_h);
 	}
 	
 	// Each call to run advances one cell in the direction the Z-win is moving in...

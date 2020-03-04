@@ -28,8 +28,9 @@ public class Model_HabitatIndex extends Model_Base
 	public void run() {
 
 		int[][] rotationData = null;//scenario.mNewRotation;
-//		int width = scenario.getWidth(), height = scenario.getHeight();
-		int width = 1250, height = 2370;
+		Layer_Integer cdl = Layer_CDL.get();
+
+		int width = cdl.getWidth(), height = cdl.getHeight();
 		
 		debugLog(">>> Computing Model Habitat Index");
 		PerformanceTimer timer = new PerformanceTimer();
@@ -37,13 +38,12 @@ public class Model_HabitatIndex extends Model_Base
 		float [][] habitatData = new float[height][width];
 		debugLog("  > Allocated memory for Habitat Index");
 		
-		Layer_Integer cdl = Layer_CDL.get();
 		
 		int totalMask = cdl.stringToMask("hay","pasture","cool-season grass","warm-season grass",	
 				"continuous corn","cash grain","dairy rotation","other crops");
 
 		// --- Model specific code starts here
-		Moving_CDL_Window win = new Moving_CDL_Window_N(mWindowSizeInCells, rotationData, width, height);
+		Moving_CDL_Window win = (Moving_CDL_Window) new Moving_CDL_Window_N(mWindowSizeInCells, width, height).initialize();
 		Moving_Window.WindowPoint point;
 		
 		boolean moreCells = true;

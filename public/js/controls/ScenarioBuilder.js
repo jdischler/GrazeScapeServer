@@ -23,18 +23,15 @@ Ext.define('DSS.controls.ScenarioBuilder', {
 			},{ 
 				xtype: 'container',
 				layout: DSS.utils.layout('vbox', 'center', 'stretch'),
-				defaults: {
-					xtype: 'component',
-					cls: 'information',
-				},				
 				items: [{
 					xtype: 'component',
 					cls: 'information',
 					html: 'Create scenarios for this operation'
 				},{
 					xtype: 'button',
+					cls: 'button-text-pad',
+					componentCls: 'button-margin',
 					text: 'Create Scenarios',
-					margin: '8 72',
 					handler: function() {
 						DSS.mainViewport.doOperationBasePage();
 					}

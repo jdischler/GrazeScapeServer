@@ -23,18 +23,18 @@ Ext.define('DSS.controls.FieldShapesBase', {
 			},{ 
 				xtype: 'container',
 				layout: DSS.utils.layout('vbox', 'center', 'stretch'),
-				defaults: {
-					xtype: 'component',
-					cls: 'information',
-				},				
 				items: [{
 					xtype: 'component',
 					cls: 'information',
-					html: 'Create or modify the field shapes for this operation'
+					html: 'Create, modify, or upload the field shapes for this operation'
 				},{
 					xtype: 'button',
-					text: 'Edit Fields',
-					margin: '8 72'
+					cls: 'button-text-pad',
+					componentCls: 'button-margin',
+					text: 'Edit Shapes',
+					handler: function(self) {
+						DSS.ApplicationFlow.instance.showManageFieldsPage();
+					}
 				}]
 			}]
 		});

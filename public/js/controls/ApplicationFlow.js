@@ -1,7 +1,7 @@
 
 
 DSS.utils.addStyle('.x-mask { background-color: rgba(0,0,0,0.5);}')
-DSS.utils.addStyle('.footer-text { background: rgba(0,0,0,0.5);padding: 0.72rem; color: #fff; font-size: 0.8rem; text-align: center}')
+DSS.utils.addStyle('.footer-text {border-top: 1px solid rgba(0,0,0,0.15); background: rgba(0,0,0,0.5);padding: 0.72rem; color: #fff; font-size: 0.8rem; text-align: center}')
 
 // Section that roughly corresponds to the left portion of the application. This area will contain logos, titles, controls, etc
 //	and generally be the starting point/container for controlling the entire application flow...whereas the remainder of the
@@ -14,16 +14,19 @@ Ext.define('DSS.controls.ApplicationFlow', {
 	alias: 'widget.application_flow',
 
 	requires: [
-		'DSS.controls.LogoBase',
+		'DSS.app.MapStateTools',
+		'DSS.section_headers.ActiveOperation',
+		'DSS.section_headers.TitleBase',
+		
+		'DSS.controls.FieldShapesBase',
+		'DSS.controls.FieldShapeManager',
 		'DSS.controls.OperationInfo',
 		'DSS.controls.OperationsBase',
 		'DSS.controls.CompareOperationsBase',
 		'DSS.controls.GrazingToolsBase',
-		'DSS.controls.ActiveOperation',
 		'DSS.controls.NavigationMenu',
-		'DSS.controls.TitleBase',
-		'DSS.controls.FieldShapesBase',
 		'DSS.controls.ScenarioBuilder',
+		'DSS.controls.ComputationTests',
 	],
 	
 	layout: DSS.utils.layout('vbox', 'start', 'stretch'),
@@ -86,7 +89,7 @@ Ext.define('DSS.controls.ApplicationFlow', {
 					afterrender: function(self) { me.DSS_App['FlowContainer'] = self }
 				}			
 			},{
-				// Footer, possible should hide when not on the "landing" portion of the grazescape application 
+				// Footer, possibly should hide when not on the "landing" portion of the grazescape application 
 				//----------------------------------------------------------------------------------
 				xtype: 'component',
 				cls: 'footer-text',
@@ -125,13 +128,29 @@ Ext.define('DSS.controls.ApplicationFlow', {
 		let me = this;
 		
 		Ext.suspendLayouts();
-			me.setTitleBlock({xtype: 'logo_base'});
+			me.setTitleBlock({
+				xtype: 'component',
+				height: 140, margin: '8 0 0 0',
+				style: 'background-image: url("assets/images/graze_logo.png"); background-size: contain; background-repeat: no-repeat',
+			});
 			me.setControlBlock([
 				DSS.controls.OperationsBase.get(),
 				DSS.controls.CompareOperationsBase.get(),
 				DSS.controls.GrazingToolsBase.get()
 			]);
 		Ext.resumeLayouts(true);
+		
+		DSS.mouseMoveFunction = DSS.MapState.mouseoverFarmHandler();
+		DSS.mapClickFunction = DSS.MapState.clickActivateFarmHandler();
+		DSS.MapState.zoomToExtent();
+		
+		DSS.MapState.disableFieldDraw();
+		
+		DSS.layer.farms.setVisible(true);
+		DSS.layer.farms.setOpacity(1);
+		DSS.layer.markers.setVisible(false);
+		
+		DSS.layer.Image.setVisible(false);
 	},
 	
 	//----------------------------------------------------------------------------------
@@ -147,24 +166,48 @@ Ext.define('DSS.controls.ApplicationFlow', {
 	},
 	
 	//----------------------------------------------------------------------------------
-	showManageOperationPage: function() {
+	showManageOperationPage: function(operationName) {
+		let me = this;
+		
+		operationName = operationName || "Grazing Acres";
+		
+		Ext.suspendLayouts();
+			me.setTitleBlock({
+				xtype: 'active_operation', 
+				DSS_operationName:operationName
+			});
+			me.setControlBlock([{	
+				xtype: 'field_shapes_base'
+			},{ 
+				xtype: 'scenario_builder'
+			},{
+				xtype: 'computation_tests'
+			}]);
+		Ext.resumeLayouts(true);
+		
+		DSS.mouseMoveFunction = undefined;
+		DSS.layer.farms.setVisible(false);
+		
+		DSS.MapState.showFieldsForFarm(DSS.activeFarm);
+		
+		DSS.popupOverlay.setPosition(false);
+	},
+	
+	//----------------------------------------------------------------------------------
+	showManageFieldsPage: function() {
 		let me = this;
 		
 		Ext.suspendLayouts();
 			me.setTitleBlock({xtype: 'active_operation'});
-			me.setControlBlock([{	xtype: 'field_shapes_base'},
-				{ xtype: 'scenario_builder'}]);
+			me.setControlBlock([
+				{xtype: 'field_shape_mgr'}
+			]);
 		Ext.resumeLayouts(true);
 	}
 	
 	
-	
 	/* If and when needed....
 	 
-	DSS.layer.farms.setVisible(true);                    	
-	DSS.layer.farms.setOpacity(1.0);
-	DSS.layer.fields.setVisible(false);                    	
-	
 	me.DSS_realtimeDashboard.animate({
 		dynamic: true, duration: 300,
 		to: {

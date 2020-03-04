@@ -1,6 +1,6 @@
 
 //------------------------------------------------------------------------------
-Ext.define('DSS.controls.ActiveOperation', {
+Ext.define('DSS.section_headers.ActiveOperation', {
 //------------------------------------------------------------------------------
 	extend: 'Ext.Container',
 	alias: 'widget.active_operation',
@@ -9,7 +9,8 @@ Ext.define('DSS.controls.ActiveOperation', {
 	padding: 8,
 	
 	DSS_TODO: 'Link control into farm operation details (name, address, location, blah)',
-		
+	DSS_operationName: 'Grazing Acres',
+
 	//--------------------------------------------------------------------------
 	initComponent: function() {
 		let me = this;
@@ -31,7 +32,7 @@ Ext.define('DSS.controls.ActiveOperation', {
 				},				
 				items: [{
 					padding: '0 8rem',
-					html: 'Grazing Acres'
+					html: me.DSS_operationName,
 				},{
 					html: '<i class="fas fa-edit"></i>'
 				}]

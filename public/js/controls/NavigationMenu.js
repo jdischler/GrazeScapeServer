@@ -85,12 +85,22 @@ Ext.define('DSS.controls.NavigationMenu', {
 					}
 				}	
 		    },{ //--------------------------------------------------------------------------
+		        html: 'Manage Operation',
+		        margin: '0 32',
+				listeners: {
+					render: function(c) {
+						createClickHandlerFor(c, function() {
+							DSS.ApplicationFlow.instance.showManageOperationPage(); me.hide();
+						});
+					}
+				}	
+		    },{ //--------------------------------------------------------------------------
 		        html: 'Manage Field Shapes',
 		        margin: '0 32',
 				listeners: { 
 					render: function(c) {
 						createClickHandlerFor(c, function() {
-							DSS.ApplicationFlow.instance.showManageOperationPage(); me.hide();
+							DSS.ApplicationFlow.instance.showManageFieldsPage(); me.hide();
 						});
 					}
 				}	

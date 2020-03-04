@@ -5,7 +5,7 @@ DSS.utils.addStyle('.primary-title i { opacity: 0.3; cursor: pointer }')
 DSS.utils.addStyle('.primary-title i:hover { opacity: 1}')
 
 //------------------------------------------------------------------------------
-Ext.define('DSS.controls.TitleBase', {
+Ext.define('DSS.section_headers.TitleBase', {
 //------------------------------------------------------------------------------
 	extend: 'Ext.Container',
 	alias: 'widget.title_base',

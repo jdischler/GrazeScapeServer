@@ -1,5 +1,5 @@
 
-DSS.utils.addStyle('.information { padding: 0.5rem; color: #aaa; font-size: 1rem; text-align: center}')
+DSS.utils.addStyle('.information { padding: 0.5rem 0.5rem 0.25rem; color: #aaa; font-size: 1rem; text-align: center}')
 DSS.utils.addStyle('.section-title { padding: 0.5rem; color: #48b; font-size: 1.2rem; text-align: center; font-weight: bold}');
 DSS.utils.addStyle('.section { margin: 1rem; padding: 1rem; background-color: #fff; border: 1px solid #bbb; border-radius: 0.3rem; box-shadow: 0px 4px 8px rgba(0,0,0,0.25) }')
 
@@ -43,18 +43,15 @@ Ext.define('DSS.controls.OperationsBase', {
 			},{ 
 				xtype: 'container',
 				layout: DSS.utils.layout('vbox', 'center', 'stretch'),
-				defaults: {
-					xtype: 'component',
-					cls: 'information',
-				},				
 				items: [{
 					xtype: 'component',
 					cls: 'information',
 					html: me.DSS_text
 				},{
 					xtype: 'button',
+					cls: 'button-text-pad',
+					componentCls: 'button-margin',
 					text: 'Create New',
-					margin: '8 72',
 					handler: function() {
 						DSS.ApplicationFlow.instance.showNewOperationPage();
 					}

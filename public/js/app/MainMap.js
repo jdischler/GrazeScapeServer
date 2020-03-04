@@ -1,27 +1,68 @@
-DSS.utils.addStyle('.popup-eye { opacity: 0.9; overflow: visible!important;background-color: #f8f7ef; border-radius: .5rem; border: 1px solid #999; box-shadow: 0 6px 6px rgba(0,0,0,0.5) }')
+DSS.utils.addStyle('.popup-eye { opacity: 0.9; overflow: visible!important;background-color: #f8f7ef; border-radius: .5rem; border: 1px solid #999; box-shadow: 0 6px 6px rgba(0,0,0,0.5);pointer-events:none; }')
 DSS.utils.addStyle('.popup-eye:after { transform: rotate(-45deg); overflow: visible!important; display: block; position: absolute; bottom: -0.32rem; left: calc(100px - 0.32rem); content: ""; background-color: #f8f7ef; width: 0.5rem; height: 0.5rem; border-left: 1px solid #999; border-bottom: 1px solid #999; box-shadow: -6px 6px 6px rgba(0,0,0,0.5) }')
 
 DSS.utils.addStyle('path.boundary { fill: #ff00001f; stroke: red;}');
 DSS.utils.addStyle('path.boundary:hover { fill: #ff00005f; stroke: red;}');
 
+/*
+// Grossly publicly shared OpenLayers access points...
+DSS.map
+DSS.mouseMoveFunction(event)
+DSS.mapClickFunction(event)
+
+DSS.layer {.bingAerial, .bingRoad, .osm, .watershed, .hillshade, .fields, .farms, .markers, .mask}
+
+//-----------------------------
+DSS.dragBox
+DSS.dragBoxFunction(dragBox)
+
+DSS.markerStyleFunction(feature)
+
+// Generally field edit hijacks
+//-----------------------------
+DSS.fieldStyleFunction(feature, resolution)
+
+DSS.draw
+DSS.drawEndEvent(evt, feature, target, type)
+
+DSS.modify
+DSS.modifyEndEvent(evt, features, target, type) // note that features is plural
+DSS.snap
+
+//-----------------------------
+DSS.selectionTool
+DSS.selectionFunction(event)
+
+//-----------------------------
+DSS.popupOverlay
+DSS.popupContainer
+
+//-----------------------------
+*/
+
 //------------------------------------------------------------------------------
 Ext.define('DSS.app.MainMap', {
 //------------------------------------------------------------------------------
-	extend: 'Ext.Component',
+	extend: 'Ext.Container',//Component',
 	alias: 'widget.main_map',
 	
-//	style: 'background-color: rgb(150,160,120)',
 	style: 'background-color: rgb(75,80,60)',
 	
 	BING_KEY: 'Au_ohpV01b_LnpbMExJmpmUnamgty20v7Cpl1GvNmwzZPOezhtzegaNM0MNaSPoa',
 	OSM_KEY: '8UmAwNixnmOYWs2lqUpR',
 	
+	requires: [
+		'DSS.controls.StatsPanel'
+	],
+	
+	layout: 'border',
 	listeners: {
 		afterrender: function(self) {
 			self.instantiateMap()
 		},
 		resize: function(self, w, h) {
-			self.map.setSize([w,h]);
+			let mapSize = self.down('#ol_map').getSize();
+			self.map.setSize([mapSize.width, mapSize.height]);
 		}
 	},
 		
@@ -29,11 +70,27 @@ Ext.define('DSS.app.MainMap', {
 	initComponent: function() {
 		let me = this;
 
-		proj4.defs('urn:ogc:def:crs:EPSG::32615', "+proj=utm +zone=15 +datum=WGS84 +units=m +no_defs");
-		proj4.defs('EPSG:32615', "+proj=utm +zone=15 +datum=WGS84 +units=m +no_defs");
-		ol.proj.proj4.register(proj4);
-		
+		Ext.applyIf(me, {
+			items: [{
+				xtype: 'component',
+				region: 'center',
+				id: 'ol_map',
+				listeners: {
+					resize: function(self, w, h) {
+						me.map.setSize([w,h]);
+						DSS.MapState.mapResize();
+					}
+				},
+			},
+			DSS.StatsPanel/*{ // Directly add the singleton instance...
+				xtype: 'stats_panel',
+			}*/]
+		});
 		me.callParent(arguments);
+		
+		proj4.defs('urn:ogc:def:crs:EPSG::3071', "+proj=tmerc +lat_0=0 +lon_0=-90 +k=0.9996 +x_0=520000 +y_0=-4480000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+		proj4.defs('EPSG:3071', "+proj=tmerc +lat_0=0 +lon_0=-90 +k=0.9996 +x_0=520000 +y_0=-4480000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+		ol.proj.proj4.register(proj4);		
 	},
 
 	//-------------------------------------------------------------------------
@@ -57,22 +114,6 @@ Ext.define('DSS.app.MainMap', {
 				})
 			});
 		}
-		me.popup = Ext.create('Ext.Container', {
-			minWidth: 200,
-			cls: 'popup-eye',
-			padding: 8,
-			floating: true,
-			x: -100, y: -75,
-		}).show();
-		
-		me.overlay = new ol.Overlay({
-			element: me.popup.getEl().dom,
-			autoPan: true,
-			autoPanAnimation: {
-				duration: 500,
-				easing: ol.easing.easeOut
-			}
-		});
 		
 		DSS.layer = {};
 		//---------------------------------------------------------
@@ -89,7 +130,6 @@ Ext.define('DSS.app.MainMap', {
 		//---------------------------------------------------------
 		DSS.layer.bingRoad = new ol.layer.Tile({
 			visible: false,
-//			opacity: 0.5,
 			source: new ol.source.BingMaps({
 				key: me.BING_KEY,
 				imagerySet: 'Road',  
@@ -122,23 +162,12 @@ Ext.define('DSS.app.MainMap', {
 				})
 			})
 		});
-		//--------------------------------------------------------------
-/*		DSS.layer.hillshade = new ol.layer.Tile({
-			visible: true,
-			opacity: 0.8,
-			source: new ol.source.TileJSON({
-				url: 'https://api.maptiler.com/tiles/hillshades/tiles.json?key=' + me.OSM_KEY,
-		        tileSize: 256,
-		        crossOrigin: 'anonymous'
-			})
-		});
-*/		
 		let extent = [ -10128000, 5358000, -10109000, 5392000];
 
 		DSS.layer.hillshade = new ol.layer.Image({
 			updateWhileAnimating: true,
 			updateWhileInteracting: true,
-			visible: false,
+			visible: true,
 			opacity: 0.5,
 			source: new ol.source.ImageStatic({
 				url: '/assets/images/hillshade_high.png',
@@ -146,101 +175,36 @@ Ext.define('DSS.app.MainMap', {
 			})
 		})
 		
-		/*//--------------------------------------------------------------		
-		let contourSource = new ol.source.VectorTile({
-			visible: false,
-			maxZoom: 14,
-		    url: 'https://api.maptiler.com/tiles/contours/{z}/{x}/{y}.pbf?key=' + me.OSM_KEY,
-		    format: new ol.format.MVT(),
-		    style: new ol.style.Style({
-		    	stroke: new ol.style.Stroke({
-		    		color: 'rgba(255,204,39,0.75)',
-		    		width: 1
-		    	})
-		    })
-		});	
-		DSS.layer.contour = new ol.layer.VectorTile({
-			visible: false,
-			opacity: 0.75,
-			source: contourSource
-		});	
-		try {
-			olms.stylefunction(DSS.layer.contour, '{"version":8,"sources":{"70a6bc5f-ab1f-4700-ba48-827a60aeabaf":{"type":"vector","url":"https://api.maptiler.com/tiles/contours/tiles.json?key=8UmAwNixnmOYWs2lqUpR"}},"zoom":12.318997928418138,"glyphs":"https://api.maptiler.com/fonts/{fontstack}/{range}.pbf?key=8UmAwNixnmOYWs2lqUpR","id":"da4d3d38-84c4-4201-9abe-4c5b1ccce2dc","name":"Contours","pitch":0,"center":[8.208182906994125,47.017038017246705],"bearing":0,"layers":[{"id":"contour_line","source":"70a6bc5f-ab1f-4700-ba48-827a60aeabaf","type":"line","paint":{"line-color":"rgba(183, 175, 67, 1)"},"layout":{"visibility":"visible","line-cap":"square","line-join":"round"},"minzoom":9,"maxzoom":19,"source-layer":"contour"},{"id":"contour_polygon","source":"70a6bc5f-ab1f-4700-ba48-827a60aeabaf","source-layer":"contour","type":"fill","filter":["==","$type","Polygon"],"paint":{"fill-color":"rgba(187, 106, 68, 1)","fill-opacity":0.6},"layout":{"visibility":"visible"}}]}', 
-					'contour_line');
-		}
-		catch(err) {
-			console.log(err);
-		}*/
-		//--------------------------------------------------------------
+		//---------------------------------------
+		let defaultFieldStyle = new ol.style.Style({
+			stroke: new ol.style.Stroke({
+				color: 'rgba(255,200,32,0.6)',
+				width: 2
+			}),
+			fill: new ol.style.Fill({
+				color: 'rgba(255,128,32,0.2)',
+			})
+		});
+		
 		DSS.layer.fields = new ol.layer.Vector({
-			visible: true,//false
+			visible: false,
 			updateWhileAnimating: true,
 			updateWhileInteracting: true,
 			source: new ol.source.Vector({
 				format: new ol.format.GeoJSON(),
-				url: 'get_fields?farm=1',
 			}),
-/*			source: new ol.source.Vector({
-				format: new ol.format.GeoJSON(),
-				url: 'assets/shapeFiles/exampleFields.geojson',
-			}),*/
-			style: new ol.style.Style({
-				stroke: new ol.style.Stroke({
-					color: 'rgba(255,200,32,0.6)',
-					width: 2
-				}),
-				fill: new ol.style.Fill({
-					color: 'rgba(255,128,32,0.2)',
-				})
-			})
+			style: function(feature, resolution) {
+				
+				if (DSS.fieldStyleFunction) {
+					return DSS.fieldStyleFunction(feature, resolution);
+				}
+				else return defaultFieldStyle;
+			},
 		});	
 
-/*		setTimeout(function() {
-
-			var snappedFeatures = [];
-			var fsc = DSS.layer.fields.getSource().getFeatures();
-			for (var idx = 0; idx < fsc.length; idx++) {
-				var el = fsc[idx];
-				var newEl = el.clone();
-				var geo = el.getGeometry().getCoordinates()[0];
-				var newGeo = []
-				for (var slop = 0; slop < geo.length; slop++) {
-					var pt = geo[slop];
-					newGeo.push([
-						Math.round(pt[0] / 10.0) * 10.0,
-						Math.round(pt[1] / 10.0) * 10.0
-					])
-				}
-				newEl.getGeometry().setCoordinates([newGeo]);
-				console.log(newGeo);
-				snappedFeatures.push(newEl);
-			}
-			console.log(snappedFeatures);
-			//--------------------------------------------------------------
-			DSS.layer.snappedFields = new ol.layer.Vector({
-				visible: true,//false
-				updateWhileAnimating: true,
-				updateWhileInteracting: true,
-				source: new ol.source.Vector({
-					features: snappedFeatures,
-				}),
-				style: new ol.style.Style({
-					stroke: new ol.style.Stroke({
-						color: '#000',
-						width: 2
-					}),
-					fill: new ol.style.Fill({
-						color: 'rgba(255,0,0,0)'
-					})
-				})
-			});
-			
-			me.map.addLayer(DSS.layer.snappedFields)
-		}, 4000);
-*/		
 		//--------------------------------------------------------------
 		DSS.layer.farms = new ol.layer.Vector({
-			visible: false,
+			visible: true,
 			updateWhileAnimating: true,
 			updateWhileInteracting: true,
 			source: new ol.source.Vector({
@@ -256,320 +220,101 @@ Ext.define('DSS.app.MainMap', {
 				return me.DSS_zoomStyles['style' + r];
 			}
 		});		
-		
-
-				
+						
 		//--------------------------------------------------------------
 		me.map = DSS.map = new ol.Map({
-			target: me.getEl().dom,
-			overlays: [me.overlay],
+			target: me.down('#ol_map').getEl().dom,
 			layers: [
 				DSS.layer.bingAerial,
 				DSS.layer.bingRoad,
 				DSS.layer.osm,
-				DSS.layer.watershed,
+				DSS.layer.watershed,             
 				DSS.layer.hillshade,
-				//DSS.layer.contour,
 				DSS.layer.fields,
 				DSS.layer.farms,
 			],//------------------------------------------------------------------------
 			view: new ol.View({
-				center: [-10118000,
-					5375100],
+				center: [-10118000,5375100],
 				zoom: 12,
 				maxZoom: 19,
 				minZoom: 10,
+			//	constrainRotation: false,
+			//	rotation: 0.009,
 				constrainOnlyCenter: true,
 				extent:[-10130000, 5355000, -10105000, 5395000]
 			})
 		});
+
+		me.map.addControl(new ol.control.ScaleLine());
+//		me.map.addInteraction(new ol.interaction.DragRotateAndZoom());
+		
+		me.popup = DSS.popupContainer = Ext.create('Ext.Container', {
+			minWidth: 200,
+			cls: 'popup-eye',
+			padding: 8,
+			floating: true,
+			x: -100, y: -75,
+		}).show();
+		
+		me.overlay = DSS.popupOverlay = new ol.Overlay({
+			element: me.popup.getEl().dom,
+			autoPan: true,
+			autoPanAnimation: {
+				duration: 500,
+				easing: ol.easing.easeOut
+			}
+		});
+		
+		me.map.addOverlay(me.overlay);
 		
 		me.ol_uid = false;
 		
 		//-----------------------------------------------------------
 		me.map.on('click', function(e) {
-			console.log(e)
-			console.log(me.map.getEventCoordinate(e.originalEvent));
+			let coords = me.map.getEventCoordinate(e.originalEvent);
+			me.dataForPoint(coords[0], coords[1]);
+			
+			
+			console.log(e, coords, ol.proj.transform(coords, 'EPSG:3857', 'EPSG:3071'));  
+			if (DSS.mapClickFunction) DSS.mapClickFunction(e, coords);
 		});
-		
+	
 		//-----------------------------------------------------------
-		/*me.map.on('pointermove', function(e) {
-			let pixel = me.map.getEventPixel(e.originalEvent);
-			let fs = me.map.getFeaturesAtPixel(pixel);
-			let cursor = '';
-			let hitAny = false;
-			fs.forEach(function(f) {
-				let g = f.getGeometry();
-				if (!g) return;
-				if (g.getType() === "Point") {
-					cursor = 'pointer';
-					hitAny = true;
-					me.overlay.setPosition(g.getCoordinates());
-					me.popup.update('Farm: ' + f.get('name') + '<br>' +
-						'Address: ' + f.get('address') + '<br>' +
-						'Owner: ' + f.get('owner') + '<br>');
-				}
-				else if (g.getType() === "Polygon") {
-					cursor = 'pointer';
-					hitAny = true;
-					console.log(f);
-					let fmt = Ext.util.Format.number;
-					let area 	= fmt(ol.sphere.getArea(g) / 4046.856, '0,0.#');
-					let len 	= ol.sphere.getLength(g);
-					let cost 	= fmt(len * 1.25, '0,0.##');
-					len 		= fmt(len, '0,0.#');
-					
-					let extent = g.getExtent();
-					let center = ol.extent.getCenter(extent);
-					center[1] += (ol.extent.getHeight(extent) / 2);
-					center = g.getClosestPoint(center);
-					me.map.getView().cancelAnimations();
-					//me.overlay.setPosition(center);
-					me.popup.update('Area (ac): ' + area + '<br>' +
-							'Boundary Dist (m): ' + len + '<br>' +
-							'Cost ($1.25/m): $' + cost + '<br>');					
-				}
-			})
-			
-			if (!hitAny) {
-				me.overlay.setPosition(false);
+		me.map.on('pointermove', function(e) {
+			if (DSS.mouseMoveFunction) {
+				DSS.mouseMoveFunction(e);
+				return;
 			}
-			me.map.getViewport().style.cursor = cursor;
-		});*/
-
-		//me.addDrawTools(me.map);	
-		
-		//me.addTestBoxSelect()
-		me.addTestBoxSelectWithImage();
-		//me.addTestProjection();
-		
-		
-		me.addWorkAreaMask();
-	},
-	
-	addTestProjection: function() {
-	
-		let me = this;
-//		let projectionName = 'EPSG:32615';
-		// Extents? -96.00, 0.00, -90.00, 84.00
-//		proj4.defs(projectionName, "+proj=utm +zone=15 +datum=WGS84 +units=m +no_defs");
-		
-		//--------------------------------------------------------------
-		DSS.layer.hexes = new ol.layer.Vector({
-			visible: true,//false
-			//opacity: 0.2,
-			updateWhileAnimating: true,
-			updateWhileInteracting: true,
-			source: new ol.source.Vector({
-				format: new ol.format.GeoJSON({
-				}),
-				url: 'assets/shapeFiles/hexes.json',
-			}),
-			style: new ol.style.Style({
-				stroke: new ol.style.Stroke({
-					color: 'rgba(255,200,32,0.6)',
-					width: 2
-				}),
-				fill: new ol.style.Fill({
-					color: 'rgba(255,128,32,0.2)',
-				})
-			})
-		});	
-		
-		me.map.addLayer(DSS.layer.hexes);
-		
-	},
-	
-	//-----------------------------------------------------------------------------
-	addTestBoxSelect() {
-		
-		let me = this;
-		let colors = ['#00429d', '#3b71b1', '#61a2c1', '#8fd4c9', '#ebffaf', '#f4c072', '#dd863e', '#bc4d15', '#910b00'];
-		
-		me.DSS_fieldStyles = [];
-		
-		for (let idx = 0; idx < 9; idx++) {
-			me.DSS_fieldStyles.push(new ol.style.Style({
-				fill: new ol.style.Fill({
-					color: colors[idx] + 'cf'
-				}),
-				/*stroke: new ol.style.Stroke({
-					color: 'rgba(0,0,0,0.0)',
-					width: 1
-				})*/
-			}));
-		}
-		
-		var dragBox = new ol.interaction.DragBox({
-			  condition: ol.events.condition.platformModifierKeyOnly
 		});
 
-		me.map.addInteraction(dragBox);
-		DSS.layer.test = new ol.layer.Vector({
-			visible: true,
-			opacity: 0.75,
-			updateWhileAnimating: true,
-			updateWhileInteracting: true,
-			source: new ol.source.Vector({
-				features: undefined
-			}),
-			style: function(feature) {
-				let  val = feature.get('val');
-				val = Math.floor(val);
-				return me.DSS_fieldStyles[val];
-			}
-	/*		style: new ol.style.Style({
-				stroke: new ol.style.Stroke({
-					color: '#0000002f',
-					width: 1
-				}),
-				fill: {
-					getColor: function(feature) {
-						return '#ff0';
-					}
-				}
-			})*/
-		});
-		me.map.addLayer(DSS.layer.test);
-		
-		/*
-		dragBox.on('blurfed', function() { // 'boxend
-			var extent = dragBox.getGeometry().getExtent();			
-			let source = {
-					"type": "FeatureCollection",
-					"name": "TainterSimpleBoundary",
-					"crs": { 
-						"type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::3857" }
-					},
-					"features": []
-			};
-			console.log(extent);
-			let strideX = Math.round((extent[2] - extent[0]) / 50);
-			let strideY = Math.round((extent[3] - extent[1]) / 50);
-			
-			let stride = strideX < strideY ? strideY : strideX;
-			if (stride < 10) stride = 10;
-			
-			for (var x = extent[0]; x <= extent[2]; x += stride) {
-				for (var y = extent[1]; y <= extent[3]; y += stride) {
-					let val = {
-						"type":"Feature",
-						"properties": {
-							val: ((Math.sin((x / 100000.0) * (y / 100000.0) + y/10000.0) + 1) * 4.5 + (Math.random() * 4.5)) * (9.5/14.5),
-						},
-						"geometry": {
-							"type":"Polygon",
-							"coordinates":[[
-								[x,				y],
-								[x + stride,	y],
-								[x + stride,	y + stride],
-								[x,				y + stride],
-								[x,			y]
-							]]
-						}
-					};
-
-					source.features.push(val);
-				}
-			}
-			let ofg = new ol.format.GeoJSON();			
-			let ffs = ofg.readFeatures(source);
-			
-			DSS.layer.test.getSource().clear(true);
-			DSS.layer.test.getSource().addFeatures(ffs);
-		});*/
-		
-		let working = false;
-		
-		dragBox.on('boxend', function() { // 'boxend
-		//	if (working) return;
-			working = true;
-			
-			var extent = dragBox.getGeometry().getExtent();			
-
-			console.log(extent);
-			let max = ol.proj.transform([extent[0],extent[1]], "EPSG:3857", "EPSG:32615");
-			let min = ol.proj.transform([extent[2],extent[3]], "EPSG:3857", "EPSG:32615");
-			
-			extent = [max[0],max[1],min[0],min[1]];
-//			extent = ol.proj.transform(extent, "EPSG:3857", "EPSG:32615");
-			/*extent[0] = ol.proj.transform(extent[0], "EPSG:3857", "EPSG:32615");
-			extent[1] = ol.proj.transform(extent[1], "EPSG:3857", "EPSG:32615");
-			extent[2] = ol.proj.transform(extent[2], "EPSG:3857", "EPSG:32615");
-			extent[3] = ol.proj.transform(extent[3], "EPSG:3857", "EPSG:32615");*/
-			console.log(extent);
-//			extent[2] = extent[0] - 4000;
-			
-			var obj = Ext.Ajax.request({
-				url: location.href + 'test_fetch',
-				jsonData: {
-//					extent,
-					"extent" : extent // FIXME: TODO: transform extent
-				},
-				timeout: 10000,
-				//method: 'GET',
-				success: function(response, opts) {
-					var obj = JSON.parse(response.responseText);
-					console.log(obj);
-					working = false;
-					let source = {
-						"type": "FeatureCollection",
-						"name": "developed",
-						"crs": { 
-							"type": "name", "properties": { "name": "EPSG:32615" }//urn:ogc:def:crs:EPSG::32615" }
-						},
-						"features": []
-					};
-					let stride = obj.stride * 10;
-					obj = obj.data;
-					for (let idx = 0; idx < obj.length; idx++) {
-						let el = obj[idx];
-						let val = {
-							"type":"Feature",
-							"properties": {
-								val: Math.round(el.val / 100.0  * 9)
-							},
-							"geometry": {
-								"type":"Polygon",
-								"coordinates":[[
-									[el.x,			el.y],
-									[el.x + stride,	el.y],
-									[el.x + stride,	el.y + stride],
-									[el.x,			el.y + stride],
-									[el.x,			el.y]
-								]]
-							}
-						};
-
-						source.features.push(val);
-					}
-					let ofg = new ol.format.GeoJSON({
-						//dataProjection: 'urn:ogc:def:crs:EPSG::32615'
-						dataProjection: 'EPSG:32615',
-						featureProjection: 'EPSG:3857'
-						//featureProjection: 'urn:ogc:def:crs:EPSG::32615'
-					});			
-					let ffs = ofg.readFeatures(source);
-					
-					DSS.layer.test.getSource().clear(true);
-					DSS.layer.test.getSource().addFeatures(ffs);
-				},
-				
-				failure: function(response, opts) {
-					working = false;
-				}
-			});
+		me.addDrawTools(me.map);
+		me.addTestBoxSelectWithImage(me.map);
+		me.addMarkerLayer(me.map);
+		me.addWorkAreaMask(me.map);
+		me.addSelectionTools(me.map);
+	},
+	
+	//----------------------------------------------------------------------
+	dataForPoint: function(x, y) {
+		Ext.Ajax.request({
+			url: location.href + 'data_from_point',
+			jsonData: {
+				x: x.toFixed(3),
+				y: y.toFixed(3)
+			},
+			timeout: 10 * 1000, // 30 seconds
 		});
 	},
 	
-	addTestBoxSelectWithImage: function() {
+	//-------------------------------------------------------
+	addTestBoxSelectWithImage: function(map) {
 		let me = this;
 		let extent = [0, 0, 1024, 968];
-		let dragBox = new ol.interaction.DragBox({
+		let dragBox = DSS.dragBox = new ol.interaction.DragBox({
 			  condition: ol.events.condition.platformModifierKeyOnly
 		});
 
-		me.map.addInteraction(dragBox);
+		map.addInteraction(dragBox);
 		
 		ol.renderer.canvas.ImageLayer.prototype.prepFrame = ol.renderer.canvas.ImageLayer.prototype.prepareFrame; 
 		ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState) {
@@ -582,19 +327,26 @@ Ext.define('DSS.app.MainMap', {
 			updateWhileInteracting: true,
 			opacity: 1,
 			source: new ol.source.ImageStatic({
-				imageExtent: extent
+				imageExtent: extent,
+				projection: 'EPSG:3071'
 			})
 		})
 		let working = false;
 		
-		me.map.addLayer(DSS.layer.Image);
+		map.addLayer(DSS.layer.Image);
 		
 		dragBox.on('boxend', function() { // 'boxend
+			//if (!DSS.dragBoxFunction) return;
 			if (working) return;
 			working = true;
 			
-			let ex = dragBox.getGeometry().getExtent();			
+			let ex = dragBox.getGeometry().getExtent();	
+			
+			let pt1 = ol.proj.transform([ex[0],ex[1]], 'EPSG:3857', 'EPSG:3071'),
+				pt2 = ol.proj.transform([ex[2],ex[3]], 'EPSG:3857', 'EPSG:3071');
 
+			ex = [pt1[0], pt1[1], pt2[0], pt2[1]];
+			
 			var obj = Ext.Ajax.request({
 				url: location.href + 'fetch_image',
 				jsonData: {
@@ -603,11 +355,17 @@ Ext.define('DSS.app.MainMap', {
 				timeout: 10000,
 				success: function(response, opts) {
 					var obj = JSON.parse(response.responseText);
+					console.log(obj);
 					working = false;
 					DSS.layer.Image.setSource(new ol.source.ImageStatic({
 						url: obj.url,
-						imageExtent: obj.extent
+						imageExtent: obj.extent,
+						projection: 'EPSG:3071'
 					}))
+					DSS.layer.Image.setOpacity(0.7);
+					DSS.layer.Image.setVisible(true);	
+					
+					DSS.MapState.showLegend(obj.palette, obj.values);
 				},
 				
 				failure: function(response, opts) {
@@ -616,16 +374,71 @@ Ext.define('DSS.app.MainMap', {
 			});
 		});
 	},
-	
+
 	//--------------------------------------------------------------------------
 	addDrawTools: function(map) {
+
+		// Ordering is important. If modify is inserted last, it takes priority over drawing
+		const modify = DSS.modify = new ol.interaction.Modify({
+			source: DSS.layer.fields.getSource(),
+			style: new ol.style.Style({
+				image: new ol.style.Circle({
+					radius: 3,
+					stroke: new ol.style.Stroke({
+						color: 'rgba(255, 255, 255, 0.8)'
+					}),
+					fill: new ol.style.Fill({
+						color: 'rgba(255, 255, 0, 0.8)'
+					})
+				})
+			})	
+		});
+		map.addInteraction(modify); modify.setActive(false);
+
+		// Yuck, returns all features no matter whether they were edited or not
+/*		DSS.modify.on('modifyend', function(evt) {
+			if (DSS.modifyEndEvent) {
+				console.log("modifyend was", evt)
+				DSS.modifyEndEvent(evt, evt.features, evt.target, evt.type);
+			}
+		})
+*/
+		// EVIL event hack to get edited segments ONLY
+		DSS.modify.handleUpEvent = function(evt) {
+			for (let i = this.dragSegments_.length - 1; i >= 0; --i) {
+				const segmentData = this.dragSegments_[i][0];
+				const geometry = segmentData.geometry;
+				this.rBush_.update(ol.extent.boundingExtent(segmentData.segment), segmentData);
+			}
+			if (this.modified_) {
+				if (DSS.modifyEndEvent) {
+					DSS.modifyEndEvent(evt, this.dragSegments_);
+				}
+				this.modified_ = false;
+			}
+			return false;
+		}
+		DSS.modify.removePoint = function() {
+			if (this.lastPointerEvent_ && this.lastPointerEvent_.type != "pointerdrag") {
+				const evt = this.lastPointerEvent_;
+				this.willModifyFeatures_(evt);
+				const copySegs = this.dragSegments_.slice(); // remove vertext unhelpfully blows away dragSegments_
+				const removed = this.removeVertex_();
+				if (DSS.modifyEndEvent) {
+					DSS.modifyEndEvent(evt, copySegs);
+				}
+				this.modified_ = false;
+				return removed;
+			}
+			return false;
+		}
 		
 		DSS.draw = new ol.interaction.Draw({
 			source: DSS.layer.fields.getSource(),
 			type: 'Polygon',
 			style: [
-					new ol.style.Style({
-						image: new ol.style.RegularShape({
+				new ol.style.Style({
+					image: new ol.style.RegularShape({
 						points: 4,
 						radius1: 4,
 						radius2: 0,
@@ -697,23 +510,30 @@ Ext.define('DSS.app.MainMap', {
 				})		
 			]
 		});
-
 		let isDrawing = false;
 		DSS.draw.on('drawstart', function(evt) {
 			isDrawing = true;
 		})
 		DSS.draw.on('drawend', function(evt) {
 			isDrawing = false
+			if (DSS.drawEndEvent) {
+				DSS.drawEndEvent(evt, evt.feature, evt.target, evt.type);
+			}
 		})
-		map.addInteraction(DSS.draw);	DSS.draw.setActive(true);
+		map.addInteraction(DSS.draw);	
+		DSS.draw.setActive(false);
 
 		document.addEventListener('keyup', function(e) {
-			if (isDrawing && e.keyCode == 27) {
-				DSS.draw.setActive(false);	DSS.draw.setActive(true);
+			if (e.keyCode == 27) {
+				if (isDrawing && DSS.draw.getActive()) {
+					DSS.draw.setActive(false);
+					DSS.draw.setActive(true);
+					isDrawing = false;
+				}
 			}
 		});
 
-		const snap = new ol.interaction.Snap({
+		const snap = DSS.snap = new ol.interaction.Snap({
 			source: DSS.layer.fields.getSource(),
 			//pixelTolerance: 8,
 			style: new ol.style.Style({
@@ -728,26 +548,11 @@ Ext.define('DSS.app.MainMap', {
 				})
 			})	
 		});
-		map.addInteraction(snap);
-		
-		const modify = new ol.interaction.Modify({
-			source: DSS.layer.fields.getSource(),
-			style: new ol.style.Style({
-				image: new ol.style.Circle({
-					radius: 3,
-					stroke: new ol.style.Stroke({
-						color: 'rgba(255, 255, 255, 0.8)'
-					}),
-					fill: new ol.style.Fill({
-						color: 'rgba(255, 255, 0, 0.8)'
-					})
-				})
-			})	
-		});
-		map.addInteraction(modify); modify.setActive(true);		
+		map.addInteraction(snap);		
 	},
-	
-	addWorkAreaMask: function() {
+
+	//---------------------------------------------------------------
+	addWorkAreaMask: function(map) {
 		let me = this;
 		let spotStyle = new ol.style.Style({
 		    stroke: new ol.style.Stroke({
@@ -776,25 +581,75 @@ Ext.define('DSS.app.MainMap', {
 				[ -10010000, 5290000 ], 
 				[ -10210000, 5290000 ] 
 			],[ // inner - counter-clockwise
-				[ -10128000, 5358000 ],
-				[ -10109000, 5358000 ], 
-				[ -10109000, 5392000 ],
-				[ -10128000, 5392000 ], 
-				[ -10128000, 5358000 ]
+				[ -10128539.23, 5356917.38 ], 
+				[ -10128962.9, 5392788.13 ], 
+				[ -10108301.0, 5393011.78 ], 
+				[ -10107956.73, 5357138.36 ], 
+				[ -10128539.23, 5356917.38 ]
 			] 
 		]];
 		
 		var spot = new ol.geom.MultiPolygon(multiPoly);
 	    
 		DSS.layer.mask.getSource().addFeature(new ol.Feature(spot));
-		me.map.addLayer(DSS.layer.mask);                        
+		map.addLayer(DSS.layer.mask);                        
+	},
+	
+	//---------------------------------------------------------------
+	addMarkerLayer: function(map) {
+		
+		let spotStyle = new ol.style.Style({
+			image: new ol.style.Circle({
+				radius: 8,
+			    stroke: new ol.style.Stroke({
+			        color: 'white',
+			        width: 2
+			    }),
+			    fill: new ol.style.Fill({
+				    color: 'rgba(32, 100, 128, 0.8)'
+				})
+			})
+		});
+		
+		let markerOverlay = DSS.layer.markers = new ol.layer.Vector({
+			updateWhileAnimating: true,
+			updateWhileInteracting: true,
+			source: new ol.source.Vector(),
+			renderOrder: function(feature1, feature2) {
+				let g1 = feature1.getGeometry(), g2 = feature2.getGeometry();
+				return g2.getCoordinates()[1] - g1.getCoordinates()[1];
+			},
+			opacity: 0.9,
+			style: function(feature) {
+				if (!DSS.markerStyleFunction) {
+					return spotStyle;
+				}
+				else return DSS.markerStyleFunction(feature);
+			}
+		})
+		
+		map.addLayer(markerOverlay);
+	},
+	
+	//---------------------------------------------
+	addSelectionTools: function(map) {
+		const select = DSS.selectionTool = new ol.interaction.Select({
+			features: new ol.Collection(),
+		});
+		select.on('select', function(evt) {
+			if (DSS.selectionFunction) {
+				DSS.selectionFunction(evt);
+			}
+		});
+		
+		select.setActive(false);
+		map.addInteraction(select);
 		
 	}
-	
-	
 });
 
 
+//---------------------------------------------------------------
 var CanvasLayer = /*@__PURE__*/(function (Layer) {
 	
 	function CanvasLayer(options) {

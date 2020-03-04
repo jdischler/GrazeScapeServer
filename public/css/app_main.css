@@ -148,22 +148,38 @@
 	color: #789;
 }
 
+.ol-control {
+	background-color: rgba(0,0,0,0.4);
+	font-size: 1rem;
+}
+.ol-control:hover {
+	background-color: rgba(0,0,0,0.6);
+}
+
 .ol-control button {
-    background-color: rgba(0, 60, 136, .7);
+    background-color: rgba(50, 80, 166, .7);
 }
 
 .ol-custom-button {
 	bottom: 0.5em;
 	left: 0.5em;
 }
+.ol-attribution:not(.ol-collapsed) {
+	background-color: rgba(0,0,0,0.6);
+}
+.ol-attribution ul {
+	color: white;
+	text-shadow: 0 0 2px #000;
+	font-size: 0.6rem;
+}
 
 .ol-scale-line {
-	background: rgba(0,60,136,.65);
+	background: rgba(0,0,0,0.4);
     border-radius: 4px;
-    bottom: 3em;
-    right: 3em;
+    bottom: 3rem;
+    right: 3rem;
     left: unset;
-    padding: 2px;
+    padding: 4px;
     position: absolute
 }
 

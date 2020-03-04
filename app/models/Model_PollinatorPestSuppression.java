@@ -33,14 +33,13 @@ public class Model_PollinatorPestSuppression extends Model_Base {
 	//--------------------------------------------------------------------------
 	public void run() {
 
-		int[][] rotationData = null;//scenario.mNewRotation;
-//		int width = scenario.getWidth(), height = scenario.getHeight();
-		int width = 1250, height = 2370;
+		int[][] rotationData = null;
 		
 		debugLog(">>> Computing Model Pest/ Pollinator");
 		PerformanceTimer timer = new PerformanceTimer();
 		
 		Layer_Integer cdl = Layer_CDL.get();
+		int width = cdl.getWidth(), height = cdl.getHeight();
 		
 		int grassMask = cdl.stringToMask("hay","pasture","cool-season grass","warm-season grass");	
 		int totalMask = cdl.stringToMask("hay","pasture","cool-season grass","warm-season grass",	
@@ -50,7 +49,7 @@ public class Model_PollinatorPestSuppression extends Model_Base {
 		float [][] pestData = new float[height][width];
 		float [][] pollinatorData = new float[height][width];
 		
-		Moving_CDL_Window win = new Moving_CDL_Window_N(mWindowSizeInCells, rotationData, width, height);
+		Moving_CDL_Window win = (Moving_CDL_Window) new Moving_CDL_Window_N(mWindowSizeInCells, width, height).initialize();
 		Moving_Window.WindowPoint point;
 
 		// derived from pollinatorIndex formula. 

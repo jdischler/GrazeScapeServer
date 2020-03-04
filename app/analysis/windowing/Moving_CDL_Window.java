@@ -17,7 +17,7 @@ import query.Layer_Integer;
 
 // Simple usage example
 /*
-Moving_CDL_Window win = new Moving_CDL_Window_Z(windowSize, rasterData, rasterWidth, rasterHeight);
+Moving_CDL_Window win = new Moving_CDL_Window_Z(windowSize, rasterWidth, rasterHeight).initialize();
 
 boolean moreCells = true;
 while (!moreCells) {
@@ -35,6 +35,10 @@ while (!moreCells) {
 //------------------------------------------------------------------------------
 public abstract class Moving_CDL_Window extends Moving_Window
 {
+	public Moving_CDL_Window(int win_sz, int raster_w, int raster_h) {
+		super(win_sz, raster_w, raster_h);
+	}
+
 	protected int[][] mRasterData;
 	
 	protected int mCountAg, mAgMask;
@@ -43,16 +47,11 @@ public abstract class Moving_CDL_Window extends Moving_Window
 	protected int mCountDeveloped, mDevelopedMask;
 	protected int mCountWater, mWaterMask; // NOTE: includes wetlands
 	
-	public Moving_CDL_Window(int win_sz, int [][] rasterData, int raster_w, int raster_h) {
-		super(win_sz, raster_w, raster_h);
-		configure(rasterData);
-	}
-	public Moving_CDL_Window(int win_sz, int [][] rasterData, int raster_w, int raster_h, int startX, int startY, int finalX, int finalY) {
-		super(win_sz, raster_w, raster_h, startX, startY, finalX, finalY);
-		configure(rasterData);
-	}
-
-	private void configure(int [][] rasterData) {
+	//--------------------------------------------------------------------------
+	public Moving_Window initialize() {
+		
+		super.initialize();
+		
 		Layer_Integer cdl = Layer_CDL.get();
 		
 		mGrassMask = cdl.stringToMask("Hay","Pasture","Reed Canary Grass","Cool-Season Grass","Warm-Season Grass");	
@@ -61,9 +60,11 @@ public abstract class Moving_CDL_Window extends Moving_Window
 		mDevelopedMask = cdl.stringToMask("Developed High Intensity", "Developed Low Intensity");
 		mWaterMask = cdl.stringToMask("Open Water");
 
-		mRasterData = rasterData;
+		mRasterData = cdl.getIntData();
 		
 		initCounts();
+		
+		return this;
 	}
 	
 	// Called internally off the constructor
