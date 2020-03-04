@@ -57,7 +57,7 @@ public abstract class Layer_Base
 	
 	// CLASS DATA --------------------------
 	protected String mName;
-	// TODO: move noDataValue into subclasses? Is that even possible? Considering float might store NaN
+	// TODO: move noDataValue into subclasses? Is that even possible?
 	protected int mNoDataValue;
 	
 	// MASK values from ClientUser.ACCESS...
@@ -76,7 +76,7 @@ public abstract class Layer_Base
 	abstract protected void allocMemory();
 	// Copies a file read bytebuffer into the internal native float array...
 	abstract protected void readCopy(ByteBuffer dataBuffer, int width, int atY);
-	// Copies the native float data into a bytebuffer that is set up to recieve it (by the caller)
+	// Copies the native float data into a bytebuffer that is set up to receive it (by the caller)
 	abstract protected void writeCopy(ByteBuffer dataBuffer, int width, int atY);
 	
 	//--------------------------------------------------------------------------
