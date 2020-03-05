@@ -335,14 +335,11 @@ Ext.define('DSS.app.MainMap', {
 				projection: 'EPSG:3071'
 			})
 		})
-		let working = false;
 		
 		map.addLayer(DSS.layer.Image);
 		
 		dragBox.on('boxend', function() { // 'boxend
 			//if (!DSS.dragBoxFunction) return;
-			if (working) return;
-			working = true;
 			
 			let ex = dragBox.getGeometry().getExtent();	
 			
@@ -351,42 +348,7 @@ Ext.define('DSS.app.MainMap', {
 
 			ex = [pt1[0], pt1[1], pt2[0], pt2[1]];
 			
-			let data = {
-				"extent" : ex,
-				"model": Ext.getCmp('DSS_cheat').getValue()['model']
-			};
-			if (Ext.getCmp('DSS_cheatRestrictFarm').getValue() && DSS.activeFarm) {
-				data["farm_id"] = DSS.activeFarm;
-				data["mode"] = Ext.getCmp('DSS_cheatFieldAggregate').getValue() ? 2 : 1;
-			}
-			if (Ext.getCmp('DSS_maskByCDL').getValue()) {
-				data['row_crops'] = Ext.getCmp('DSS_cheatRowCropMask').getValue() ? true : false;
-				data['grasses'] = Ext.getCmp('DSS_cheatGrassMask').getValue() ? true : false;
-			}
-			
-			var obj = Ext.Ajax.request({
-				url: location.href + 'fetch_image',
-				jsonData: data,
-				timeout: 10000,
-				success: function(response, opts) {
-					var obj = JSON.parse(response.responseText);
-					console.log(obj);
-					working = false;
-					DSS.layer.Image.setSource(new ol.source.ImageStatic({
-						url: obj.url,
-						imageExtent: obj.extent,
-						projection: 'EPSG:3071'
-					}))
-					DSS.layer.Image.setOpacity(0.7);
-					DSS.layer.Image.setVisible(true);	
-					
-					DSS.MapState.showLegend(obj.palette, obj.values);
-				},
-				
-				failure: function(response, opts) {
-					working = false;
-				}
-			});
+			DSS.StatsPanel.computeResults(ex);
 		});
 	},
 

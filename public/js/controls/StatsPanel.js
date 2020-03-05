@@ -3,6 +3,18 @@ DSS.utils.addStyle('.x-resizable-handle-west {width: 6px; background-color: rgba
 DSS.utils.addStyle('.box-label-cls {color: #eee; text-shadow: 0 1px rgba(0,0,0,0.2),1px 0 rgba(0,0,0,0.2); font-size: 1rem}');
 DSS.utils.addStyle('.small {color: #38b; text-shadow: 0 1px rgba(0,0,0,0.3),1px 0 rgba(0,0,0,0.2); font-size: 1rem}');
 
+
+var models = Ext.create('Ext.data.Store', {
+	fields: ['key', 'name'],
+	data: [{
+		"key":"yield", "name":"Landcover Yield"
+	},{
+		"key":"slope", "name":"Slope"
+	},{
+		"key":"bird", "name": "Bird Habitat"
+	}]
+});
+
 //------------------------------------------------------------------------------
 Ext.define('DSS.controls.StatsPanel', {
 //------------------------------------------------------------------------------
@@ -89,19 +101,93 @@ Ext.define('DSS.controls.StatsPanel', {
 				margin: 4,
 				padding: 8,
 				items: [{
+					xtype: 'component',
+					style: 'text-align: center; color: #ccc',
+					html: 'Mode'
+				},{
+					xtype: 'button',
+					text: 'Crop Yield',
+					listeners: {
+						afterrender: function(self) {
+							self.setMenu({
+								DSS_ownerButton: self,
+								plain: true,
+								width: 160,
+								items: [{
+									text: 'Models',
+									disabled: true,
+									style: 'border-bottom: 1px solid rgba(0,0,0,0.2);'
+								},{
+									text: 'Soil Loss',
+									handler: function(self) {
+										self.parentMenu.DSS_ownerButton.setText(self.text)
+									}
+								},{
+									text: 'P-Loss',
+									handler: function(self) {
+										self.parentMenu.DSS_ownerButton.setText(self.text)
+									}
+								},{
+									text: 'Crop Yield',
+									handler: function(self) {
+										self.parentMenu.DSS_ownerButton.setText(self.text)
+									}
+								},{
+									text: 'Bird Habitat',
+									handler: function(self) {
+										self.parentMenu.DSS_ownerButton.setText(self.text)
+									}
+								},{
+									text: 'Land Properties',
+									disabled: true,
+									style: 'border-bottom: 1px solid rgba(0,0,0,0.2);padding-top: 4px'
+								},{
+									text: 'Slope',
+									handler: function(self) {
+										self.parentMenu.DSS_ownerButton.setText(self.text)
+									}
+								},{
+									text: 'Soil Depth',
+									handler: function(self) {
+										self.parentMenu.DSS_ownerButton.setText(self.text)
+									}
+								},{
+									text: '% Sand',
+									handler: function(self) {
+										self.parentMenu.DSS_ownerButton.setText(self.text)
+									}
+								},{
+									text: 'Distance to Water',
+									handler: function(self) {
+										self.parentMenu.DSS_ownerButton.setText(self.text)
+									}
+								}]
+							})
+						}
+					}
+				},{
 					xtype: 'radiogroup',
 					id: 'DSS_cheat',
 					columns: 1,
 					vertical: true,
 					items: [{ 
 						boxLabelCls: 'x-form-cb-label x-form-cb-label-default x-form-cb-label-after box-label-cls',
-						boxLabel: 'Corn', name: 'model', inputValue: 'corn', checked: true 
+						boxLabel: 'Corn', name: 'model', inputValue: 'corn', checked: true,
+						handler: function() {
+							me.computeResults();
+						}
 					},{
 						boxLabelCls: 'x-form-cb-label x-form-cb-label-default x-form-cb-label-after box-label-cls',
-						boxLabel: 'Slope', name: 'model', inputValue: 'slope'
+						boxLabel: 'Slope', name: 'model', inputValue: 'slope',
+						handler: function() {
+							me.computeResults();
+						}
 					},{
 						boxLabelCls: 'x-form-cb-label x-form-cb-label-default x-form-cb-label-after box-label-cls',
-						boxLabel: 'Bird Habitat', name: 'model', inputValue: 'bird'
+						boxLabel: 'Bird Habitat', name: 'model', inputValue: 'bird',
+						handler: function() {
+							me.computeResults();
+						}
 					}]
 				},{
 					xtype: 'component', flex: 1
@@ -111,12 +197,13 @@ Ext.define('DSS.controls.StatsPanel', {
 				id: 'DSS_cheatRestrictFarm',
 				margin: '0 0 0 8',
 				boxLabelCls: 'x-form-cb-label x-form-cb-label-default x-form-cb-label-after box-label-cls',
-				boxLabel: 'Restrict to active farm', checked: true,
+				boxLabel: 'Restrict to active operation', checked: true,
 				handler: function(self, checked) {
+					me.computeResults();
 					me.down('#DSS_aggregateHider').animate({
 						dynamic: true,
 						to: {
-							height: checked ? 24 : 0
+							height: checked ? 28 : 0
 						}
 					})
 				}
@@ -124,13 +211,16 @@ Ext.define('DSS.controls.StatsPanel', {
 				xtype: 'container',
 				style: 'overflow: hidden!important',
 				itemId: 'DSS_aggregateHider',
-//				height: 0,
+				height: 28,
 				items: [{
 					xtype: 'checkbox',
 					id: 'DSS_cheatFieldAggregate',
 					margin: '0 0 0 24',
 					boxLabelCls: 'x-form-cb-label x-form-cb-label-default x-form-cb-label-after box-label-cls',
-					boxLabel: 'Aggregate to field', checked: true 
+					boxLabel: 'Aggregate to field', checked: true,
+					handler: function() {
+						me.computeResults();
+					}
 				}]
 			},{
 				xtype: 'checkbox',
@@ -139,10 +229,11 @@ Ext.define('DSS.controls.StatsPanel', {
 				boxLabelCls: 'x-form-cb-label x-form-cb-label-default x-form-cb-label-after box-label-cls',
 				boxLabel: 'Restrict to landcover', checked: false,
 				handler: function(self, checked) {
+					me.computeResults();
 					me.down('#DSS_cdlHider').animate({
 						dynamic: true,
 						to: {
-							height: checked ? 48 : 0
+							height: checked ? 56 : 0
 						}
 					})
 				}
@@ -156,18 +247,83 @@ Ext.define('DSS.controls.StatsPanel', {
 					id: 'DSS_cheatRowCropMask',
 					margin: '0 0 0 24',
 					boxLabelCls: 'x-form-cb-label x-form-cb-label-default x-form-cb-label-after box-label-cls',
-					boxLabel: 'Match rowcrops', checked: true
+					boxLabel: 'Match rowcrops', checked: true,
+					handler: function() {
+						me.computeResults();
+					}
 				},{
 					xtype: 'checkbox',
 					id: 'DSS_cheatGrassMask',
 					margin: '0 0 0 24',
 					boxLabelCls: 'x-form-cb-label x-form-cb-label-default x-form-cb-label-after box-label-cls',
-					boxLabel: 'Match grasses', checked: true 
+					boxLabel: 'Match grasses', checked: true,
+					handler: function() {
+						me.computeResults();
+					}
 				}]
 			}]
 		});
 		
 		me.callParent(arguments);
+	},
+	
+	computeResults: function(extents) {
+		let me = this;
+		
+		// TODO: busy feedback
+		if (me.DSS_isWorking) {
+			return;
+		}
+		
+		if (!extents) {
+			extents = me.DSS_extents;
+		}
+		
+		if (!extents) {
+			console.log("nothing to do right now?");
+			return;
+		}
+		me['DSS_extents'] = extents;
+	
+		me.DSS_isWorking = true;
+		
+		let data = {
+			"extent" : extents,
+			"model": Ext.getCmp('DSS_cheat').getValue()['model']
+		};
+		if (Ext.getCmp('DSS_cheatRestrictFarm').getValue() && DSS.activeFarm) {
+			data["farm_id"] = DSS.activeFarm;
+			data["mode"] = Ext.getCmp('DSS_cheatFieldAggregate').getValue() ? 2 : 1;
+		}
+		if (Ext.getCmp('DSS_maskByCDL').getValue()) {
+			data['row_crops'] = Ext.getCmp('DSS_cheatRowCropMask').getValue() ? true : false;
+			data['grasses'] = Ext.getCmp('DSS_cheatGrassMask').getValue() ? true : false;
+		}
+		
+		var obj = Ext.Ajax.request({
+			url: location.href + 'fetch_image',
+			jsonData: data,
+			timeout: 10000,
+			success: function(response, opts) {
+				var obj = JSON.parse(response.responseText);
+				me.DSS_isWorking = false;
+
+				DSS.layer.Image.setSource(new ol.source.ImageStatic({
+					url: obj.url,
+					imageExtent: obj.extent,
+					projection: 'EPSG:3071'
+				}))
+				DSS.layer.Image.setOpacity(0.7);
+				DSS.layer.Image.setVisible(true);	
+				
+				DSS.MapState.showLegend(obj.palette, obj.values);
+			},
+			
+			failure: function(response, opts) {
+				me.DSS_isWorking = false;
+			}
+		});
+
 	}
 
 });
