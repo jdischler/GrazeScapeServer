@@ -15,8 +15,8 @@ Ext.define('DSS.view.AppViewport', {
 	
 	requires: [
 		'DSS.data.ApplicationState',
-		'DSS.app.MainMap',
-		'DSS.app.MapLayers',
+		'DSS.map.MainMap',
+		'DSS.map.LayerMenu',
 		'DSS.pages.CompareOperationsPage',
 		'DSS.pages.ManageAssumptionsPage',
 		'DSS.controls.ApplicationFlow',
@@ -54,7 +54,7 @@ Ext.define('DSS.view.AppViewport', {
 					autoDestroy: false,
 					layout: 'border',
 					items: [{
-						xtype: 'main_map',
+						xtype: 'main_map_new',
 						region: 'center',
 					},{					
 						xtype: 'component',
@@ -116,7 +116,7 @@ Ext.define('DSS.view.AppViewport', {
 					c.getEl().getFirstChild().el.on({
 						click: function(self) {
 							let rect = self.target.getBoundingClientRect();
-							Ext.create('DSS.app.MapLayers').showAt(rect.left, rect.top);
+							Ext.create('DSS.map.LayerMenu').showAt(rect.left, rect.top);
 						}
 					});
 				}

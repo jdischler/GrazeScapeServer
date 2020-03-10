@@ -1,9 +1,9 @@
 
 //------------------------------------------------------------------------------
-Ext.define('DSS.app.MapLayers', {
+Ext.define('DSS.map.LayerMenu', {
 //------------------------------------------------------------------------------
 	extend: 'Ext.menu.Menu',
-	alias: 'widget.map_layers',
+	alias: 'widget.map_layer_menu',
 	
 	header: {
 		style: 'background: rgba(200,200,200,0.9)',

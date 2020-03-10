@@ -178,7 +178,7 @@ Ext.define('DSS.app.MapStateTools', {
     //-------------------------------------------------------------
     mouseoverFarmHandler: function(evt) {
     	
-		let lastF = undefined;
+		let lastF = undefined, lastFp = undefined;
 		
 		return function(evt) {
 			let pixel = DSS.map.getEventPixel(evt.originalEvent);
@@ -193,23 +193,27 @@ Ext.define('DSS.app.MapStateTools', {
 					if (f.get('name') != undefined) {
 						cursor = 'pointer';
 						hitAny = true;
-						if (lastF !== f) {
+						if (lastFp !== f) {
 							DSS.popupOverlay.setPosition(g.getCoordinates());
 							DSS.popupContainer.update('Farm: ' + f.get('name') + '<br>' +
-								'Owner: ' + f.get('owner') + '<br>' +
-								'Address: ' + f.get('address') + '<br>');
+									'Owner: ' + f.get('owner') + '<br>' +
+									'Address: ' + f.get('address') + '<br>');
+							lastFp = f;
+						}
+						if (lastF !== f) {
 							DSS.layer.fields.getSource().setUrl("get_fields?farm="+ f.get("id"));
 							DSS.layer.fields.getSource().refresh();
 							DSS.MapState.showFields(0.9);
 							lastF = f;
-							break;
 						}
+						break;
 					}
 				}
 			}
 			if (!hitAny) {
 				DSS.popupOverlay.setPosition(false);
-				lastF = undefined;
+			//	lastF = undefined;
+				lastFp = undefined;
 			}
 			DSS.map.getViewport().style.cursor = cursor;
 		}
@@ -235,7 +239,7 @@ Ext.define('DSS.app.MapStateTools', {
 					me.setPinMarker(g.getFirstCoordinate());
 					me.zoomToExtent(g.getFirstCoordinate(),15);
 					// if results were already being computed (extents chosen and model), then trigger a recompute
-					DSS.StatsPanel.computeResults();
+					DSS.StatsPanel.computeResults(undefined, DSS.layer.ModelResult);
 					break;
 				}
 			}

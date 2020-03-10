@@ -8,7 +8,7 @@ DSS.utils.addStyle('.light-color {color: #bbb; text-shadow: 0 1px rgba(0,0,0,0.3
 
 //--------------------------------------------------------------------------
 var filter_task = new Ext.util.DelayedTask(function(){
-	DSS.StatsPanel.computeResults();
+	DSS.StatsPanel.computeResults(undefined, DSS.layer.ModelResult);
 });
 
 var DSS_Refilter = function() {
@@ -255,7 +255,7 @@ Ext.define('DSS.controls.StatsPanel', {
 
 		me.DSS_options = options;
 		if (!silent) {
-			me.computeResults();
+			me.computeResults(undefined, DSS.layer ? DSS.layer.ModelResult : undefined);
 		}
 	},
 	
@@ -264,11 +264,11 @@ Ext.define('DSS.controls.StatsPanel', {
 		let me = this;
 		
 		me.DSS_mode = mode;
-		me.computeResults();
+		me.computeResults(undefined, DSS.layer.ModelResult);
 	},
 	
 	//-------------------------------------------------------------------------------------------------
-	computeResults: function(extents) {
+	computeResults: function(extents, modelResultsLayer) {
 		let me = this;
 		
 		// TODO: busy feedback
@@ -313,13 +313,13 @@ Ext.define('DSS.controls.StatsPanel', {
 				var obj = JSON.parse(response.responseText);
 				me.DSS_isWorking = false;
 
-				DSS.layer.Image.setSource(new ol.source.ImageStatic({
+				modelResultsLayer.setSource(new ol.source.ImageStatic({
 					url: obj.url,
 					imageExtent: obj.extent,
 					projection: 'EPSG:3071'
 				}))
-				DSS.layer.Image.setOpacity(0.7);
-				DSS.layer.Image.setVisible(true);	
+				modelResultsLayer.setOpacity(0.7);
+				modelResultsLayer.setVisible(true);	
 				
 				DSS.MapState.showLegend(obj.palette, obj.values);
 			},

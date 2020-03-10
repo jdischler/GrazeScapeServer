@@ -32,7 +32,7 @@ Ext.define('DSS.controls.MapLegend', {
 		Ext.each(me.DSS_colors, function(it) {
 			elements.push({
 				xtype: 'component',
-				style: 'border: 1px solid rgba(0,0,0,0.25); background-color:' + it,
+				style: 'border: 1px solid rgba(0,0,0,0.25); border-bottom-color: rgba(0,0,0,0.5); background-color:' + it,
 				x: atX,
 				y: atY,
 				width: usableWidth,
@@ -45,7 +45,7 @@ Ext.define('DSS.controls.MapLegend', {
 		Ext.each(me.DSS_values, function(it) {
 			elements.push({
 				xtype: 'component',
-				style: 'color: white; text-shadow: 1px 0 0 black, -1px 0 0 grey, 0 1px 0 black, 0 -1px 0 grey; text-align: right; font-weight: bold',
+				style: 'color: white; text-shadow: 1px 0 0 black, -1px 0 0 black, 0 1px 0 black, 0 -1px 0 rgba(0,0,0,0.5), 0 2px 4px black; text-align: right; font-weight: bold',
 				x: atX,
 				y: atY,
 				width: usableWidth-2,

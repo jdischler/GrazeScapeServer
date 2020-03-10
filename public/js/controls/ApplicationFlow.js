@@ -158,7 +158,7 @@ Ext.define('DSS.controls.ApplicationFlow', {
 		DSS.layer.farms.setOpacity(1);
 		DSS.layer.markers.setVisible(false);
 		
-		DSS.layer.Image.setVisible(false);
+		DSS.layer.ModelResult.setVisible(false);
 	},
 	
 	//----------------------------------------------------------------------------------
