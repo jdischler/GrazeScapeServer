@@ -463,13 +463,16 @@ public abstract class Layer_Base
 //			newIntegerLayer("non_ag_mask",EType.ERaw).init();	// Hybrid of Wisc-Land, DNR perennial streams, DNR open water, and DMV road data
 			
 			// SSURGO-Derived layers: topmost horizon only
-//			newFloatLayer("k_fact").init();			// SSURGO: kffact
 //			newFloatLayer("soil_depth").init();		// SSURGO: hzdept_r
 //			newFloatLayer("clay_perc").init();		// SSURGO: claytotal_r
 			newFloatLayer("sand_perc").init();		// SSURGO: sandtotal_r
 			newFloatLayer("silt_perc").init();		// SSURGO: silttotal_r			
 			newFloatLayer("cec").init();			// SSURGO: cec7_r
-//			newFloatLayer("om_perc").init();		// SSURGO: om_r
+			newFloatLayer("om").init();				// SSURGO: om_r
+			newFloatLayer("k").init();				// SSURGO: kffact
+			newFloatLayer("ls").init();				// SSURGO: ls
+			newFloatLayer("slope_length").init();	// SSURGO: slope-length
+			
 		}
 		catch (Exception e) {
 			logger.error(e.toString());

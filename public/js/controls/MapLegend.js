@@ -7,7 +7,7 @@ Ext.define('DSS.controls.MapLegend', {
 
 	layout: 'absolute',
 
-	width: 64,
+	width: 54,
 	height: 256,
 	floating: true,
 	shadow: false,

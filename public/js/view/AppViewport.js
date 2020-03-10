@@ -5,6 +5,9 @@ DSS.utils.addStyle('.x-btn-default-toolbar-small {box-shadow: -1px 2px 2px rgba(
 DSS.utils.addStyle('.x-btn-pressed {z-index:2000; box-shadow: 0 4px 6px rgba(0,0,0,0.4)!important;}')
 DSS.utils.addStyle('.x-btn-inner-default-small {font-size: 1rem}');
 
+DSS.utils.addStyle('.layer-menu { padding: 0.5rem; color: #28c; font-size: 1rem; cursor: pointer; text-shadow: 0 2px 2px rgba(0,0,0,0.6), 1px 0 rgba(0,0,0,0.3), -1px 0 rgba(0,0,0,0.3), 0 -1px 1px rgba(255,255,255,0.4)}');
+DSS.utils.addStyle('.layer-menu:hover { color: #37a}');
+
 //------------------------------------------------------------------------------
 Ext.define('DSS.view.AppViewport', {
 //------------------------------------------------------------------------------
@@ -61,10 +64,10 @@ Ext.define('DSS.view.AppViewport', {
 						listeners: {
 							afterrender: function(self) { me.DSS_realtimeDashboard = self; }
 						}
-					},{					
+					/*},{					
 						xtype: 'map_layers',
 						region: 'south'
-					}],
+					*/}],
 					listeners: {
 						afterrender: function(self) { me.DSS_MapWidget = self; }
 					}
@@ -76,9 +79,9 @@ Ext.define('DSS.view.AppViewport', {
 				xtype: 'container',
 				region: 'west',
 				style: 'background: #ede9d9; border-right: 1px solid rgba(0,0,0,0.25);',
-				width: 388,
+				width: 320,
 				layout: 'fit',
-				minWidth: 388,
+				minWidth: 320,
 				items: [{
 					xtype: 'application_flow',
 					listeners: {
@@ -92,7 +95,33 @@ Ext.define('DSS.view.AppViewport', {
 		});
 
 		me.callParent(arguments);
-		DSS_viewport = me;	
+		DSS_viewport = me;
+		
+		// Terrible image cache
+		Ext.create('Ext.window.Window', {
+			style: 'url("assets/images/graze_logo.png")',
+			width: 1, height: 1,
+		}).showAt(-10000,-10000);
+		
+		Ext.create('Ext.Component', {
+			floating: true,
+			shadow: false,
+			cls: 'layer-menu',
+			padding: '4 8',
+			tooltip: 'Access map layers',
+//			html: '<i class="fas fa-bars"></i>',
+			html: '<i class="far fa-caret-square-down"></i>',
+			listeners: {
+				render: function(c) {
+					c.getEl().getFirstChild().el.on({
+						click: function(self) {
+							let rect = self.target.getBoundingClientRect();
+							Ext.create('DSS.app.MapLayers').showAt(rect.left, rect.top);
+						}
+					});
+				}
+			}					
+		}).showAt(322,2);
 	},
 	
 	doChartWorkPanel: function() {

@@ -10,8 +10,8 @@ Ext.define('DSS.controls.NavigationMenu', {
 	extend: 'Ext.menu.Menu',
 	alias: 'widget.navigation_menu',
 
-    width: 400,
-    padding: '16 48',
+    width: 320,
+    padding: '16 40',
     style: 'background:white; box-shadow: 0 8px 12px rgba(0,0,0,0.3); border-radius: 6px',
     modal: true,
     plain: true,
@@ -22,7 +22,7 @@ Ext.define('DSS.controls.NavigationMenu', {
     	beforehide: function(self) {
 			self.animate({
 				duration: 300,
-				to: {x: -420},
+				to: {x: -360},
 				callback: function() {
 					self.destroy()
 				}
@@ -48,7 +48,7 @@ Ext.define('DSS.controls.NavigationMenu', {
 		Ext.applyIf(me, {
 		    defaults: {
 		    	xtype: 'component',
-		    	padding: 8,
+		    	padding: 6,
 		    	cls: 'menu-title'
 		    },
 			items: [
@@ -56,7 +56,7 @@ Ext.define('DSS.controls.NavigationMenu', {
 				style: 'background-image: url("assets/images/graze_logo.png"); background-size: contain; background-repeat: no-repeat;cursor: pointer',
 				cls: undefined,
 				height: 112,
-		        margin: '0 0 0 48',
+		        margin: '0 0 0 16',
 				listeners: {
 					render: function(c) {
 						createClickHandlerFor(c, function() {
@@ -76,7 +76,7 @@ Ext.define('DSS.controls.NavigationMenu', {
 				}					
 		    },{ //--------------------------------------------------------------------------
 		        html: 'New Operation',
-		        margin: '0 32',
+		        margin: '0 0 0 32',
 				listeners: {
 					render: function(c) {
 						createClickHandlerFor(c, function() {
@@ -86,7 +86,7 @@ Ext.define('DSS.controls.NavigationMenu', {
 				}	
 		    },{ //--------------------------------------------------------------------------
 		        html: 'Manage Operation',
-		        margin: '0 32',
+		        margin: '0 0 0 32',
 				listeners: {
 					render: function(c) {
 						createClickHandlerFor(c, function() {
@@ -96,7 +96,7 @@ Ext.define('DSS.controls.NavigationMenu', {
 				}	
 		    },{ //--------------------------------------------------------------------------
 		        html: 'Manage Field Shapes',
-		        margin: '0 32',
+		        margin: '0 0 0 32',
 				listeners: { 
 					render: function(c) {
 						createClickHandlerFor(c, function() {
@@ -106,7 +106,7 @@ Ext.define('DSS.controls.NavigationMenu', {
 				}	
 		    },{ //--------------------------------------------------------------------------
 		        html: 'Create Scenarios',
-		        margin: '0 32',
+		        margin: '0 0 0 32',
 				listeners: { 
 					render: function(c) {
 						createClickHandlerFor(c, function() {
@@ -117,18 +117,18 @@ Ext.define('DSS.controls.NavigationMenu', {
 		    },{ //--------------------------------------------------------------------------
 		        html: 'Assign Landcover',
 		        cls: 'menu-title-disabled',
-		        margin: '0 64'
+		        margin: '0 0 0 64'
 		    },{ //--------------------------------------------------------------------------
 		        html: 'Manage Grazing',
 		        cls: 'menu-title-disabled',
-		        margin: '0 64'
+		        margin: '0 0 0 64'
 		    },{ //--------------------------------------------------------------------------
 		        html: 'Manage Herd',
 		        cls: 'menu-title-disabled',
-		        margin: '0 64'
+		        margin: '0 0 0 64'
 		    },{ //--------------------------------------------------------------------------
 		        html: 'Compare Scenarios',
-		        margin: '0 32',
+		        margin: '0 0 0 32',
 				listeners: {
 					render: function(c) {
 						c.getEl().on({
@@ -172,7 +172,7 @@ Ext.define('DSS.controls.NavigationMenu', {
 		        style: 'font-size: 1.2rem; font-weight: bold'
 		    },{ //--------------------------------------------------------------------------
 		        html: 'Manage Assumptions',
-		        margin: '0 32',
+		        margin: '0 0 0 32',
 				listeners: { render: function(c) {
 					c.getEl().on({ click: function() {
 						DSS.mainViewport.doManageAssumptionsPage(); me.hide();
@@ -180,11 +180,11 @@ Ext.define('DSS.controls.NavigationMenu', {
 				}}		
 		    },{ //--------------------------------------------------------------------------
 		        html: 'Fence Calculator',
-		        margin: '0 32'
+		        margin: '0 0 0 32',
 		    },{ //--------------------------------------------------------------------------
 		        html: 'Soil / Slope Lookup',
 		        cls: 'menu-title-disabled',
-		        margin: '0 32'
+		        margin: '0 0 0 32',
 		    },{ //--------------------------------------------------------------------------
 		    	html: 'Help',
 		        cls: 'menu-title-disabled',

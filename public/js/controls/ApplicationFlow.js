@@ -26,7 +26,7 @@ Ext.define('DSS.controls.ApplicationFlow', {
 		'DSS.controls.GrazingToolsBase',
 		'DSS.controls.NavigationMenu',
 		'DSS.controls.ScenarioBuilder',
-		'DSS.controls.ComputationTests',
+		'DSS.controls.Management'
 	],
 	
 	layout: DSS.utils.layout('vbox', 'start', 'stretch'),
@@ -130,13 +130,21 @@ Ext.define('DSS.controls.ApplicationFlow', {
 		Ext.suspendLayouts();
 			me.setTitleBlock({
 				xtype: 'component',
-				height: 140, margin: '8 0 0 0',
+				height: 110, margin: '8 0 0 0',
 				style: 'background-image: url("assets/images/graze_logo.png"); background-size: contain; background-repeat: no-repeat',
 			});
 			me.setControlBlock([
 				DSS.controls.OperationsBase.get(),
 				DSS.controls.CompareOperationsBase.get(),
-				DSS.controls.GrazingToolsBase.get()
+				DSS.controls.GrazingToolsBase.get(),
+				{
+					xtype: 'container',
+					layout: DSS.utils.layout('vbox', 'center', 'stretch'),
+					cls: 'section',
+					items: [{
+						xtype: 'management'
+					}]
+				}
 			]);
 		Ext.resumeLayouts(true);
 		
@@ -180,8 +188,6 @@ Ext.define('DSS.controls.ApplicationFlow', {
 				xtype: 'field_shapes_base'
 			},{ 
 				xtype: 'scenario_builder'
-			},{
-				xtype: 'computation_tests'
 			}]);
 		Ext.resumeLayouts(true);
 		

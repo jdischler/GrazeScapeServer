@@ -612,6 +612,7 @@ Ext.define('DSS.app.MainMap', {
 	addSelectionTools: function(map) {
 		const select = DSS.selectionTool = new ol.interaction.Select({
 			features: new ol.Collection(),
+			toggleCondition: ol.events.condition.never
 		});
 		select.on('select', function(evt) {
 			if (DSS.selectionFunction) {

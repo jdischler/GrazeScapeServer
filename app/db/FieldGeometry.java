@@ -10,8 +10,8 @@ import java.sql.Statement;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +22,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import io.ebean.Ebean;
 import io.ebean.Finder;
 import io.ebean.Model;
-import io.ebean.SqlQuery;
 import io.ebean.SqlRow;
 import play.mvc.Http.Request;
 
+// Generally just the field Geometry, but it can also contain simple default values for P, OM, etc
+//	which are typically populated at creation time. These become field default values that can be overridden when 
+//	desired on an instance of the field as applied to a given scenario.
 @Entity
 public class FieldGeometry extends Model {
 
@@ -39,6 +41,11 @@ public class FieldGeometry extends Model {
     @Column(columnDefinition = "TEXT")
 	public String geom;
     
+    @NotNull
+    public Float fieldP = 32.0f; // county average is 32, can't be null;
+    
+    // can be NULL in which case SSURGO soil lookup is used. If populated, provides a default which can be overridden
+    public Float fieldOm = null;
 
 	public FieldGeometry fromGeoJSON(String geoJson) {
 

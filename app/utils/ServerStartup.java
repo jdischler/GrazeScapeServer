@@ -4,13 +4,18 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import data_types.Farm;
+import play.api.db.evolutions.ApplicationEvolutions;
 import play.inject.ApplicationLifecycle;
 import query.Layer_Base;
+import scala.concurrent.ExecutionContext;
 
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import akka.actor.ActorSystem;
 
 //-----------------------------------------------------------------------
 @Singleton
@@ -19,8 +24,9 @@ public class ServerStartup {
     private static final Logger logger = LoggerFactory.getLogger("app");
     
 	@Inject
-	public ServerStartup(ApplicationLifecycle lifecycle) {
+	public ServerStartup(ApplicationLifecycle lifecycle, ActorSystem as, ExecutionContext ec, ApplicationEvolutions ae) {
 				
+		logger.error("ServerStartup.....");
         lifecycle.addStopHook(() -> {
         	Layer_Base.removeAllLayers();
             return CompletableFuture.completedFuture(null);
@@ -31,9 +37,16 @@ public class ServerStartup {
         
         Layer_Base.cacheLayers();
 
-        systemReport("  Server is ready!"); 
+        systemReport("  Server is ready!");
         
-
+        // TODO: I want a callback for when the evolution is actually done.
+		as.scheduler()
+			.scheduleOnce(
+				Duration.ofSeconds(10L), // delay
+				() -> db.PostServerStart.initialize(),
+				ec
+			);
+	
        // db.Farm.dbInit();
         //db.Farm.testLoadShapes();
         

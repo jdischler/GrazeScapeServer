@@ -234,6 +234,8 @@ Ext.define('DSS.app.MapStateTools', {
 					DSS.ApplicationFlow.instance.showManageOperationPage(f.get("name"));					
 					me.setPinMarker(g.getFirstCoordinate());
 					me.zoomToExtent(g.getFirstCoordinate(),15);
+					// if results were already being computed (extents chosen and model), then trigger a recompute
+					DSS.StatsPanel.computeResults();
 					break;
 				}
 			}
@@ -258,7 +260,7 @@ Ext.define('DSS.app.MapStateTools', {
     	var me = this;
     	if (me.DSS_legend) {
     		let cmp = Ext.getCmp('ol_map');
-    		me.DSS_legend.setX(cmp.getX() + cmp.getWidth() - (me.DSS_legend.getWidth() + 16))
+    		me.DSS_legend.setX(cmp.getX() + cmp.getWidth() - (me.DSS_legend.getWidth() + 8))
     	}	
     },
     
@@ -275,8 +277,8 @@ Ext.define('DSS.app.MapStateTools', {
 		});
 		
 		let cmp = Ext.getCmp('ol_map');
-		me.DSS_legend.showAt(DSS_viewport.getWidth() - 120, 8);
-		me.DSS_legend.setX(cmp.getX() + cmp.getWidth() - (me.DSS_legend.getWidth() + 16))
+		me.DSS_legend.showAt(DSS_viewport.getWidth() - 120, 0);
+		me.DSS_legend.setX(cmp.getX() + cmp.getWidth() - (me.DSS_legend.getWidth() + 8))
     },
     
     //-------------------------------------------------------------

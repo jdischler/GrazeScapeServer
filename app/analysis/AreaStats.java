@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 //------------------------------------------------------------------------------
 public class AreaStats
 {
-//    private static final Logger logger = LoggerFactory.getLogger(FieldStats.class);
+    private static final Logger logger = LoggerFactory.getLogger("app");
 
 
 	//---------------------------------------------
@@ -220,7 +220,8 @@ public class AreaStats
     // TODO: wrap these to reduce sending around raw 2D arrays?
     private int[][] 	mFieldIDs = null;
     private float[][]	mFieldData = null;
-    
+    private int 		mAtX = 0, mAtY = 0;
+    private int			mWidth = 1500, mHeight = 2600;
     
     //----------------------------------------------------------------
     public AreaStats(float[][] data) {
@@ -238,31 +239,29 @@ public class AreaStats
     
     //----------------------------------------------------------------
     public AreaStats forExtents(int x, int y, int width, int height) {
-    	// TODO: this.set up analysis extents
+    	mAtX = x; mAtY = y; mWidth = width; mHeight = height;
     	return this;
     }
     
     //----------------------------------------------------------------
     public AreaStats compute() {
 
-		int rasterWidth = 1500, rasterHeight = 2600;
-		
 		if (mFieldIDs == null) {
 			
 			Stats s = new Stats(true);
 			mFieldStats.put(0L, s);
 			
-	    	for (int y = 0; y < rasterHeight; y++) {
-	        	for (int x = 0; x < rasterWidth; x++) {
-	    			s.record(mFieldData[y][x]);
+	    	for (int y = 0; y < mHeight; y++) {
+	        	for (int x = 0; x < mWidth; x++) {
+	    			s.record(mFieldData[y+mAtY][x+mAtX]);
 	        	}
 	    	}
 		}
 		else {
-	    	for (int y = 0; y < rasterHeight; y++) {
-	        	for (int x = 0; x < rasterWidth; x++) {
+	    	for (int y = 0; y < mHeight; y++) {
+	        	for (int x = 0; x < mWidth; x++) {
 	        		
-	        		int f_id = mFieldIDs[y][x];
+	        		int f_id = mFieldIDs[y+mAtY][x+mAtX];
 	        		if (f_id <= 0) continue;
 	        		
 	    			Stats s = mFieldStats.get((long)f_id);
@@ -271,7 +270,7 @@ public class AreaStats
 	    				mFieldStats.put((long) f_id, s);
 	    			}
 	        		
-	    			s.record(mFieldData[y][x]);
+	    			s.record(mFieldData[y+mAtY][x+mAtX]);
 	        	}
 	    	}
 		}
@@ -285,79 +284,10 @@ public class AreaStats
 		return mFieldStats.get(fs_idx);
     }
     
-    // TODO: area stats may also be wanted?
     //----------------------------------------------------------------
     public Stats getAreaStats() throws Exception {
 		if (mFieldIDs != null) throw new Exception("AreaStats: was configured for field level compution so total area stats are not available");
 		return mFieldStats.get(0L);
     }
     
-    // 
-	//--------------------------------------------------------------------------
-    @Deprecated // I have no idea what this is....
-	public static void huh_fetch_image() {
-		
-		// topLeftX, topLeftY, bottomRightX, bottomRightY
-		Integer areaExtents[] = {
-			-10128000, 5392000,
-			-10109000, 5358000
-		};
-	
-		// Align selection to 10m grid
-		// The openLayers extent has the Y values reversed from the convention I prefer
-		Integer selExtents[] = {
-//			Math.round(extent.get(0).floatValue() / 10.0f) * 10, Math.round(extent.get(3).floatValue() / 10.0f) * 10,
-//			Math.round(extent.get(2).floatValue() / 10.0f) * 10, Math.round(extent.get(1).floatValue() / 10.0f) * 10
-		};
-		
-		// Clip Selection to area
-		if (selExtents[0] < areaExtents[0]) 		selExtents[0] = areaExtents[0];
-		else if (selExtents[0] > areaExtents[2]) 	selExtents[0] = areaExtents[2];
-		
-		if (selExtents[2] < areaExtents[0]) 		selExtents[2] = areaExtents[0];
-		else if (selExtents[2] > areaExtents[2]) 	selExtents[2] = areaExtents[2];
-
-		if (selExtents[1] > areaExtents[1]) 		selExtents[1] = areaExtents[1];
-		else if (selExtents[1] < areaExtents[3]) 	selExtents[1] = areaExtents[3];
-		
-		if (selExtents[3] > areaExtents[1]) 		selExtents[3] = areaExtents[1];
-		else if (selExtents[3] < areaExtents[3]) 	selExtents[3] = areaExtents[3];
-//		logger.error("clipped [" + selExtents[0] + "," + selExtents[1] + "][" + selExtents[2] + "," + selExtents[3] + "]");
-
-		int rasterWidth = 1900, rasterHeight = 3400;
-		
-		// re-index
-		Integer indexX = (selExtents[0] - areaExtents[0]) / 10;
-		Integer indexY = -(selExtents[1] - areaExtents[1]) / 10;
-		
-		Integer indexX2 = (selExtents[2] - areaExtents[0]) / 10;
-		Integer indexY2 = -(selExtents[3] - areaExtents[1]) / 10;
-		
-		Integer ww = indexX2 - indexX;
-		Integer hh = indexY2 - indexY;
-
-/*		Map<Integer,Float> mTotalSlope = new HashMap<>();
-		Map<Integer,Integer> mCellCount = new HashMap<>();
-		
-		float slp[][] = Layer_Base.getLayer("Slope").getFloatData();
-		for (int y = 0; y < rasterHeight; y++) {
-			for (int x = 0; x < rasterWidth; x++) {
-				int f_id = layer[y][x]; 
-				if ( f_id > 0) {
-					if (!mCellCount.containsKey(f_id)) {
-						mCellCount.put(f_id, 0);
-						mTotalSlope.put(f_id, 0.0f);
-					}
-					mCellCount.put(f_id, mCellCount.get(f_id) + 1);
-					mTotalSlope.put(f_id, mTotalSlope.get(f_id) + cornYield[y][x]);	
-				}
-			}
-		}
-
-		for (Entry<Integer, Integer> es: mCellCount.entrySet()) {
-			mTotalSlope.put(es.getKey(), mTotalSlope.get(es.getKey()) / es.getValue());
-		}
-*/
-	}
-	
 }

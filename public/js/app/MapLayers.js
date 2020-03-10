@@ -1,132 +1,112 @@
 
-// wiscland 2.0 codes
-/*
-1	developed
-2	Cash Grain
-3	Continuous Corn
-4	Dairy Rotation
-5	Vegetables
-6	Hay
-7	Pasture
-8	Reed Canary Grass
-9	Cool-Season
-10	Warm-Season
-11	Water/Swamp
-12	Other (forest)
-13	Other
-*/
-
-
 //------------------------------------------------------------------------------
 Ext.define('DSS.app.MapLayers', {
 //------------------------------------------------------------------------------
-	extend: 'Ext.container.Container',
+	extend: 'Ext.menu.Menu',
 	alias: 'widget.map_layers',
-	mixins: [
-		'Ext.mixin.Responsive'
-	],	
-
-	layout: {
-		type: 'hbox',
-		pack: 'center',
-		align: 'center'
-	},
 	
-	padding: 8,
-	style: 'border-top: 1px solid rgba(255,255,255,0.5); border-bottom: 1px solid rgba(0,0,0,0.5); background-color: #e9edd977; background-repeat: no-repeat; background-image: linear-gradient(to right, rgba(0,0,0,0.35), rgba(0,0,0,0.1), rgba(0,0,0,0.03), rgba(0,0,0,0)); background-size: 2rem 100%;',
-	
-		
-	// 'landscape', 'width', 'height', 'tall', 'wide', <platform> e.g, 'desktop',
-	//	examples: '!(desktop || width > 800)'
-	responsiveConfig: {
-		'width < 1050': {
-			vertical: true
-		},
-		'width >= 1050': {
-			vertical: false
-		}
+	header: {
+		style: 'background: rgba(200,200,200,0.9)',
+		padding: 2
 	},
-	setVertical: function(v) {
-		let me = this;
-		
-		me.setLayout({vertical: v});
-	},
-	
+	closable: true,
+	plain: true,
+	width: 160,
 	//--------------------------------------------------------------------------
 	initComponent: function() {
 		let me = this;
 		
 		Ext.applyIf(me, {
 			defaults: {
-				xtype: 'container',
-				layout: 'hbox',
+				xtype: 'menucheckitem',
+				padding: 2,
+                hideOnClick: false,
 			},
 			items: [{
-				xtype: 'component',
-				flex: 1
+				xtype: 'menuitem',
+				text: 'Base Layer', disabled: true,
+				style: 'border-bottom: 1px solid rgba(0,0,0,0.2);padding-top: 4px'
 			},{
-				width: 300,
-				margin: '0 16',
+				xtype: 'radiogroup',
+				columns: 1, 
+				vertical: true,
 				defaults: {
-					xtype: 'radio',
-					name: 'base-layer',
-					flex: 1,
-					margin: '0 4',
-					handler: function(control, checked) {
-						if (checked) {
-							
-						}
-					}
+					padding: '2 0',
+					group: 'base-layer'
 				},
-				items: [{
-                    boxLabel: 'Bing Aerial',
-                    DSS_layer: 'bing-aerial',
-                    checked: true,
-                    handler: function(self, checked) {
-                    	DSS.layer.bingAerial.setVisible(checked);
-                    }
+				items: [{ 
+					boxLabel: 'Base Layer', 
+	                checked: true,
+	                text: 'Bing Aerial',
+	                DSS_layer: 'bing-aerial',
+	                listeners: {
+	                	afterrender: function(self) {
+	                		self.setValue(DSS.layer.bingAerial.getVisible());
+	                	}
+	                },
+	                handler: function(self, checked) {
+	                	DSS.layer.bingAerial.setVisible(checked);
+	                }
 				},{
-                    boxLabel: 'Bing Road',
-                    DSS_layer: 'bing-aerial',
-                    handler: function(self, checked) {
-                    	DSS.layer.bingRoad.setVisible(checked);
-                    }
+					boxLabel: 'Bing Road',
+	                DSS_layer: 'bing-aerial',
+	                listeners: {
+	                	afterrender: function(self) {
+	                		self.setValue(DSS.layer.bingRoad.getVisible());
+	                	}
+	                },
+	                handler: function(self, checked) {
+	                	DSS.layer.bingRoad.setVisible(checked);
+	                }
 				},{
-                    boxLabel: 'Open-Street',
-                    DSS_layer: 'bing-aerial',
-                    handler: function(self, checked) {
-                    	DSS.layer.osm.setVisible(checked);
-                    }
+					boxLabel: 'Open-Street',
+	                DSS_layer: 'bing-aerial',
+	                listeners: {
+	                	afterrender: function(self) {
+	                		self.setValue(DSS.layer.osm.getVisible());
+	                	}
+	                },
+	                handler: function(self, checked) {
+	                	DSS.layer.osm.setVisible(checked);
+	                }
 				}]
 			},{
-				width: 300,
-				margin: '0 16',
-				defaults: {
-					xtype: 'checkbox',
-					flex: 1,
-					margin: '0 4'
-				},
-				items: [{
-                    boxLabel: 'Watershed',
-                    checked: true,
-                    handler: function(self,checked) {
-                    	DSS.layer.watershed.setVisible(checked);                    	
-                    }
-				},{
-                    boxLabel: 'Contour',
-                    handler: function(self,checked) {
-                    	DSS.layer.contour.setVisible(checked);                    	
-                    }
-				},{
-                    boxLabel: 'Hillshade',					
-                    checked: true,
-                    handler: function(self,checked) {
-                    	DSS.layer.hillshade.setVisible(checked);                    	
-                    }
-				}]
+				xtype: 'menuitem',
+				text: 'Overlays', disabled: true,
+				style: 'border-bottom: 1px solid rgba(0,0,0,0.2);padding-top: 4px'
 			},{
-				xtype: 'component',
-				flex: 1
+				text: 'Watershed',
+                checked: true,
+                listeners: {
+                	afterrender: function(self) {
+                		self.setChecked(DSS.layer.watershed.getVisible());
+                	}
+                },
+                handler: function(self) {
+                	DSS.layer.watershed.setVisible(self.checked);                    	
+                }
+			},{
+				text: 'Contour',
+				disabled: true,
+				listeners: {
+                	afterrender: function(self) {
+                		//self.setChecked(DSS.layer.contour.getVisible());
+                	}
+                },
+                handler: function(self) {
+                	DSS.layer.contour.setVisible(self.checked);                    	
+                }
+			},{
+				text: 'Hillshade',					
+                checked: true,
+                listeners: {
+                	afterrender: function(self) {
+                		self.setChecked(DSS.layer.hillshade.getVisible());
+                	}
+                },
+                handler: function(self) {
+                	DSS.layer.hillshade.setVisible(self.checked);                    	
+                }
 			}]
 		});
 		

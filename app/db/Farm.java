@@ -44,8 +44,11 @@ public class Farm extends Model {
     public String farmAddress;
     
     @OneToMany(cascade = CascadeType.ALL)
-    public List<FieldGeometry> mFieldGeometry = new ArrayList<>();
+    public List<FieldGeometry> fieldGeometry = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL)
+    public List<Scenario> scenarios = new ArrayList<>();
+    
     // WKT format, blah
     @Column(columnDefinition = "TEXT")
 	public String location;
@@ -118,7 +121,7 @@ public class Farm extends Model {
 						.fromGeoJSON(geoJson);
 				//		.fromWKT(wkt); //TODO
 	
-				this.mFieldGeometry.add(fg);
+				this.fieldGeometry.add(fg);
 				
 			} catch (JsonProcessingException e) {
 				logger.error(e.toString());
@@ -139,7 +142,7 @@ public class Farm extends Model {
         		"\"features\":[");
     	
     	boolean isFirst = true;
-    	for (FieldGeometry fg: this.mFieldGeometry) {
+    	for (FieldGeometry fg: this.fieldGeometry) {
     		if (!isFirst) sb.append(",");
     		
     		sb.append("{\"type\":\"Feature\",\"geometry\":");
@@ -266,7 +269,7 @@ public class Farm extends Model {
 						.fromGeoJSON(geoJson);
 				//		.fromWKT(wkt); //TODO
 	
-				this.mFieldGeometry.add(fg);
+				this.fieldGeometry.add(fg);
 				
 			} catch (JsonProcessingException e) {
 				logger.error(e.toString());
@@ -341,7 +344,7 @@ public class Farm extends Model {
 			// FIXME: TODO: Maybe best to pass the whole list...
 			//	The underlying class needs to note whether items have been added to or removed from the list...
 			//	
-			for (FieldGeometry fg: this.mFieldGeometry) {
+			for (FieldGeometry fg: this.fieldGeometry) {
 				fg.save();
 			}
 		}
@@ -397,7 +400,7 @@ public class Farm extends Model {
 		if (f != null) {
 			FieldGeometry fg = new FieldGeometry();
 			fg.fromWKT(wkt);
-			f.mFieldGeometry.add(fg);
+			f.fieldGeometry.add(fg);
 			f.save();
 			field_id = fg.id;
 		}

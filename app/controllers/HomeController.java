@@ -235,10 +235,10 @@ public class HomeController extends Controller {
 	
 	public Result getFields(Long farmId) {
 		
-		logger.info("Got a request for farm: " + farmId);
+//		logger.info("Got a request for farm: " + farmId);
 		db.Farm f = db.Farm.find.byId(farmId);
 		if (f != null) {
-			logger.info(String.format("And that farm was found...<%s> <%s> <%s>", f.farmName, f.farmOwner, f.farmAddress));
+//			logger.info(String.format("And that farm was found...<%s> <%s> <%s>", f.farmName, f.farmOwner, f.farmAddress));
 			return ok(f.getFieldShapesAsGeoJson());
 		}
 		return ok("Farm did not exist");
@@ -261,38 +261,46 @@ public class HomeController extends Controller {
 	public Result fetchImage(Http.Request request) {
 		
 		JsonNode node = request.body().asJson();
-		String model = Json.safeGetOptionalString(node, "model", "bird");
+		String mode = Json.safeGetOptionalString(node, "model", "bird-habitat");
 		
 		ModelComputation mc = null;
-		if (model.equalsIgnoreCase("bird")) mc = new BirdModel();
-		else if (model.equalsIgnoreCase("corn")) mc = new CornModel();
-		else if (model.equalsIgnoreCase("slope")) mc = new SlopeModel();
+		if (mode.equalsIgnoreCase("bird-habitat")) mc = new BirdModel();
+		else if (mode.equalsIgnoreCase("crop-yield")) mc = new YieldModel();
+		else if (mode.equalsIgnoreCase("p-loss")) mc = new PLossModel();
+		
+		else if (mode.equalsIgnoreCase("slope")) mc = new RasterInspection().dataLayer("slope").setTransform(new SlopePercentToAngle());
+		else if (mode.equalsIgnoreCase("dem")) mc = new RasterInspection().dataLayer("dem");
+		else if (mode.equalsIgnoreCase("dist-water")) mc = new RasterInspection().dataLayer("distance_to_water");
+		else if (mode.equalsIgnoreCase("perc-sand")) mc = new RasterInspection().dataLayer("sand_perc");
+		else if (mode.equalsIgnoreCase("perc-silt")) mc = new RasterInspection().dataLayer("silt_perc");
+		else if (mode.equalsIgnoreCase("om")) mc = new RasterInspection().dataLayer("om");
+		else if (mode.equalsIgnoreCase("k")) mc = new RasterInspection().dataLayer("k");
+		else if (mode.equalsIgnoreCase("ls")) mc = new RasterInspection().dataLayer("ls");
+		else if (mode.equalsIgnoreCase("slope-length")) mc = new RasterInspection().dataLayer("slope_length");
 		
 		return computeModel(request, mc);
-//		return ok(Layer_Base.fetch_image(request));
 	}
 
-	//-----------------------------------------------------------------------------
-	public Result computeSlope(Http.Request request) {
-		return computeModel(request, new SlopeModel());
-	}	
-
-	//-----------------------------------------------------------------------------
-	public Result computeCornModel(Http.Request request) {
-		return computeModel(request, new CornModel());
-	}	
 	
-	//-------------------------------------------------------
-	public Result computeBirdModel(Http.Request request) {
-		return computeModel(request, new BirdModel());
+	private interface Transform {
+		public abstract float transform(float input);
 	}
 	
-	
+	private class PassThrough implements Transform {
+		final public float transform(float input) { return input; }
+	}
+	private class SlopePercentToAngle implements Transform {
+
+		public float transform(float input) {
+			return (float)(Math.atan(input / 100.0f) * (180.0f / Math.PI));
+		}
+		
+	}
 	//-------------------------------------------------------
 	// Model interface
 	//-------------------------------------------------------
 	private interface ModelComputation {
-		public float[][] compute(Clipper computationArea); 
+		public abstract float[][] compute(Clipper computationArea, JsonNode options) throws Exception; 
 	};
 
 	public class Clipper {
@@ -352,24 +360,28 @@ public class HomeController extends Controller {
 			return this;
 		}
 	}
-
 	
 	//-------------------------------------------------------
 	public Result computeModel(Http.Request request, ModelComputation modelFunction) {
 	
 		JsonNode node = request.body().asJson();
-		
+
+		JsonNode options = node.get("options");
+		if (options != null) {
+			logger.info("Has model options:" + options.toString());
+		}
 		// Extent array node can be missing, in which case we get a clipper that extracts the entire area
 		Clipper ext = new Clipper().initFromJson(node.get("extent"));
 		
 		final Integer rasterHeight = 2600, rasterWidth = 1500;
-		final Integer areaExtents[] = {
-			440000, 340000,
-			455000, 314000
-		};
 		ObjectNode result = null;
 		
-		float [][] modelResults = modelFunction.compute(ext);
+		float[][] modelResults = null;
+		try {
+			modelResults = modelFunction.compute(ext, options);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 		
 		Long farmId = utils.Json.safeGetOptionalLong(node, "farm_id");
 		int mapMode = utils.Json.safeGetOptionalInteger(node, "mode", 1);  // 0, 1, or 2
@@ -399,12 +411,13 @@ public class HomeController extends Controller {
 			}
 		}
 		
+		AreaStats fs = null;
 		if (farmId != null) {
 			db.Farm f = db.Farm.find.byId(farmId);
 			if (f != null) {
 				List<JsonNode> features = new ArrayList<>();
 				
-				for (FieldGeometry fd: f.mFieldGeometry) {
+				for (FieldGeometry fd: f.fieldGeometry) {
 					SqlRow sw = Ebean.createSqlQuery("SELECT ST_AsGeoJson(ST_Transform(ST_GeomFromText( ?, 3857 ),3071)) as gjson")
 						.setParameter(1, fd.geom)
 						.findOne();
@@ -423,10 +436,10 @@ public class HomeController extends Controller {
 					}
 				}
 				
-				AreaStats fs = new AreaStats(modelResults).forRasterizedFields(layer).compute();
+				fs = new AreaStats(modelResults).forRasterizedFields(layer).compute();
 				
 				try {
-					for (FieldGeometry fd: f.mFieldGeometry) {
+					for (FieldGeometry fd: f.fieldGeometry) {
 						Long fs_idx = fd.id;
 						Stats stats = fs.getFieldStats(fs_idx);
 						
@@ -494,6 +507,47 @@ public class HomeController extends Controller {
 				}
 			}
 		}
+		else { // no farm 
+			fs = new AreaStats(modelResults).forExtents(ext.mX1, ext.mY1, ext.mWidth, ext.mHeight).compute();
+			AreaStats.Stats stats;
+			try {
+				stats = fs.getAreaStats();
+			
+				Integer noDataCt = stats.getNoDataCount();
+				Float noDataPerc = stats.getFractionNoData();
+	
+				String results = "\n─────────────────────────────────────────────────────\n" +
+						"¤STATISTICS for Area: \n" +
+						"  NoDataCells: " + noDataCt + "\n" +
+						"  NoData%:     " + String.format("%.1f%%", noDataPerc * 100) + "\n";
+				
+				if (stats.hasStatistics()) {
+					Integer histogramCt = 20;
+					AreaStats.Histogram hs = stats.getHistogram(histogramCt, stats.getMin(), stats.getMax()); 
+					Integer ct = stats.getCounted();
+					Float area = ct * 100.0f;
+					Double sum = stats.getSum();
+					Float min = stats.getMin();
+					Float max = stats.getMax();
+					Float mean = stats.getMean();
+					Float median = stats.getMedian();
+					results += " »Area CELLS: " + ct + "\n";
+					results += String.format("  Area: %.2f(ac)   %.2f(km2) \n", area / 4047.0f, area / 1000000.0f);
+					results += " »Value STATS \n";
+					results += String.format("  Total Value: %.2f\n", sum);
+					results += String.format("  Min: %.2f    Max: %.2f \n", min, max);
+					results += String.format("  Mean: %.2f\n", mean);
+					results += String.format("  Median: %.2f\n", median);
+					results += " »HISTOGRAM (" + histogramCt + " bins) \n";
+					results += hs.toString();
+				}
+				results += "─────────────────────────────────────────────────────\n";
+				
+				logger.info(results);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		// TODO: may want to skip clipping process if raster modelResults is the full raster...
 		float clipped[][] = Extract.now(modelResults, ext.mX1, ext.mY1, ext.mWidth, ext.mHeight);
 
@@ -539,67 +593,175 @@ public class HomeController extends Controller {
 	
 	// Simple fake model - just copy a layer into a returnable dataset
 	//-------------------------------------------------------------------------------------
-	public class SlopeModel implements ModelComputation {
+	public class RasterInspection implements ModelComputation {
+
+		private Layer_Base mLayer;
+		private Transform mDataTransform = new PassThrough();
+		
+		public RasterInspection dataLayer(String dataLayer) {
+			mLayer = Layer_Base.getLayer(dataLayer);
+			return this;
+		}
+		public RasterInspection setTransform(Transform dataTransform) {
+			mDataTransform = dataTransform;
+			return this;
+		}
 		
 		// ext is the computation extent
-		public float[][] compute(Clipper ext)  { 
+		// options can contain a filter object. That filter object (if exists) can contain
+		//	compare: (greater-than, less-than) and value: #
+		public float[][] compute(Clipper ext, JsonNode options) throws Exception  { 
 			
-			Layer_Base slope = Layer_Base.getLayer("slope");
-			float slopeData[][] = slope.getFloatData();
-			float [][] slopeOut = new float[slope.getHeight()][slope.getWidth()];
-			
-			for (int y = ext.mY1; y < ext.mY2; y++) {
-				for (int x = ext.mX1; x < ext.mX2; x++) {
-					
-					slopeOut[y][x] = slopeData[y][x];
+			Boolean filterEnabled = false;
+			Boolean lessThan = true; // if false, then is in greater-than mode
+			Float filterValue = 0.0f;
+			if (options != null) {
+				JsonNode filter = options.get("filter");
+				if (filter != null) {
+					filterEnabled = true;
+					lessThan = Json.safeGetOptionalString(filter, "compare", "less-than").equalsIgnoreCase("less-than");
+					filterValue = (float)Json.safeGetOptionalInteger(filter, "value", 0);
 				}
 			}
 			
-			return slopeOut;
+			if (mLayer == null) throw new Exception("Did not configure a data layer");
+			float [][] dataIn = mLayer.getFloatData();
+			float [][] dataOut = new float[mLayer.getHeight()][mLayer.getWidth()];
+
+			if (filterEnabled) {
+				logger.info("Using filtered view...");
+				for (int y = ext.mY1; y < ext.mY2; y++) {
+					for (int x = ext.mX1; x < ext.mX2; x++) {
+						float data = mDataTransform.transform(dataIn[y][x]);
+						if (lessThan && data < filterValue) {
+							dataOut[y][x] = data;
+						}
+						else if (!lessThan && data > filterValue) { // in greater than mode
+							dataOut[y][x] = data;
+						}
+						else { // filter it out
+							dataOut[y][x] = -9999.0f;
+						}
+					}
+				}
+			}
+			else { // straight copy
+				for (int y = ext.mY1; y < ext.mY2; y++) {
+					for (int x = ext.mX1; x < ext.mX2; x++) {
+						float data = mDataTransform.transform(dataIn[y][x]);
+						dataOut[y][x] = data;
+					}
+				}
+			}
+			
+			return dataOut;
 		}
 	}
 	
+	public enum Crop {
+		ECornGrain,
+		ECornSilage,
+		ESoybeans,
+		ESoylage,
+		EAlfalfa
+	};
+	
 	//-------------------------------------------------------------------------------------
-	public class CornModel implements ModelComputation {
+	public class YieldModel implements ModelComputation {
 		
-		public float[][] compute(Clipper ext)  { 
+		public float[][] compute(Clipper ext, JsonNode options) throws Exception { 
+			
+			Boolean filterEnabled = false;
+			Boolean lessThan = true; // if false, then is in greater-than mode
+			Float filterValue = 0.0f;
+			
+			Crop cropCode = Crop.ECornGrain;
+			
+			if (options != null) {
+				JsonNode filter = options.get("filter");
+				if (filter != null) {
+					filterEnabled = true;
+					lessThan = Json.safeGetOptionalString(filter, "compare", "less-than").equalsIgnoreCase("less-than");
+					filterValue = (float)Json.safeGetOptionalInteger(filter, "value", 0);
+				}
+				// Extract crop....
+				String crop = Json.safeGetOptionalString(options, "crop", "corn-grain");
+				if (crop.equalsIgnoreCase("corn-grain")) cropCode = Crop.ECornGrain;
+				else if (crop.equalsIgnoreCase("corn-silage")) cropCode = Crop.ECornSilage;
+				else if (crop.equalsIgnoreCase("soybeans")) cropCode = Crop.ESoybeans;
+				else if (crop.equalsIgnoreCase("soylage")) cropCode = Crop.ESoylage;
+				else if (crop.equalsIgnoreCase("alfalfa")) cropCode = Crop.EAlfalfa;
+				
+				// Oats + grasses incoming
+			}
+			
 			
 			Layer_Base slope = Layer_Base.getLayer("slope");
 			float slopeData[][] = slope.getFloatData();
 			float silt[][] = Layer_Base.getLayer("silt_perc").getFloatData();
 //			float depth[][] = Layer_Base.getLayer("soil_depth").getFloatData();
 			float cec[][] = Layer_Base.getLayer("cec").getFloatData();
-			float [][] cornYield = new float[slope.getHeight()][slope.getWidth()];
+			float [][] yield = new float[slope.getHeight()][slope.getWidth()];
 			
-			float cornCoefficient = 1.30f 	// correction for technological advances 
-					* 0.053f; 				// conversion to Mg per Ha 
+			final float cornCoefficient = 1.30f 	// correction for technological advances 
+					* 0.053f; 						// conversion to Mg per Ha 
 			
-			float soyCoefficient = 1.2f		// Correct for techno advances
-					* 0.0585f;				// conversion to Mg per Ha
+			final float soyCoefficient = 1.2f		// Correct for techno advances
+					* 0.0585f;						// conversion to Mg per Ha
 			
 			for (int y = ext.mY1; y < ext.mY2; y++) {
 				for (int x = ext.mX1; x < ext.mX2; x++) {
 					
-					float _slope = slopeData[y][x], /*_depth = depth[y][x],*/ _silt = silt[y][x], _cec = cec[y][x];
+					float value = 0;
+					float _slope = slopeData[y][x], _depth = 60.0f,/*depth[y][x],*/ _silt = silt[y][x], _cec = cec[y][x];
+
+					// Corn
+					//----------------------------------------------------------
+					if (cropCode == Crop.ECornGrain || cropCode == Crop.ECornSilage) {
+						
+						// Corn roots don't exceed much below this
+						if (_depth > 60) _depth = 60;
+						
+						// Yield
+						value =  22.0f - 1.05f * _slope + 0.19f * _depth + (0.817f / 100.0f) * _silt + 1.32f * _cec
+								* cornCoefficient;
+						
+						// TODO: sensible clamps?
+						if (value < 0.5) value = 0.5f;
+						else if (value > 36) value = 36;
+						
+						// contribution of stover doubles yield
+						if (cropCode == Crop.ECornSilage) value *= 2.0f;
+					}
+					//----------------------------------------------------------
+					else if (cropCode == Crop.ESoybeans || cropCode == Crop.ESoylage) {
+						
+						// soy roots don't exceed much below this
+						if (_depth > 60) _depth = 60;
+						
+						// Yield
+						value = 6.37f - 0.34f * _slope + 0.065f * _depth + (0.278f / 100.0f) * _silt + 0.437f * _cec 
+								* soyCoefficient;
 					
-//					if (_depth > 60) _depth = 60;
-					float cornY =  22.0f - 1.05f * _slope + /*0.19f * _depth +*/ (0.817f / 100.0f) * _silt + 1.32f * _cec
-							* cornCoefficient ;
+						// TODO: sensible clamps?
+						if (value < 0.5) value = 0.5f;
+						else if (value > 18) value = 18;
+						
+						// soy plant residue contributes 2.5x biomass
+						if (cropCode == Crop.ESoylage) value *= 2.5f;
+					}
 					
-//					float soyY = 6.37f - 0.34f * _slope + 0.065f * _depth + (0.278f / 100.0f) * _silt + 0.437f * _cec 
-//							* soyCoefficient;
-					
-					if (cornY < 1) cornY = 1;//-9999.0f;
-					else if (cornY > 36) cornY = 36;
-					
-//					if (soyY < 1) soyY = 1;//-9999.0f;
-//					else if (soyY > 36) soyY = 36;
-					
-					cornYield[y][x] = cornY;
+					if (filterEnabled) {
+						if ((lessThan && value >= filterValue) ||
+								(!lessThan && value <= filterValue)) {
+							value = -9999.0f;
+						}
+					}
+					yield[y][x] = value;
 				}
 			}
 			
-			return cornYield;
+			return yield;
 		}
 	}
 	
@@ -607,7 +769,7 @@ public class HomeController extends Controller {
 	//-------------------------------------------------------------------------------------
 	public class BirdModel implements ModelComputation {
 		
-		public float[][] compute(Clipper ext)  { 
+		public float[][] compute(Clipper ext, JsonNode options) throws Exception { 
 			
 			Layer_Integer wl = Layer_CDL.get();
 			int wl_data[][] = wl.getIntData();
@@ -632,8 +794,9 @@ public class HomeController extends Controller {
 						float lambda = -4.47f + (2.95f * proportionAg) + (5.17f * proportionGrass); 
 						float habitatIndex = (float)((1.0f / (1.0f / Math.exp(lambda) + 1.0f )) / 0.67f);
 		
-						if (habitatIndex < 0.1f) 
+						if (habitatIndex < 0.1f) {
 							habitatIndex = -9999.0f;
+						}
 				
 						habitatData[point.mY][point.mX] = habitatIndex;
 					}
@@ -651,6 +814,71 @@ public class HomeController extends Controller {
 			return habitatData;
 		}
 	}
+	
+	//-------------------------------------------------------------------------------------
+	public class PLossModel implements ModelComputation {
+		
+		public float[][] compute(Clipper ext, JsonNode options) throws Exception { 
+			
+			float intercept		= -1.78349736f;// CC and NT
+//			float intercept		= 0.002108137f;// CC and SC
+//			float intercept		= 0.674846328f; // CC and FM
+			float c_ManureApp 	= 0.003592068f;
+			float c_SyntheticApp = 0.002528376f;
+			float c_initialP 	= 0.003373863f;
+			float c_Slope 		= 0.068572035f;
+			float c_SlopeLength = -0.003486291f;
+			float c_LS 			= -0.129721845f;
+			float c_K 			= 2.251860154f;
+			float c_sandtotal_r = 0.003883564f;
+			float c_silttotal_r = 0.012381493f;
+			float c_OM 			= 0.079284433f;	
+			
+			float initialP = 32.0f;
+			float percManure = 50.0f;
+			float percSynth = 50.0f;
+			
+			Layer_Base s_layer = Layer_Base.getLayer("slope");
+			
+			float slope[][] = Layer_Base.getLayer("slope").getFloatData();
+			float silt[][] = Layer_Base.getLayer("silt_perc").getFloatData();
+			float sand[][] = Layer_Base.getLayer("sand_perc").getFloatData();
+			float om[][] = Layer_Base.getLayer("om").getFloatData();
+			float k[][] = Layer_Base.getLayer("k").getFloatData();
+			float ls[][] = Layer_Base.getLayer("ls").getFloatData();
+			float slp_len[][] = Layer_Base.getLayer("slope_length").getFloatData();
+			
+			float [][] ploss = new float[s_layer.getHeight()][s_layer.getWidth()];
+			
+			for (int y = ext.mY1; y < ext.mY2; y++) {
+				for (int x = ext.mX1; x < ext.mX2; x++) {
+					
+					float value = 0;
+					float _slope =slope[y][x];
+					if (_slope > 45 || sand[y][x] > 65) value = -9999.0f;
+					else {
+						value = intercept	+
+							percManure 	* c_ManureApp +
+							percSynth 	* c_SyntheticApp + 
+							initialP 	* c_initialP + 
+							_slope 		* c_Slope +
+							k[y][x] 	* c_K +
+							ls[y][x] 	* c_LS +
+							sand[y][x] 	* c_sandtotal_r +
+							silt[y][x] 	* c_silttotal_r +
+							om[y][x] 	* c_OM +
+							slp_len[y][x] * c_SlopeLength;
+						
+						value = (float)Math.exp(value) * 0.024f; // convert to pounds per 100m2
+					}
+					ploss[y][x] = value;
+				}
+			}
+			
+			return ploss;
+		}
+	}
+	
 	
 	
 

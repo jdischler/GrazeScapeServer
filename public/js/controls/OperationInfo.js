@@ -1,9 +1,8 @@
 
 DSS.utils.addStyle('.underlined-input { border: none; border-bottom: 1px solid #ddd; display:table; width: 100%; height:100%; padding: 0 0 2px}')   
 DSS.utils.addStyle('.underlined-input:hover { border-bottom: 1px solid #7ad;}')
-DSS.utils.addStyle('.x-form-text-default {font-size: 1rem}')
-DSS.utils.addStyle('.x-form-text-default:focus { background:#ebf4f7; border-top-left-radius: 4px; border-top-right-radius: 4px}')
-
+//DSS.utils.addStyle('.x-form-text-default {font-size: 1rem}')
+//DSS.utils.addStyle('.x-form-text-default:focus { background:#ebf4f7; border-top-left-radius: 4px; border-top-right-radius: 4px}')
 
 //------------------------------------------------------------------------------
 Ext.define('DSS.controls.OperationInfo', {
@@ -47,48 +46,40 @@ Ext.define('DSS.controls.OperationInfo', {
 				border: false,
 				layout: DSS.utils.layout('vbox', 'center', 'stretch'),
 				margin: '8 0',
-				items: [{
+				defaults: {
 					xtype: 'textfield',
+					labelAlign: 'right',
+					labelWidth: 80,
+					triggerWrapCls: 'underlined-input',
+				},
+				items: [{
 					fieldLabel: 'Operation',
 					name: 'operation',
 					allowBlank: false,
 					value: me.DSS_operation,
-					labelAlign: 'right',
-					labelWidth: 80,
-					triggerWrapCls: 'underlined-input',
-					width: 280,
-					margin: '12 0',
+				//	width: 250,
+					margin: '10 0',
 					padding: 4,
 				},{
-					xtype: 'textfield',
 					fieldLabel: 'Owner',
 					name: 'owner',
 					allowBlank: false,
-					labelAlign: 'right',
-					labelWidth: 80,
-					triggerWrapCls: 'underlined-input',
-					width: 280,
-					margin: '12 0',
+				//	width: 250,
+					margin: '10 0',
 					padding: 4,
 				},{
-					xtype: 'textfield',
 					fieldLabel: 'Address',
 					name: 'address',
-					labelAlign: 'right',
-					labelWidth: 80,
-					triggerWrapCls: 'underlined-input',
-					width: 280,
+				//	width: 250,
 					margin: '12 0',
 					padding: 4,
 				},{
-					xtype: 'textfield',
 					itemId: 'location_x',
 					fieldLabel: 'Location x',
 					name: 'location_x',
 					allowBlank: false,
 					hidden: true,
 				},{
-					xtype: 'textfield',
 					itemId: 'location_y',
 					fieldLabel: 'Location y',
 					name: 'location_y',
