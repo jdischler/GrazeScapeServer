@@ -28,6 +28,8 @@ Ext.define('DSS.controls.StatsPanel', {
 	
 	requires: [
 		'DSS.controls.Inspector_Limiter',
+		'DSS.controls.Inspector_PLoss',
+		'DSS.controls.Management'
 	],
 	
 	width: 0,
@@ -40,6 +42,7 @@ Ext.define('DSS.controls.StatsPanel', {
 	resizeHandles: 'w',
 	maxWidth: 320,
 	padding: '8 6',
+	scrollable: 'y',
 	
 	layout: DSS.utils.layout('vbox', 'start', 'stretch'),
 	
@@ -66,7 +69,7 @@ Ext.define('DSS.controls.StatsPanel', {
 		let me = this;
 
 		//-------------------------------------------------------------
-		function makeInspectionMode(buttonText, modeName, disabled) {
+		function makeInspectionMode(buttonText, modeName, disabled, controls) {
 			return {
 				padding: '0 0 0 16',
 				text: buttonText,
@@ -74,6 +77,13 @@ Ext.define('DSS.controls.StatsPanel', {
 				handler: function(self) {
 					self.parentMenu.DSS_ownerButton.setText(buttonText);
 					me.setMode(modeName);
+					me.down('#mode-options').removeAll();
+					if (controls) {
+						me.down('#mode-options').add({
+							xtype: controls,
+							DSS_InspectorParent: me
+						})
+					}
 				}
 			}
 		};
@@ -98,7 +108,7 @@ Ext.define('DSS.controls.StatsPanel', {
 						}
 					}
 				},
-			},{
+/*			},{
 				DSS_ratio: 0.5,
 				margin: 4,
 				minHeight: 64,
@@ -109,7 +119,22 @@ Ext.define('DSS.controls.StatsPanel', {
 							self.setHeight(Math.floor(w * self.DSS_ratio));
 						}
 					}
-				}
+				}*/
+			},{
+				flex: 1
+			/*},{
+				xtype: 'container',
+				hidden: false,
+				layout: 'fit',
+				margin: 4,
+				padding: 4,
+				
+				//layout: DSS.utils.layout('vbox', 'center', 'stretch'),
+				style: 'background-color: white; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); border-top-color:rgba(255,255,255,0.25); border-bottom-color:rgba(0,0,0,0.3); box-shadow: 0 3px 6px rgba(0,0,0,0.2)',
+
+				items: [{
+					xtype: 'management'
+				}]*/
 			},{
 				flex: 1
 			},{
@@ -140,31 +165,27 @@ Ext.define('DSS.controls.StatsPanel', {
 									text: 'Models', disabled: true,
 									style: 'border-bottom: 1px solid rgba(0,0,0,0.2);'
 								},
-									makeInspectionMode('Soil Loss', 'soil-loss', true),
-									makeInspectionMode('P-Loss', 'p-loss'),
-									makeInspectionMode('Crop Yield', 'crop-yield'),
-									makeInspectionMode('Bird Habitat', 'bird-habitat'),
+									makeInspectionMode('Soil Loss', 	'soil-loss', true, 'inspector_p_loss'),
+									makeInspectionMode('P-Loss', 		'p-loss', 	false, 'inspector_p_loss'),
+									makeInspectionMode('Crop Yield', 	'crop-yield', false, 'inspector_p_loss'),
+									makeInspectionMode('Bird Habitat', 	'bird-habitat'),
 								{
 									text: 'Land Properties', disabled: true,
 									style: 'border-bottom: 1px solid rgba(0,0,0,0.2);padding-top: 4px'
 								}, 
-									makeInspectionMode('Slope', 'slope'),
-									makeInspectionMode('Soil Depth', 'soil-depth', true),
-									makeInspectionMode('% Sand', 'perc-sand'),
-									makeInspectionMode('% Silt', 'perc-silt'),
-									makeInspectionMode('Distance to Water', 'dist-water'),
-									makeInspectionMode('OM', 'om'),
-									makeInspectionMode('K', 'k'),
-									makeInspectionMode('LS', 'ls'),
-									makeInspectionMode('Slope Length', 'slope-length'),
-									makeInspectionMode('Elevation', 'dem')
+									makeInspectionMode('Slope', 		'slope', 	false, 'inspector_limiter'),
+									makeInspectionMode('Soil Depth', 	'soil-depth', true),
+									makeInspectionMode('% Sand', 		'perc-sand', false, 'inspector_limiter'),
+									makeInspectionMode('% Silt', 		'perc-silt', false, 'inspector_limiter'),
+									makeInspectionMode('Distance to Water', 'dist-water', false, 'inspector_limiter'),
+									makeInspectionMode('OM', 			'om', 		false, 'inspector_limiter'),
+									makeInspectionMode('K', 			'k', 		false, 'inspector_limiter'),
+									makeInspectionMode('LS', 			'ls', 		false, 'inspector_limiter'),
+									makeInspectionMode('Slope Length', 	'slope-length', false, 'inspector_limiter'),
+									makeInspectionMode('Elevation', 	'dem', 		false, 'inspector_limiter'),
 
 								]
 							});
-							me.down('#mode-options').add({
-								xtype: 'inspector_limiter',
-								DSS_InspectorParent: me
-							})
 						}
 					}
 				},{
@@ -322,6 +343,10 @@ Ext.define('DSS.controls.StatsPanel', {
 				modelResultsLayer.setVisible(true);	
 				
 				DSS.MapState.showLegend(obj.palette, obj.values);
+				
+				if (obj.fields) {
+					DSS.fieldList.addStats(me.DSS_mode, obj.fields)
+				}
 			},
 			
 			failure: function(response, opts) {

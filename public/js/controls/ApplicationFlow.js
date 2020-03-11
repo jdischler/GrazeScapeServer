@@ -136,15 +136,7 @@ Ext.define('DSS.controls.ApplicationFlow', {
 			me.setControlBlock([
 				DSS.controls.OperationsBase.get(),
 				DSS.controls.CompareOperationsBase.get(),
-				DSS.controls.GrazingToolsBase.get(),
-				{
-					xtype: 'container',
-					layout: DSS.utils.layout('vbox', 'center', 'stretch'),
-					cls: 'section',
-					items: [{
-						xtype: 'management'
-					}]
-				}
+				DSS.controls.GrazingToolsBase.get()
 			]);
 		Ext.resumeLayouts(true);
 		

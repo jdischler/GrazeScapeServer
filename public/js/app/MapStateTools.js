@@ -28,7 +28,8 @@ Ext.define('DSS.app.MapStateTools', {
 		// Full minimal style
 		defaultStyle: new ol.style.Style({
 			fill: new ol.style.Fill({
-				color: 'rgba(48, 32, 0, 0.45)'
+//				color: 'rgba(48, 32, 0, 0.45)'
+				color: 'rgba(0, 0, 0, 0.2)'
 			}),
 			stroke: new ol.style.Stroke({
 				color: 'rgba(255,204,32,0.9)',
@@ -38,7 +39,8 @@ Ext.define('DSS.app.MapStateTools', {
 		// just minimal fill style
 		defaultFill: new ol.style.Style({
 			fill: new ol.style.Fill({
-				color: 'rgba(48, 32, 0, 0.33)'
+				color: 'rgba(0, 0, 0, 0.2)'
+//				color: 'rgba(48, 32, 0, 0.33)'
 			})
 		}),
 		baseStroke: new ol.style.Style({
@@ -240,6 +242,7 @@ Ext.define('DSS.app.MapStateTools', {
 					me.zoomToExtent(g.getFirstCoordinate(),15);
 					// if results were already being computed (extents chosen and model), then trigger a recompute
 					DSS.StatsPanel.computeResults(undefined, DSS.layer.ModelResult);
+					DSS.map.getViewport().style.cursor = '';
 					break;
 				}
 			}

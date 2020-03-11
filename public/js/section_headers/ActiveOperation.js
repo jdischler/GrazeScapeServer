@@ -22,7 +22,7 @@ Ext.define('DSS.section_headers.ActiveOperation', {
 			items: [{
 				xtype: 'component',
 				cls: 'lightweight-title',
-				html: 'Operation'
+				html: 'Manage Operation'
 			},{ 
 				xtype: 'container',
 				layout: DSS.utils.layout('hbox', 'center', 'stretch'),

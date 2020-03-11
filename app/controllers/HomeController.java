@@ -343,6 +343,7 @@ public class HomeController extends Controller {
 		}
 		
 		AreaStats fs = null;
+		ObjectNode fieldStats = null;
 		if (farmId != null) {
 			db.Farm f = db.Farm.find.byId(farmId);
 			if (f != null) {
@@ -370,6 +371,8 @@ public class HomeController extends Controller {
 				fs = new AreaStats(modelResults).forRasterizedFields(layer).compute();
 				
 				try {
+					fieldStats = JsonNodeFactory.instance.objectNode();
+					
 					for (FieldGeometry fd: f.fieldGeometry) {
 						Long fs_idx = fd.id;
 						Stats stats = fs.getFieldStats(fs_idx);
@@ -406,6 +409,8 @@ public class HomeController extends Controller {
 							results += String.format("  Median: %.2f\n", median);
 							results += " »HISTOGRAM (" + histogramCt + " bins) \n";
 							results += hs.toString();
+							
+							Json.addToPack(fieldStats, fs_idx.toString(), Json.pack("area", area, "mean", mean));
 						}
 						results += "─────────────────────────────────────────────────────\n";
 						
@@ -518,6 +523,9 @@ public class HomeController extends Controller {
 						"extent", Json.array(ext.mExtent[0],ext.mExtent[3],
 								ext.mExtent[2],ext.mExtent[1]));	
 		
+		if (fieldStats != null) {
+			Json.addToPack(result, "fields", fieldStats);
+		}
 		pngCounter++;
 		return ok(result);
 	}
@@ -650,7 +658,7 @@ public class HomeController extends Controller {
 					//----------------------------------------------------------
 					if (cropCode == Crop.ECornGrain || cropCode == Crop.ECornSilage) {
 						
-						// Corn roots don't exceed much below this
+						// Corn roots don't exceed much below this, well, in inches. But are these centimeters?
 						if (_depth > 60) _depth = 60;
 						
 						// Yield
@@ -667,7 +675,7 @@ public class HomeController extends Controller {
 					//----------------------------------------------------------
 					else if (cropCode == Crop.ESoybeans || cropCode == Crop.ESoylage) {
 						
-						// soy roots don't exceed much below this
+						// soy roots don't exceed much below this, well, in inches. But are these centimeters?
 						if (_depth > 60) _depth = 60;
 						
 						// Yield
@@ -703,7 +711,6 @@ public class HomeController extends Controller {
 		public float[][] compute(Clipper ext, JsonNode options) throws Exception { 
 			
 			Layer_Integer wl = Layer_CDL.get();
-			int wl_data[][] = wl.getIntData();
 			float [][] habitatData = new float[wl.getHeight()][wl.getWidth()];
 			
 			Moving_CDL_Window win = (Moving_CDL_Window)new Moving_CDL_Window_Z(400/10).
@@ -751,23 +758,306 @@ public class HomeController extends Controller {
 		
 		public float[][] compute(Clipper ext, JsonNode options) throws Exception { 
 			
-			float intercept		= -1.78349736f;// CC and NT
-//			float intercept		= 0.002108137f;// CC and SC
-//			float intercept		= 0.674846328f; // CC and FM
-			float c_ManureApp 	= 0.003592068f;
-			float c_SyntheticApp = 0.002528376f;
-			float c_initialP 	= 0.003373863f;
-			float c_Slope 		= 0.068572035f;
-			float c_SlopeLength = -0.003486291f;
-			float c_LS 			= -0.129721845f;
-			float c_K 			= 2.251860154f;
-			float c_sandtotal_r = 0.003883564f;
-			float c_silttotal_r = 0.012381493f;
-			float c_OM 			= 0.079284433f;	
+			String landcoverCode = "cc";
+			String coverCropCode = "cc";
+			String tillageCode = "nt";
 			
 			float initialP = 32.0f;
 			float percManure = 50.0f;
 			float percSynth = 50.0f;
+			
+			if (options != null) {
+				landcoverCode 	= Json.safeGetOptionalString(options, "landcover", 	"cc"); // cc, cg, dr
+				coverCropCode 	= Json.safeGetOptionalString(options, "cover-crop", "cc"); // cc or nc
+				tillageCode 	= Json.safeGetOptionalString(options, "tillage", 	"nt"); // nt, s_cd, f_cd, s_mp, f_mp
+				initialP 		= Json.safeGetOptionalFloat(options, "soil-p", 		initialP);
+				percManure 		= Json.safeGetOptionalFloat(options, "perc-manure", percManure);
+				percSynth 		= Json.safeGetOptionalFloat(options, "perc-fertilizer", percSynth);
+			}
+		
+			float intercept 	= 0;
+			float c_ManureApp 	= 0;
+			float c_SyntheticApp= 0;
+			float c_initialP 	= 0;
+			float c_Slope 		= 0;
+			float c_SlopeLength = 0;
+			float c_LS 			= 0;
+			float c_K 			= 0;
+			float c_sandtotal_r = 0;
+			float c_silttotal_r = 0;
+			float c_OM 			= 0;
+			// Continuous Corn
+			//-------------------------------------------------------------
+			if (landcoverCode.equalsIgnoreCase("cc")) {
+				if (coverCropCode.equalsIgnoreCase("cc")) {
+					switch(tillageCode) {
+					case "fc":
+						intercept = 0.0566591768276325f;
+						break;
+					case "sc":
+						intercept = 0.002108137081453f;
+						break;
+					case "fm":
+						intercept = 0.674846327508485f;
+						break;
+					case "sm":
+						intercept = 0.719958719846611f;
+						break;
+					case "nt":
+						intercept = -1.78349735992302f;
+						break;
+					default:
+						logger.error("Unhandled tillage code:" + tillageCode);
+					}
+				}
+				else if (coverCropCode.equalsIgnoreCase("nc")) {
+					switch(tillageCode) {
+					case "fc":
+						intercept = -0.579261936378879f;
+						break;
+					case "sc":
+						intercept = -0.633812975746179f;
+						break;
+					case "fm":
+						intercept = 0.038925214680853f;
+						break;
+					case "sm":
+						intercept = 0.084037607018978f;
+						break;
+					case "nt":
+						intercept = -2.41941847275065f;
+						break;
+					default:
+						logger.error("Unhandled tillage code:" + tillageCode);
+					}
+				}
+				else {
+					logger.error("Unhandled cover crop code:" + coverCropCode);
+				}
+				
+				c_ManureApp 	= 0.00359206803416f;
+				c_SyntheticApp 	= 0.00252837564114f;
+				c_initialP 		= 0.00337386285029f;
+				c_Slope 		= 0.06857203548177f;
+				c_SlopeLength 	= -0.0034862913967f;
+				c_LS 			= -0.1297218451209f;
+				c_K 			= 2.25186015396712f;
+				c_sandtotal_r 	= 0.00388356367312f;
+				c_silttotal_r 	= 0.01238149285957f;
+				c_OM 			= 0.07928443256857f;	
+			}
+			// Cash Grain (Corn + Soy)
+			//-------------------------------------------------------------
+			else if (landcoverCode.equalsIgnoreCase("cg")) {
+				if (coverCropCode.equalsIgnoreCase("cc")) {
+					switch(tillageCode) {
+					case "fc":
+						intercept = 0.17712728352553f;
+						break;
+					case "sc":
+						intercept = -0.031632721834f;
+						break;
+					case "fm":
+						intercept = 0.552153277505f;
+						break;
+					case "sm":
+						intercept = 0.549093698358f;
+						break;
+					case "nt":
+						intercept = -1.600321633430f;
+						break;
+					default:
+						logger.error("Unhandled tillage code:" + tillageCode);
+					}
+				}
+				else if (coverCropCode.equalsIgnoreCase("nc")) {
+					switch(tillageCode) {
+					case "fc":
+						intercept = -0.177448061444f;
+						break;
+					case "sc":
+						intercept = -0.386208066803f;
+						break;
+					case "fm":
+						intercept = 0.197577932536f;
+						break;
+					case "sm":
+						intercept = 0.194518353389f;
+						break;
+					case "nt":
+						intercept = -1.954896978399f;
+						break;
+					default:
+						logger.error("Unhandled tillage code:" + tillageCode);
+					}
+				}
+				else {
+					logger.error("Unhandled cover crop code:" + coverCropCode);
+				}
+				
+				c_ManureApp 	= 0.00277537745450f;
+				c_SyntheticApp 	= 0.00210478873069f;
+				c_initialP 		= 0.00328978161121f;
+				c_Slope 		= 0.07268108586729f; 
+				c_SlopeLength 	= -0.00374287052429f;
+				c_LS 			= -0.14212765910246f;
+				c_K 			= 2.43583905849407f;
+				c_sandtotal_r 	= 0.00588279213064f;
+				c_silttotal_r 	= 0.01441431827988f;
+				c_OM 			= 0.08113536990160f;	
+			}
+			// Dairy Rotation
+			//-------------------------------------------------------------
+			else if (landcoverCode.equalsIgnoreCase("dr")) {
+				if (coverCropCode.equalsIgnoreCase("cc")) {
+					switch(tillageCode) {
+					case "fc":
+						intercept = 0.302634741679f;
+						break;
+					case "sc":
+						intercept = 0.072659495219f;
+						break;
+					case "fm":
+						intercept = 0.337371095760f;
+						break;
+					case "sm":
+						intercept = 0.399588747324f;
+						break;
+					case "nt":
+						intercept = -0.992183005201f;
+						break;
+					default:
+						logger.error("Unhandled tillage code:" + tillageCode);
+					}
+				}
+				else if (coverCropCode.equalsIgnoreCase("nc")) {
+					switch(tillageCode) {
+					case "fc":
+						intercept = 0.605307890508f;
+						break;
+					case "sc":
+						intercept = 0.375332644048f;
+						break;
+					case "fm":
+						intercept = 0.640044244590f;
+						break;
+					case "sm":
+						intercept = 0.702261896153f;
+						break;
+					case "nt":
+						intercept = -0.689509856372f;
+						break;
+					default:
+						logger.error("Unhandled tillage code:" + tillageCode);
+					}
+				}
+				else {
+					logger.error("Unhandled cover crop code:" + coverCropCode);
+				}
+				
+				c_ManureApp 	= 0.002952260183f; 
+				c_SyntheticApp 	= 0.002324369178f; 
+				c_initialP 		= 0.003523159931f; 
+				c_Slope 		= 0.058817887648f;  
+				c_SlopeLength 	= -0.004091007642f; 
+				c_LS 			= -0.102274335208f; 
+				c_K 			= 2.303621117181f; 
+				c_sandtotal_r 	= -0.003640751209f; 
+				c_silttotal_r 	= 0.003903691381f; 
+				c_OM 			= 0.088916995709f; 	
+			}
+			// Corn Soy Oats
+			//-------------------------------------------------------------
+			else if (landcoverCode.equalsIgnoreCase("cso")) {
+				if (coverCropCode.equalsIgnoreCase("cc")) {
+					switch(tillageCode) {
+					case "fc":
+						intercept = 0.304055046729f;
+						break;
+					case "sc":
+						intercept = 0.186830609034f;
+						break;
+					case "fm":
+						intercept = 0.555635922028f;
+						break;
+					case "sm":
+						intercept = 0.590269197502f;
+						break;
+					case "nt":
+						intercept = -1.260135314598f;
+						break;
+					default:
+						logger.error("Unhandled tillage code:" + tillageCode);
+					}
+				}
+				else if (coverCropCode.equalsIgnoreCase("nc")) {
+					switch(tillageCode) {
+					case "fc":
+						intercept = 0.556564164589f;
+						break;
+					case "sc":
+						intercept = 0.439339726894f;
+						break;
+					case "fm":
+						intercept = 0.808145039888f;
+						break;
+					case "sm":
+						intercept = 0.842778315362f;
+						break;
+					case "nt":
+						intercept = -1.007626196738f;
+						break;
+					default:
+						logger.error("Unhandled tillage code:" + tillageCode);
+					}
+				}
+				else {
+					logger.error("Unhandled cover crop code:" + coverCropCode);
+				}
+				
+				c_ManureApp 	= 0.003055080991f;
+				c_SyntheticApp 	= 0.002707272611f;
+				c_initialP 		= 0.003382967272f;
+				c_Slope 		= 0.055077232960f;
+				c_SlopeLength 	= -0.004251675881f;
+				c_LS 			= -0.090935063767f;
+				c_K 			= 2.252541965754f;
+				c_sandtotal_r 	= 0.000942354835f;
+				c_silttotal_r 	= 0.008457536411f;
+				c_OM 			= 0.084705451215f;	
+			}
+			// Pasture
+			//-------------------------------------------------------------
+			else if (landcoverCode.startsWith("p")) {
+				switch(landcoverCode) {
+				case "pr": // pasture, rotational
+					intercept = -3.387384002923f;
+					break;
+				case "pl": // pasture, continuous, low density
+					intercept = -2.803379129937f;
+					break;
+				case "ph": // pasture, continuous, high density
+					intercept = -1.261009446664f;
+					break;
+				default:
+					logger.error("Unhandled tillage code:" + tillageCode);
+				}
+				
+				c_ManureApp 	= 0.002814638921f;
+				c_SyntheticApp 	= 0.001230465139f;
+				c_initialP 		= 0.007878286120f;
+				c_Slope 		= 0.041020426882f;
+				c_SlopeLength 	= -0.001120477836f;
+				c_LS 			= -0.088859139728f;
+				c_K 			= 2.065562020684f;
+				c_sandtotal_r 	= 0.000161475720f;
+				c_silttotal_r 	= 0.005943307442f;
+				c_OM 			= 0.110005660671f;
+			}
+			else {
+				logger.error("Unhandled landcover code:" + landcoverCode);
+			}
+			
 			
 			Layer_Base s_layer = Layer_Base.getLayer("slope");
 			
@@ -786,7 +1076,7 @@ public class HomeController extends Controller {
 					
 					float value = 0;
 					float _slope =slope[y][x];
-					if (_slope > 45 || sand[y][x] > 65) value = -9999.0f;
+					if (_slope > 40 || sand[y][x] > 65) value = -9999.0f;
 					else {
 						value = intercept	+
 							percManure 	* c_ManureApp +

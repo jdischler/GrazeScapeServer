@@ -1,6 +1,6 @@
 
 DSS.utils.addStyle('.lightweight-title { color: #888; font-size: 1rem; text-align: center;}')
-DSS.utils.addStyle('.primary-title { color: #27b; font-size: 1.4rem; line-height: 1.6rem; text-align: center; font-weight: bold}')
+DSS.utils.addStyle('.primary-title { color: #27b; font-size: 1.2rem; line-height: 1.6rem; text-align: center; font-weight: bold}')
 DSS.utils.addStyle('.primary-title i { opacity: 0.3; cursor: pointer }')
 DSS.utils.addStyle('.primary-title i:hover { opacity: 1}')
 

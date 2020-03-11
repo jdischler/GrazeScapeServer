@@ -239,11 +239,14 @@
     }
 }
 
+.ol-zoom-in,.ol-zoom-out,.ol-attribution button {
+    cursor: pointer;
+}
 .ol-zoom {
     left: unset;
     top: unset;
 	bottom: 3em;
-    right: .5em
+    right: .5em;
 }
 
 .dss-tool {

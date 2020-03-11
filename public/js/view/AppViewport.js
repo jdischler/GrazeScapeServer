@@ -54,7 +54,7 @@ Ext.define('DSS.view.AppViewport', {
 					autoDestroy: false,
 					layout: 'border',
 					items: [{
-						xtype: 'main_map_new',
+						xtype: 'main_map',
 						region: 'center',
 					},{					
 						xtype: 'component',
@@ -98,10 +98,12 @@ Ext.define('DSS.view.AppViewport', {
 		DSS_viewport = me;
 		
 		// Terrible image cache
-		Ext.create('Ext.window.Window', {
-			style: 'url("assets/images/graze_logo.png")',
+		Ext.create('Ext.container.Container', {
+			style: 'background:url("assets/images/graze_logo.png")',
 			width: 1, height: 1,
-		}).showAt(-10000,-10000);
+			floating: true, 
+			shadow: false,
+		}).showAt(-1,-1);
 		
 		Ext.create('Ext.Component', {
 			floating: true,

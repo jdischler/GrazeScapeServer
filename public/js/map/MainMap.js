@@ -44,7 +44,7 @@ DSS.popupContainer
 Ext.define('DSS.map.MainMap', {
 //------------------------------------------------------------------------------
 	extend: 'Ext.Container',//Component',
-	alias: 'widget.main_map_new',
+	alias: 'widget.main_map',
 	
 	style: 'background-color: rgb(75,80,60)',
 	
@@ -53,6 +53,7 @@ Ext.define('DSS.map.MainMap', {
 	
 	requires: [
 		'DSS.controls.StatsPanel',
+		'DSS.controls.FieldList',
 		'DSS.map.DrawAndModify',
 		'DSS.map.BoxModel',
 	],
@@ -74,19 +75,26 @@ Ext.define('DSS.map.MainMap', {
 
 		Ext.applyIf(me, {
 			items: [{
-				xtype: 'component',
+				xtype: 'container',
+				layout: 'border',
 				region: 'center',
-				id: 'ol_map',
-				listeners: {
-					resize: function(self, w, h) {
-						me.map.setSize([w,h]);
-						DSS.MapState.mapResize();
+				items: [{
+					xtype: 'component',
+					region: 'center',
+					id: 'ol_map',
+					listeners: {
+						resize: function(self, w, h) {
+							me.map.setSize([w,h]);
+							DSS.MapState.mapResize();
+						}
 					}
-				},
+				},{
+					xtype: 'field_list',
+					region: 'south'
+				}]
 			},
-			DSS.StatsPanel/*{ // Directly add the singleton instance...
-				xtype: 'stats_panel',
-			}*/]
+			DSS.StatsPanel // Directly add the singleton instance...
+			]
 		});
 		me.callParent(arguments);
 		
@@ -184,8 +192,10 @@ Ext.define('DSS.map.MainMap', {
 				width: 2
 			}),
 			fill: new ol.style.Fill({
-				color: 'rgba(255,128,32,0.2)',
-			})
+				color: 'rgba(0,0,0,0.1)',
+//				color: 'rgba(255,128,32,0.2)',
+			}),
+			zIndex: 0
 		});
 		
 		DSS.layer.fields = new ol.layer.Vector({
@@ -193,7 +203,7 @@ Ext.define('DSS.map.MainMap', {
 			updateWhileAnimating: true,
 			updateWhileInteracting: true,
 			source: new ol.source.Vector({
-				format: new ol.format.GeoJSON(),
+				format: new ol.format.GeoJSON()
 			}),
 			style: function(feature, resolution) {
 				
@@ -204,6 +214,23 @@ Ext.define('DSS.map.MainMap', {
 			},
 		});	
 
+		// Populate grid
+/*		DSS.layer.fields.getSource().on('change', function(evt) {
+			
+			let fd = Ext.StoreMgr.lookup('field_data');
+			let records = [];
+			let fid = 1;
+			DSS.layer.fields.getSource().forEachFeature(function(f) {
+				records.push({
+					id: f.get('f_id'),
+					name: 'field' + fid,
+					acres: ol.sphere.getArea(f.getGeometry()) / 4046.8564224
+				});
+				fid++;
+			})
+			fd.loadRawData(records);
+		})
+*/		
 		//--------------------------------------------------------------
 		DSS.layer.farms = new ol.layer.Vector({
 			visible: true,
@@ -232,7 +259,7 @@ Ext.define('DSS.map.MainMap', {
 				DSS.layer.osm,
 				DSS.layer.watershed,             
 				DSS.layer.hillshade,
-				DSS.layer.fields,
+//				DSS.layer.fields,
 				DSS.layer.farms,
 			],//------------------------------------------------------------------------
 			view: new ol.View({
@@ -297,6 +324,7 @@ Ext.define('DSS.map.MainMap', {
 		me.addMarkerLayer(me.map);
 		me.addWorkAreaMask(me.map);
 		me.addSelectionTools(me.map);
+		me.map.addLayer(DSS.layer.fields);
 	},
 	
 	//---------------------------------------------------------------
@@ -383,7 +411,17 @@ Ext.define('DSS.map.MainMap', {
 	addSelectionTools: function(map) {
 		const select = DSS.selectionTool = new ol.interaction.Select({
 			features: new ol.Collection(),
-			toggleCondition: ol.events.condition.never
+			toggleCondition: ol.events.condition.never,
+			style: new ol.style.Style({
+				stroke: new ol.style.Stroke({
+					color: 'white',
+					width: 4
+				}),
+				fill: new ol.style.Fill({
+					color: 'rgba(0,0,0,0)'
+				}),
+				zIndex: 5
+			})
 		});
 		select.on('select', function(evt) {
 			if (DSS.selectionFunction) {
@@ -393,8 +431,8 @@ Ext.define('DSS.map.MainMap', {
 		
 		select.setActive(false);
 		map.addInteraction(select);
-		
 	}
+	
 });
 
 
