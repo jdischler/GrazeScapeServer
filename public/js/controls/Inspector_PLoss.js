@@ -59,7 +59,7 @@ Ext.define('DSS.controls.Inspector_PLoss', {
 				labelWidth: 90,
 				maxWidth: 170,
 				minValue: 5, maxValue: 200,
-				value: 30, step: 5,
+				value: 35, step: 5,
 				enableKeyEvents: true,
 				listeners: numberListener
 			},{
@@ -70,7 +70,7 @@ Ext.define('DSS.controls.Inspector_PLoss', {
 				labelWidth: 90,
 				maxWidth: 170,
 				minValue: 0, maxValue: 150,
-				value: 30, step: 10,
+				value: 20, step: 10,
 				enableKeyEvents: true,
 				listeners: numberListener
 			},{
@@ -81,7 +81,7 @@ Ext.define('DSS.controls.Inspector_PLoss', {
 				labelWidth: 90,
 				maxWidth: 170,
 				minValue: 0, maxValue: 150,
-				value: 100, step: 10,
+				value: 80, step: 10,
 				enableKeyEvents: true,
 				listeners: numberListener
 			},{
@@ -150,6 +150,13 @@ Ext.define('DSS.controls.Inspector_PLoss', {
 				listeners: {
 					change: function() { me.getOptions() }
 				}
+			},{
+				xtype: 'checkbox',
+				itemId: 'dss-snap-plus',
+				boxLabel: 'Apply S+ transmission...',
+				handler: function(self, checked) {
+					me.getOptions();
+				}
 			}]
 		});
 		
@@ -173,6 +180,7 @@ Ext.define('DSS.controls.Inspector_PLoss', {
 		options['landcover'] = me.down('#dss-landcover').getValue()['landcover'];
 		options['cover-crop'] = me.down('#dss-cover').getValue()['cover'];
 		options['tillage'] = me.down('#dss-tillage').getValue()['tillage'];
+		options['snap-plus-transmission'] = me.down('#dss-snap-plus').getValue();
 		
 		me.down('#dss-cover').setDisabled(options['landcover'][0] == 'p');
 		me.down('#dss-tillage').setDisabled(options['landcover'][0] == 'p');

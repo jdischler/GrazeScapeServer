@@ -97,7 +97,7 @@ Ext.define('DSS.map.MainMap', {
 			]
 		});
 		me.callParent(arguments);
-		
+
 		proj4.defs('urn:ogc:def:crs:EPSG::3071', "+proj=tmerc +lat_0=0 +lon_0=-90 +k=0.9996 +x_0=520000 +y_0=-4480000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 		proj4.defs('EPSG:3071', "+proj=tmerc +lat_0=0 +lon_0=-90 +k=0.9996 +x_0=520000 +y_0=-4480000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 		ol.proj.proj4.register(proj4);		
@@ -126,6 +126,16 @@ Ext.define('DSS.map.MainMap', {
 		}
 		
 		DSS.layer = {};
+		
+		if (Ext.util.Cookies.get("watershed:visible") == null) {
+			Ext.util.Cookies.set("watershed:visible", "1");
+		}
+		if (Ext.util.Cookies.get("hillshade:visible") == null) {
+			Ext.util.Cookies.set("hillshade:visible", "0");
+		}
+		DSS.layer['watershed:visible'] = Ext.util.Cookies.get("watershed:visible") == "1" ? true : false; 
+		DSS.layer['hillshade:visible'] = Ext.util.Cookies.get("hillshade:visible") == "1" ? true : false; 
+		
 		//---------------------------------------------------------
 		DSS.layer.bingAerial = new ol.layer.Tile({
 			visible: true,
@@ -158,7 +168,7 @@ Ext.define('DSS.map.MainMap', {
 		})	;	
 		//--------------------------------------------------------------		
 		DSS.layer.watershed = new ol.layer.Vector({
-			visible: true,
+			visible: DSS.layer['watershed:visible'],
 			updateWhileAnimating: true,
 			updateWhileInteracting: true,
 			source: new ol.source.Vector({
@@ -175,9 +185,9 @@ Ext.define('DSS.map.MainMap', {
 		let extent = [ -10128000, 5358000, -10109000, 5392000];
 
 		DSS.layer.hillshade = new ol.layer.Image({
+			visible: DSS.layer['hillshade:visible'],
 			updateWhileAnimating: true,
 			updateWhileInteracting: true,
-			visible: true,
 			opacity: 0.5,
 			source: new ol.source.ImageStatic({
 				url: '/assets/images/hillshade_high.png',

@@ -198,8 +198,10 @@ public class HomeController extends Controller {
 		if (mode.equalsIgnoreCase("bird-habitat")) mc = new BirdModel();
 		else if (mode.equalsIgnoreCase("crop-yield")) mc = new YieldModel();
 		else if (mode.equalsIgnoreCase("p-loss")) mc = new PLossModel();
+		else if (mode.equalsIgnoreCase("p-loss-real")) mc = new AwePLossModel();
 		
 		else if (mode.equalsIgnoreCase("slope")) mc = new RasterInspection().dataLayer("slope").setTransform(new SlopePercentToAngle());
+		else if (mode.equalsIgnoreCase("soil-depth")) mc = new RasterInspection().dataLayer("soil_depth");
 		else if (mode.equalsIgnoreCase("dem")) mc = new RasterInspection().dataLayer("dem");
 		else if (mode.equalsIgnoreCase("dist-water")) mc = new RasterInspection().dataLayer("distance_to_water");
 		else if (mode.equalsIgnoreCase("perc-sand")) mc = new RasterInspection().dataLayer("sand_perc");
@@ -207,6 +209,8 @@ public class HomeController extends Controller {
 		else if (mode.equalsIgnoreCase("om")) mc = new RasterInspection().dataLayer("om");
 		else if (mode.equalsIgnoreCase("k")) mc = new RasterInspection().dataLayer("k");
 		else if (mode.equalsIgnoreCase("ls")) mc = new RasterInspection().dataLayer("ls");
+		else if (mode.equalsIgnoreCase("ksat")) mc = new RasterInspection().dataLayer("ksat");
+		else if (mode.equalsIgnoreCase("ph")) mc = new RasterInspection().dataLayer("ph");
 		else if (mode.equalsIgnoreCase("slope-length")) mc = new RasterInspection().dataLayer("slope_length");
 		
 		return computeModel(request, mc);
@@ -225,8 +229,8 @@ public class HomeController extends Controller {
 		public float transform(float input) {
 			return (float)(Math.atan(input / 100.0f) * (180.0f / Math.PI));
 		}
-		
 	}
+	
 	//-------------------------------------------------------
 	// Model interface
 	//-------------------------------------------------------
@@ -488,33 +492,33 @@ public class HomeController extends Controller {
 		float clipped[][] = Extract.now(modelResults, ext.mX1, ext.mY1, ext.mWidth, ext.mHeight);
 
 		// Downsampler...
-/*		int maxSize = 1600;
+/*		int maxSize = 400;
 		// restrict output size and resample
-		if (ww > maxSize || hh > maxSize) {
-			int newW = ww, newH = hh;
-			if (ww > hh) {
+		if (ext.mWidth > maxSize || ext.mHeight > maxSize) {
+			int newW = ext.mWidth, newH = ext.mHeight;
+			if (ext.mWidth > ext.mHeight) {
 				newW = maxSize;
-				newH = Math.round((hh / (float)ww) * maxSize);
+				newH = Math.round((ext.mHeight / (float)ext.mWidth) * maxSize);
 			}
-			else if (ww < hh) {
-				newW = Math.round((ww / (float)hh) * maxSize);
+			else if (ext.mWidth < ext.mHeight) {
+				newW = Math.round((ext.mWidth / (float)ext.mHeight) * maxSize);
 				newH = maxSize;
 			}
 			else {
 				newW = newH = maxSize;
 			}
 			
-			logger.info("wh [" + ww + "," + hh + "] new wh [" + newW + "," + newH + "]");
+			logger.info("wh [" + ext.mWidth + "," + ext.mHeight + "] new wh [" + newW + "," + newH + "]");
 			try {
-				clipped = Downsampler.mean(clipped, ww, hh, newW, newH);
+				clipped = Downsampler.max(clipped, ext.mWidth, ext.mHeight, newW, newH);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
-			hh = newH;
-			ww = newW;
+			ext.mHeight = newH;
+			ext.mWidth = newW;
 		}
-		*/		
+*/				
 		File fp = new File("./public/dynamicFiles/yes" + pngCounter + ".png");
 		result  = (ObjectNode)RasterToPNG.save(clipped, ext.mWidth, ext.mHeight, fp);
 		
@@ -638,45 +642,50 @@ public class HomeController extends Controller {
 			Layer_Base slope = Layer_Base.getLayer("slope");
 			float slopeData[][] = slope.getFloatData();
 			float silt[][] = Layer_Base.getLayer("silt_perc").getFloatData();
-//			float depth[][] = Layer_Base.getLayer("soil_depth").getFloatData();
+			float depth[][] = Layer_Base.getLayer("soil_depth").getFloatData();
 			float cec[][] = Layer_Base.getLayer("cec").getFloatData();
 			float [][] yield = new float[slope.getHeight()][slope.getWidth()];
 			
-			final float cornCoefficient = 1.30f 	// correction for technological advances 
-					* 0.053f; 						// conversion to Mg per Ha 
-			
 			final float soyCoefficient = 1.2f		// Correct for techno advances
 					* 0.0585f;						// conversion to Mg per Ha
+			
+			final float maxCropSlope = (float)(Math.tan(15 * Math.PI / 180.0f) * 100.0f);
 			
 			for (int y = ext.mY1; y < ext.mY2; y++) {
 				for (int x = ext.mX1; x < ext.mX2; x++) {
 					
 					float value = 0;
-					float _slope = slopeData[y][x], _depth = 60.0f,/*depth[y][x],*/ _silt = silt[y][x], _cec = cec[y][x];
+					float _slope = slopeData[y][x], _depth = depth[y][x], _silt = silt[y][x], _cec = cec[y][x];
 
 					// Corn
 					//----------------------------------------------------------
 					if (cropCode == Crop.ECornGrain || cropCode == Crop.ECornSilage) {
 						
-						// Corn roots don't exceed much below this, well, in inches. But are these centimeters?
-						if (_depth > 60) _depth = 60;
-						
-						// Yield
-						value =  22.0f - 1.05f * _slope + 0.19f * _depth + (0.817f / 100.0f) * _silt + 1.32f * _cec
-								* cornCoefficient;
-						
-						// TODO: sensible clamps?
-						if (value < 0.5) value = 0.5f;
-						else if (value > 36) value = 36;
-						
-						// contribution of stover doubles yield
-						if (cropCode == Crop.ECornSilage) value *= 2.0f;
+						if (_slope > maxCropSlope) {
+							value = -9999.0f;
+						}
+						else {
+							// Corn roots don't exceed much below 150cm
+							if (_depth > 150) _depth = 150;
+							
+							// Yield
+	//						value =  22.0f - 1.05f * _slope + 0.19f * _depth + (0.817f / 100.0f) * _silt + 1.32f * _cec
+							value =  3.08f - 0.11f * _slope + 0.012f * _depth + 0.07f * _silt + 0.03f * _cec; 
+							value *= 1.3f; // techno advances
+	//								* cornCoefficient;
+							
+							if (value < 1.5f) value = 1.5f;
+							else if (value > 20) value = 20;
+							
+							// contribution of stover doubles yield
+							if (cropCode == Crop.ECornSilage) value *= 2.0f;
+						}
 					}
 					//----------------------------------------------------------
 					else if (cropCode == Crop.ESoybeans || cropCode == Crop.ESoylage) {
 						
-						// soy roots don't exceed much below this, well, in inches. But are these centimeters?
-						if (_depth > 60) _depth = 60;
+						// soy roots don't exceed much below 150cm
+						if (_depth > 150) _depth = 150;
 						
 						// Yield
 						value = 6.37f - 0.34f * _slope + 0.065f * _depth + (0.278f / 100.0f) * _silt + 0.437f * _cec 
@@ -762,6 +771,7 @@ public class HomeController extends Controller {
 			String coverCropCode = "cc";
 			String tillageCode = "nt";
 			
+			Boolean applySnapPlusTransmission = false;
 			float initialP = 32.0f;
 			float percManure = 50.0f;
 			float percSynth = 50.0f;
@@ -773,6 +783,7 @@ public class HomeController extends Controller {
 				initialP 		= Json.safeGetOptionalFloat(options, "soil-p", 		initialP);
 				percManure 		= Json.safeGetOptionalFloat(options, "perc-manure", percManure);
 				percSynth 		= Json.safeGetOptionalFloat(options, "perc-fertilizer", percSynth);
+				applySnapPlusTransmission = Json.safeGetOptionalBoolean(options, "snap-plus-transmission", applySnapPlusTransmission);
 			}
 		
 			float intercept 	= 0;
@@ -1069,6 +1080,8 @@ public class HomeController extends Controller {
 			float ls[][] = Layer_Base.getLayer("ls").getFloatData();
 			float slp_len[][] = Layer_Base.getLayer("slope_length").getFloatData();
 			
+			float distanceToWater[][] = Layer_Base.getLayer("distance_to_water").getFloatData();
+			
 			float [][] ploss = new float[s_layer.getHeight()][s_layer.getWidth()];
 			
 			for (int y = ext.mY1; y < ext.mY2; y++) {
@@ -1090,7 +1103,20 @@ public class HomeController extends Controller {
 							om[y][x] 	* c_OM +
 							slp_len[y][x] * c_SlopeLength;
 						
-						value = (float)Math.exp(value) * 0.024f; // convert to pounds per 100m2
+						value = (float)Math.exp(value);// * 0.024f; // convert to pounds per 100m2
+						
+						if (applySnapPlusTransmission) {
+							double fixedSlope = 1;
+							double distance = distanceToWater[y][x] * 3.281; // convert meters to feet
+							double factor = 0.9415f + 
+									0.02122 * fixedSlope + -0.001345 * fixedSlope * fixedSlope + 
+									-0.00003511 * distance + 0.0000000007114 * distance * distance;
+							
+							if (factor > 1) factor = 1.0;
+							else if (factor < 0.4f) factor = 0.4f;
+							
+							value *= factor;
+						}
 					}
 					ploss[y][x] = value;
 				}
@@ -1099,6 +1125,159 @@ public class HomeController extends Controller {
 			return ploss;
 		}
 	}
+	
+	//-------------------------------------------------------------------------------------
+	public class AwePLossModel implements ModelComputation {
+		
+		public float[][] compute(Clipper ext, JsonNode options) throws Exception { 
+			
+			Layer_Integer wl = Layer_CDL.get();
+			int [][] wl_data = wl.getIntData();
+			
+			int cg = wl.stringToMask("Cash Grain");
+			int cc = wl.stringToMask("Continuous Corn");
+			int dr = wl.stringToMask("Dairy Rotation");
+			int ps = wl.stringToMask("Pasture","Cool-season Grass","Warm-season Grass");
+			
+			int totalMask = cg | cc | dr | ps;
+			
+			float initialP = 32.0f;
+			float percManure = 20.0f;
+			float percSynth = 70.0f;
+		
+			float intercept 	= 0;
+			float c_ManureApp 	= 0;
+			float c_SyntheticApp= 0;
+			float c_initialP 	= 0;
+			float c_Slope 		= 0;
+			float c_SlopeLength = 0;
+			float c_LS 			= 0;
+			float c_K 			= 0;
+			float c_sandtotal_r = 0;
+			float c_silttotal_r = 0;
+			float c_OM 			= 0;
+			
+			Layer_Base s_layer = Layer_Base.getLayer("slope");
+			
+			float slope[][] = Layer_Base.getLayer("slope").getFloatData();
+			float silt[][] = Layer_Base.getLayer("silt_perc").getFloatData();
+			float sand[][] = Layer_Base.getLayer("sand_perc").getFloatData();
+			float om[][] = Layer_Base.getLayer("om").getFloatData();
+			float k[][] = Layer_Base.getLayer("k").getFloatData();
+			float ls[][] = Layer_Base.getLayer("ls").getFloatData();
+			float slp_len[][] = Layer_Base.getLayer("slope_length").getFloatData();
+			float distanceToWater[][] = Layer_Base.getLayer("distance_to_water").getFloatData();
+			
+			float [][] ploss = new float[s_layer.getHeight()][s_layer.getWidth()];
+			
+			for (int y = ext.mY1; y < ext.mY2; y++) {
+				for (int x = ext.mX1; x < ext.mX2; x++) {
+					
+					float value = 0;
+					float _slope =slope[y][x];
+					
+					if ((wl_data[y][x] & totalMask) <= 0) {
+						ploss[y][x] = -9999.0f;
+						continue;
+					}
+					else if (_slope > 40 || sand[y][x] > 65) {
+						ploss[y][x] = -9999.0f;
+						continue;
+					}
+					
+					//-------------------------------------------------------------
+					if ((wl_data[y][x] & cc) > 0) {
+						intercept 		= -0.633812975746179f;// -1.78349735992302f;
+						c_ManureApp 	= 0.00359206803416f;
+						c_SyntheticApp 	= 0.00252837564114f;
+						c_initialP 		= 0.00337386285029f;
+						c_Slope 		= 0.06857203548177f;
+						c_SlopeLength 	= -0.0034862913967f;
+						c_LS 			= -0.1297218451209f;
+						c_K 			= 2.25186015396712f;
+						c_sandtotal_r 	= 0.00388356367312f;
+						c_silttotal_r 	= 0.01238149285957f;
+						c_OM 			= 0.07928443256857f;	
+					}
+					//-------------------------------------------------------------
+					else if ((wl_data[y][x] & cg) > 0) {
+						intercept 		= -0.031632721834f;//-1.600321633430f;
+						c_ManureApp 	= 0.00277537745450f;
+						c_SyntheticApp 	= 0.00210478873069f;
+						c_initialP 		= 0.00328978161121f;
+						c_Slope 		= 0.07268108586729f; 
+						c_SlopeLength 	= -0.00374287052429f;
+						c_LS 			= -0.14212765910246f;
+						c_K 			= 2.43583905849407f;
+						c_sandtotal_r 	= 0.00588279213064f;
+						c_silttotal_r 	= 0.01441431827988f;
+						c_OM 			= 0.08113536990160f;	
+					}
+					// Dairy Rotation
+					//-------------------------------------------------------------
+					else if ((wl_data[y][x] & dr) > 0) {
+						intercept 		= 0.375332644048f;// -0.992183005201f;
+						c_ManureApp 	= 0.002952260183f; 
+						c_SyntheticApp 	= 0.002324369178f; 
+						c_initialP 		= 0.003523159931f; 
+						c_Slope 		= 0.058817887648f;  
+						c_SlopeLength 	= -0.004091007642f; 
+						c_LS 			= -0.102274335208f; 
+						c_K 			= 2.303621117181f; 
+						c_sandtotal_r 	= -0.003640751209f; 
+						c_silttotal_r 	= 0.003903691381f; 
+						c_OM 			= 0.088916995709f; 	
+					}
+					// Pasture
+					//-------------------------------------------------------------
+					else if ((wl_data[y][x] & ps) > 0) {
+						intercept 		= -1.261009446664f;//-2.803379129937f;
+						c_ManureApp 	= 0.002814638921f;
+						c_SyntheticApp 	= 0.001230465139f;
+						c_initialP 		= 0.007878286120f;
+						c_Slope 		= 0.041020426882f;
+						c_SlopeLength 	= -0.001120477836f;
+						c_LS 			= -0.088859139728f;
+						c_K 			= 2.065562020684f;
+						c_sandtotal_r 	= 0.000161475720f;
+						c_silttotal_r 	= 0.005943307442f;
+						c_OM 			= 0.110005660671f;
+					}
+					
+					value = intercept	+
+						percManure 	* c_ManureApp +
+						percSynth 	* c_SyntheticApp + 
+						initialP 	* c_initialP + 
+						_slope 		* c_Slope +
+						k[y][x] 	* c_K +
+						ls[y][x] 	* c_LS +
+						sand[y][x] 	* c_sandtotal_r +
+						silt[y][x] 	* c_silttotal_r +
+						om[y][x] 	* c_OM +
+						slp_len[y][x] * c_SlopeLength;
+					
+					value = (float)Math.exp(value);// * 0.024f; // convert to pounds per 100m2
+					
+					double fixedSlope = 1;
+					double distance = distanceToWater[y][x] * 3.281; // convert meters to feet
+					double factor = 0.9415f + 
+							0.02122 * fixedSlope + -0.001345 * fixedSlope * fixedSlope + 
+							-0.00003511 * distance + 0.0000000007114 * distance * distance;
+					
+					if (factor > 1) factor = 1.0;
+					else if (factor < 0) factor = 0.0;
+					
+					value *= factor;
+					if (value < 1.0f) value = -9999.0f;
+					else if (value > 8) value = 8.0f;
+					ploss[y][x] = value;  
+				}
+			}
+			
+			return ploss;
+		}
+	}
+	
 	
 	
 	

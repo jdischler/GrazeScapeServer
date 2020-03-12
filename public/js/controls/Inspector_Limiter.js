@@ -114,7 +114,7 @@ Ext.define('DSS.controls.Inspector_Limiter', {
 		if (typeof silent === 'undefined') silent = false;
 		
 		let options = {
-			crop: 'soybeans' // FIXME: TODO: the crop yield inspector helper variant should be configuring this. Other helpers shouldn't be setting this at all				
+			crop: 'corn-grain'//'soybeans' // FIXME: TODO: the crop yield inspector helper variant should be configuring this. Other helpers shouldn't be setting this at all				
 		};
 		
 		if (me.down('#dss-filter').getValue()) {

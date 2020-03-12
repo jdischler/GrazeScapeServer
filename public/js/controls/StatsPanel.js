@@ -167,6 +167,7 @@ Ext.define('DSS.controls.StatsPanel', {
 								},
 									makeInspectionMode('Soil Loss', 	'soil-loss', true, 'inspector_p_loss'),
 									makeInspectionMode('P-Loss', 		'p-loss', 	false, 'inspector_p_loss'),
+									makeInspectionMode('P-Loss-Real', 	'p-loss-real', false),//, 'inspector_p_loss'),
 									makeInspectionMode('Crop Yield', 	'crop-yield', false, 'inspector_p_loss'),
 									makeInspectionMode('Bird Habitat', 	'bird-habitat'),
 								{
@@ -174,15 +175,17 @@ Ext.define('DSS.controls.StatsPanel', {
 									style: 'border-bottom: 1px solid rgba(0,0,0,0.2);padding-top: 4px'
 								}, 
 									makeInspectionMode('Slope', 		'slope', 	false, 'inspector_limiter'),
-									makeInspectionMode('Soil Depth', 	'soil-depth', true),
+									makeInspectionMode('Soil Depth', 	'soil-depth',false, 'inspector_limiter'),,
 									makeInspectionMode('% Sand', 		'perc-sand', false, 'inspector_limiter'),
 									makeInspectionMode('% Silt', 		'perc-silt', false, 'inspector_limiter'),
 									makeInspectionMode('Distance to Water', 'dist-water', false, 'inspector_limiter'),
+									makeInspectionMode('Elevation', 	'dem', 		false, 'inspector_limiter'),
+									makeInspectionMode('pH', 			'ph', 		false, 'inspector_limiter'),
 									makeInspectionMode('OM', 			'om', 		false, 'inspector_limiter'),
 									makeInspectionMode('K', 			'k', 		false, 'inspector_limiter'),
+									makeInspectionMode('ksat', 			'ksat', 	false, 'inspector_limiter'),
 									makeInspectionMode('LS', 			'ls', 		false, 'inspector_limiter'),
 									makeInspectionMode('Slope Length', 	'slope-length', false, 'inspector_limiter'),
-									makeInspectionMode('Elevation', 	'dem', 		false, 'inspector_limiter'),
 
 								]
 							});

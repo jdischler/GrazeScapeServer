@@ -37,3 +37,5 @@ reload
 run
 eclipse
 run
+clean
+run

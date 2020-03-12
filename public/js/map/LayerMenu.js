@@ -83,6 +83,7 @@ Ext.define('DSS.map.LayerMenu', {
                 	}
                 },
                 handler: function(self) {
+                	Ext.util.Cookies.set("watershed:visible", self.checked ? "1" : "0");                	
                 	DSS.layer.watershed.setVisible(self.checked);                    	
                 }
 			},{
@@ -105,6 +106,7 @@ Ext.define('DSS.map.LayerMenu', {
                 	}
                 },
                 handler: function(self) {
+                	Ext.util.Cookies.set("hillshade:visible", self.checked ? "1" : "0");                	
                 	DSS.layer.hillshade.setVisible(self.checked);                    	
                 }
 			}]
