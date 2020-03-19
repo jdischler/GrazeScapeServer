@@ -1,6 +1,13 @@
 package controllers;
 
 import javax.inject.Inject;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import play.mvc.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,32 +17,19 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import analysis.AreaStats;
-import analysis.Downsampler;
-import analysis.Extract;
-import analysis.RasterToPNG;
-import analysis.RasterizeFeature;
-import analysis.AreaStats.Stats;
-import analysis.windowing.Moving_CDL_Window;
-import analysis.windowing.Moving_CDL_Window_Z;
-import analysis.windowing.Moving_Window;
-import play.api.libs.Files.TemporaryFile;
-import play.mvc.*;
-import utils.Json;
-import utils.ServerStartup;
-import query.Layer_Base;
-import query.Layer_CDL;
-import query.Layer_Integer;
+import analysis.*;
+import analysis.windowing.*;
+import query.*;
+import raster.Extents;
 import data_types.Farm;
 import db.FieldGeometry;
 import io.ebean.Ebean;
 import io.ebean.SqlRow;
+import models.Yield;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+
+import utils.Json;
+import utils.ServerStartup;
 
 //• On connect:
 //	• Create new user id if needed (stored in cookies)
@@ -210,6 +204,7 @@ public class HomeController extends Controller {
 		else if (mode.equalsIgnoreCase("k")) mc = new RasterInspection().dataLayer("k");
 		else if (mode.equalsIgnoreCase("ls")) mc = new RasterInspection().dataLayer("ls");
 		else if (mode.equalsIgnoreCase("ksat")) mc = new RasterInspection().dataLayer("ksat");
+		else if (mode.equalsIgnoreCase("cec")) mc = new RasterInspection().dataLayer("cec");
 		else if (mode.equalsIgnoreCase("ph")) mc = new RasterInspection().dataLayer("ph");
 		else if (mode.equalsIgnoreCase("slope-length")) mc = new RasterInspection().dataLayer("slope_length");
 		
@@ -235,67 +230,9 @@ public class HomeController extends Controller {
 	// Model interface
 	//-------------------------------------------------------
 	private interface ModelComputation {
-		public abstract float[][] compute(Clipper computationArea, JsonNode options) throws Exception; 
+		public abstract float[][] compute(Extents computationArea, JsonNode options) throws Exception; 
 	};
 
-	public class Clipper {
-		Integer mExtent[] = {0,0,0,0};
-		Integer mX1, mY1, mX2, mY2;
-		Integer mWidth, mHeight;
-
-		// Node should be an arrayNode of OL extent values, but it can be a NULL node in which case the area extents becomes the clip extent
-		public Clipper initFromJson(JsonNode node) {
-			
-			ArrayNode extent = (ArrayNode)node;
-			final Integer areaExtents[] = {
-				440000, 340000,
-				455000, 314000
-			};
-			
-			// Align selection to 10m grid
-			// The openLayers extent has the Y values reversed from the convention I prefer
-			if (extent != null) {
-//				logger.info(" Clipper has an extent node...." + extent.toString());
-				mExtent[0] = Math.round(extent.get(0).floatValue() / 10.0f) * 10;
-				mExtent[1] = Math.round(extent.get(3).floatValue() / 10.0f) * 10;
-				mExtent[2] = Math.round(extent.get(2).floatValue() / 10.0f) * 10;
-				mExtent[3] = Math.round(extent.get(1).floatValue() / 10.0f) * 10;
-			
-				// Clip Selection to area
-				if (mExtent[0] < areaExtents[0]) 		mExtent[0] = areaExtents[0];
-				else if (mExtent[0] > areaExtents[2]) 	mExtent[0] = areaExtents[2];
-				
-				if (mExtent[2] < areaExtents[0]) 		mExtent[2] = areaExtents[0];
-				else if (mExtent[2] > areaExtents[2]) 	mExtent[2] = areaExtents[2];
-			
-				if (mExtent[1] > areaExtents[1]) 		mExtent[1] = areaExtents[1];
-				else if (mExtent[1] < areaExtents[3]) 	mExtent[1] = areaExtents[3];
-				
-				if (mExtent[3] > areaExtents[1]) 		mExtent[3] = areaExtents[1];
-				else if (mExtent[3] < areaExtents[3]) 	mExtent[3] = areaExtents[3];
-			}
-			else {
-				mExtent[0] = areaExtents[0];
-				mExtent[1] = areaExtents[1];
-				mExtent[2] = areaExtents[2];
-				mExtent[3] = areaExtents[3];
-			}
-//			logger.error(" clipped extents are [" + mExtent[0] + "," + mExtent[1] + "][" + mExtent[2] + "," + mExtent[3] + "]");
-		
-			// re-index
-			mX1 = (mExtent[0] - areaExtents[0]) / 10;
-			mY1 = -(mExtent[1] - areaExtents[1]) / 10;
-			
-			mX2 = (mExtent[2] - areaExtents[0]) / 10;
-			mY2 = -(mExtent[3] - areaExtents[1]) / 10;
-			
-			mWidth = mX2 - mX1;
-			mHeight = mY2 - mY1;
-			
-			return this;
-		}
-	}
-	
 	//-------------------------------------------------------
 	public Result computeModel(Http.Request request, ModelComputation modelFunction) {
 	
@@ -306,7 +243,7 @@ public class HomeController extends Controller {
 			logger.info("Has model options:" + options.toString());
 		}
 		// Extent array node can be missing, in which case we get a clipper that extracts the entire area
-		Clipper ext = new Clipper().initFromJson(node.get("extent"));
+		Extents ext = new Extents().fromJson((ArrayNode)node.get("extent")).toRasterSpace();
 		
 		final Integer rasterHeight = 2600, rasterWidth = 1500;
 		ObjectNode result = null;
@@ -316,34 +253,17 @@ public class HomeController extends Controller {
 			modelResults = modelFunction.compute(ext, options);
 		} catch (Exception e1) {
 			e1.printStackTrace();
+			logger.error(e1.toString());
 		}
 		
 		Long farmId = utils.Json.safeGetOptionalLong(node, "farm_id");
 		int mapMode = utils.Json.safeGetOptionalInteger(node, "mode", 1);  // 0, 1, or 2
 
-		Boolean restrictionToRowCrops = utils.Json.safeGetOptionalBoolean(node, "row_crops", false);
-		Boolean restrictionToGrasses = utils.Json.safeGetOptionalBoolean(node, "grasses", false);
-
-		if (restrictionToRowCrops || restrictionToGrasses) {
-			Layer_Integer wl = Layer_CDL.get();
-			int wl_data[][] = wl.getIntData();
-			int road_mask[][] = Layer_Base.getLayer("road_mask").getIntData();
-			int water_mask[][] = Layer_Base.getLayer("water_mask").getIntData();
-			
-			int mask = 0;
-			if (restrictionToRowCrops) {
-				mask |= wl.stringToMask("Cash Grain","Continuous Corn","Dairy Rotation","Other Crops");
-			}
-			if (restrictionToGrasses) {
-				mask |= wl.stringToMask("Hay","Pasture","Reed Canary Grass","Cool-Season Grass","Warm-Season Grass");
-			}
-			
-			for (int y = 0; y < rasterHeight; y++) {
-				for (int x = 0; x < rasterWidth; x++) {
-					if ((wl_data[y][x] & mask) <= 0) modelResults[y][x] = -9999.0f;
-					else if (road_mask[y][x] > 0 || water_mask[y][x] > 0) modelResults[y][x] = -9999.0f;
-				}
-			}
+		Boolean restrictToRowCrops = utils.Json.safeGetOptionalBoolean(node, "row_crops", false);
+		Boolean restrictToGrasses = utils.Json.safeGetOptionalBoolean(node, "grasses", false);
+		if (restrictToRowCrops || restrictToGrasses) {
+			modelResults = FloatFilters.restrictToAgriculture(modelResults, ext, 
+				restrictToRowCrops, restrictToGrasses);
 		}
 		
 		AreaStats fs = null;
@@ -395,20 +315,21 @@ public class HomeController extends Controller {
 	
 						
 						if (stats.hasStatistics()) {
-							Integer histogramCt = 20;
-							AreaStats.Histogram hs = stats.getHistogram(histogramCt, stats.getMin(), stats.getMax()); 
+							Integer histogramCt = 40;
+							Histogram hs = stats.getHistogram(histogramCt, stats.getMin(), stats.getMax()); 
 							Integer ct = stats.getCounted();
 							Float area = ct * 100.0f;
 							Double sum = stats.getSum();
 							Float min = stats.getMin();
 							Float max = stats.getMax();
+							Float mid = (min + max) * 0.5f;
 							Float mean = stats.getMean();
 							Float median = stats.getMedian();
 							results += " »FIELD CELLS: " + ct + "\n";
 							results += String.format("  Area: %.2f(ac)   %.2f(km2) \n", area / 4047.0f, area / 1000000.0f);
 							results += " »YIELD STATS \n";
 							results += String.format("  Total Yield: %.2f\n", sum);
-							results += String.format("  Min: %.2f    Max: %.2f \n", min, max);
+							results += String.format("  Min: %.2f  Mid: %.2f  Max: %.2f \n", min, mid, max);
 							results += String.format("  Mean: %.2f\n", mean);
 							results += String.format("  Median: %.2f\n", median);
 							results += " »HISTOGRAM (" + histogramCt + " bins) \n";
@@ -443,53 +364,27 @@ public class HomeController extends Controller {
 					}
 					catch (Exception e) {
 						e.printStackTrace();
+						logger.error(e.toString());
 					}
 				}
 			}
 		}
 		else { // no farm 
-			fs = new AreaStats(modelResults).forExtents(ext.mX1, ext.mY1, ext.mWidth, ext.mHeight).compute();
-			AreaStats.Stats stats;
+			
+			fs = new AreaStats(modelResults).forExtents(ext.x1(), ext.y2(), ext.width(), ext.height());
+			fs.compute();
+			Stats stats;
 			try {
 				stats = fs.getAreaStats();
-			
-				Integer noDataCt = stats.getNoDataCount();
-				Float noDataPerc = stats.getFractionNoData();
-	
-				String results = "\n─────────────────────────────────────────────────────\n" +
-						"¤STATISTICS for Area: \n" +
-						"  NoDataCells: " + noDataCt + "\n" +
-						"  NoData%:     " + String.format("%.1f%%", noDataPerc * 100) + "\n";
-				
-				if (stats.hasStatistics()) {
-					Integer histogramCt = 20;
-					AreaStats.Histogram hs = stats.getHistogram(histogramCt, stats.getMin(), stats.getMax()); 
-					Integer ct = stats.getCounted();
-					Float area = ct * 100.0f;
-					Double sum = stats.getSum();
-					Float min = stats.getMin();
-					Float max = stats.getMax();
-					Float mean = stats.getMean();
-					Float median = stats.getMedian();
-					results += " »Area CELLS: " + ct + "\n";
-					results += String.format("  Area: %.2f(ac)   %.2f(km2) \n", area / 4047.0f, area / 1000000.0f);
-					results += " »Value STATS \n";
-					results += String.format("  Total Value: %.2f\n", sum);
-					results += String.format("  Min: %.2f    Max: %.2f \n", min, max);
-					results += String.format("  Mean: %.2f\n", mean);
-					results += String.format("  Median: %.2f\n", median);
-					results += " »HISTOGRAM (" + histogramCt + " bins) \n";
-					results += hs.toString();
-				}
-				results += "─────────────────────────────────────────────────────\n";
-				
-				logger.info(results);
+				stats.debug(true);
 			} catch (Exception e) {
 				e.printStackTrace();
+				logger.error(e.toString());
 			}
 		}
+		
 		// TODO: may want to skip clipping process if raster modelResults is the full raster...
-		float clipped[][] = Extract.now(modelResults, ext.mX1, ext.mY1, ext.mWidth, ext.mHeight);
+		float clipped[][] = Extract.now(modelResults, ext.x1(), ext.y2(), ext.width(), ext.height());
 
 		// Downsampler...
 /*		int maxSize = 400;
@@ -519,17 +414,16 @@ public class HomeController extends Controller {
 			ext.mWidth = newW;
 		}
 */				
-		File fp = new File("./public/dynamicFiles/yes" + pngCounter + ".png");
-		result  = (ObjectNode)RasterToPNG.save(clipped, ext.mWidth, ext.mHeight, fp);
+		File fp = new File(FileService.mDirPath + "yes" + pngCounter + ".png");
+		result  = (ObjectNode)RasterToPNG.save(clipped, ext.width(), ext.height(), fp);
 		
-		// Reverse Y ordering for openlayers
 		Json.addToPack(result, "url", "renders/yes" + pngCounter + ".png", 
-						"extent", Json.array(ext.mExtent[0],ext.mExtent[3],
-								ext.mExtent[2],ext.mExtent[1]));	
+						"extent", ext.toJson());	
 		
 		if (fieldStats != null) {
 			Json.addToPack(result, "fields", fieldStats);
 		}
+		
 		pngCounter++;
 		return ok(result);
 	}
@@ -553,7 +447,7 @@ public class HomeController extends Controller {
 		// ext is the computation extent
 		// options can contain a filter object. That filter object (if exists) can contain
 		//	compare: (greater-than, less-than) and value: #
-		public float[][] compute(Clipper ext, JsonNode options) throws Exception  { 
+		public float[][] compute(Extents ext, JsonNode options) throws Exception  { 
 			
 			Boolean filterEnabled = false;
 			Boolean lessThan = true; // if false, then is in greater-than mode
@@ -573,8 +467,8 @@ public class HomeController extends Controller {
 
 			if (filterEnabled) {
 				logger.info("Using filtered view...");
-				for (int y = ext.mY1; y < ext.mY2; y++) {
-					for (int x = ext.mX1; x < ext.mX2; x++) {
+				for (int y = ext.y2(); y < ext.y1(); y++) {
+					for (int x = ext.x1(); x < ext.x2(); x++) {
 						float data = mDataTransform.transform(dataIn[y][x]);
 						if (lessThan && data < filterValue) {
 							dataOut[y][x] = data;
@@ -589,8 +483,8 @@ public class HomeController extends Controller {
 				}
 			}
 			else { // straight copy
-				for (int y = ext.mY1; y < ext.mY2; y++) {
-					for (int x = ext.mX1; x < ext.mX2; x++) {
+				for (int y = ext.y2(); y < ext.y1(); y++) {
+					for (int x = ext.x1(); x < ext.x2(); x++) {
 						float data = mDataTransform.transform(dataIn[y][x]);
 						dataOut[y][x] = data;
 					}
@@ -612,9 +506,12 @@ public class HomeController extends Controller {
 	//-------------------------------------------------------------------------------------
 	public class YieldModel implements ModelComputation {
 		
-		public float[][] compute(Clipper ext, JsonNode options) throws Exception { 
+		public float[][] compute(Extents ext, JsonNode options) throws Exception { 
 			
-			Boolean filterEnabled = false;
+			Yield test = new Yield();
+			return test.compute();
+			
+/*			Boolean filterEnabled = false;
 			Boolean lessThan = true; // if false, then is in greater-than mode
 			Float filterValue = 0.0f;
 			
@@ -709,7 +606,7 @@ public class HomeController extends Controller {
 				}
 			}
 			
-			return yield;
+			return yield;*/
 		}
 	}
 	
@@ -717,14 +614,14 @@ public class HomeController extends Controller {
 	//-------------------------------------------------------------------------------------
 	public class BirdModel implements ModelComputation {
 		
-		public float[][] compute(Clipper ext, JsonNode options) throws Exception { 
+		public float[][] compute(Extents ext, JsonNode options) throws Exception { 
 			
 			Layer_Integer wl = Layer_CDL.get();
 			float [][] habitatData = new float[wl.getHeight()][wl.getWidth()];
 			
 			Moving_CDL_Window win = (Moving_CDL_Window)new Moving_CDL_Window_Z(400/10).
-					restrict(ext.mX1, ext.mY1,
-					ext.mX2, ext.mY2).initialize();
+					restrict(ext.x1(), ext.y2(),
+					ext.x2(), ext.y1()).initialize();
 			
 			Moving_Window.WindowPoint point = win.getPoint();
 			
@@ -765,7 +662,7 @@ public class HomeController extends Controller {
 	//-------------------------------------------------------------------------------------
 	public class PLossModel implements ModelComputation {
 		
-		public float[][] compute(Clipper ext, JsonNode options) throws Exception { 
+		public float[][] compute(Extents ext, JsonNode options) throws Exception { 
 			
 			String landcoverCode = "cc";
 			String coverCropCode = "cc";
@@ -1084,8 +981,8 @@ public class HomeController extends Controller {
 			
 			float [][] ploss = new float[s_layer.getHeight()][s_layer.getWidth()];
 			
-			for (int y = ext.mY1; y < ext.mY2; y++) {
-				for (int x = ext.mX1; x < ext.mX2; x++) {
+			for (int y = ext.y2(); y < ext.y1(); y++) {
+				for (int x = ext.x1(); x < ext.x2(); x++) {
 					
 					float value = 0;
 					float _slope =slope[y][x];
@@ -1129,7 +1026,7 @@ public class HomeController extends Controller {
 	//-------------------------------------------------------------------------------------
 	public class AwePLossModel implements ModelComputation {
 		
-		public float[][] compute(Clipper ext, JsonNode options) throws Exception { 
+		public float[][] compute(Extents ext, JsonNode options) throws Exception { 
 			
 			Layer_Integer wl = Layer_CDL.get();
 			int [][] wl_data = wl.getIntData();
@@ -1170,8 +1067,8 @@ public class HomeController extends Controller {
 			
 			float [][] ploss = new float[s_layer.getHeight()][s_layer.getWidth()];
 			
-			for (int y = ext.mY1; y < ext.mY2; y++) {
-				for (int x = ext.mX1; x < ext.mX2; x++) {
+			for (int y = ext.y2(); y < ext.y1(); y++) {
+				for (int x = ext.x1(); x < ext.x2(); x++) {
 					
 					float value = 0;
 					float _slope =slope[y][x];
@@ -1277,9 +1174,6 @@ public class HomeController extends Controller {
 			return ploss;
 		}
 	}
-	
-	
-	
-	
 
 }
+

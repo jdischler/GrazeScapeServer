@@ -2,14 +2,45 @@ package controllers;
 
 import play.mvc.*;
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //--------------------------------------------------------------------------
 public class FileService extends Controller {
 
-       static String path = "./public/dynamicFiles/";
-       
-       public Result getFile(String file){
-              File myfile = new File (path+file);
-              return ok(myfile);
-       }
+	private static final Logger logger = LoggerFactory.getLogger("app");
+
+	public static String mDirPath; // call init() to configure this
+      
+	//--------------------------------------------------------------------------
+	public Result getFile(String file) {
+		File myfile = new File (mDirPath + file);
+		if (myfile.exists()) {
+			return ok(myfile);
+		}
+		else {
+			logger.warn("File <" + file + "> not found");
+			return notFound();
+		}
+	}
+	
+	//-----------------------------------------------------------------------
+	public static void init(File rootPath) {
+		
+		mDirPath = rootPath.toString() + "/dynamicFiles/";
+
+		logger.info(" > Ensuring dynamicFiles path <" + mDirPath + "> exists...");
+		File dir = new File(mDirPath);
+		dir.mkdirs();
+
+		logger.info(" > Cleaning dynamicFiles directory...");
+		for(File file: dir.listFiles()) { 
+		    if (!file.isDirectory()) { 
+		        file.delete();
+		    }
+		}
+	}
 }

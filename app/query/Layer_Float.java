@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.*;
 
 import analysis.AreaStats;
+import analysis.Histogram;
+import analysis.Stats;
 
 //------------------------------------------------------------------------------
 public class Layer_Float extends Layer_Base
@@ -39,11 +41,11 @@ public class Layer_Float extends Layer_Base
 	
 	// Min / Max
 	//--------------------------------------------------------------------------
-	public float getLayerMin() {
+	public float getMin() {
 		
 		return mMin;
 	}
-	public float getLayerMax() {
+	public float getMax() {
 		
 		return mMax;
 	}
@@ -117,7 +119,7 @@ public class Layer_Float extends Layer_Base
 		AreaStats fs = new AreaStats(mFloatData).compute();
 		
 		try {
-			AreaStats.Stats stats = fs.getAreaStats();
+			Stats stats = fs.getAreaStats();
 			Integer noDataCt = stats.getNoDataCount();
 			Float noDataPerc = stats.getFractionNoData();
 	
@@ -129,13 +131,14 @@ public class Layer_Float extends Layer_Base
 			
 			if (stats.hasStatistics()) {
 				Integer histogramCt = 40;
-				AreaStats.Histogram hs = stats.getHistogram(histogramCt, stats.getMin(), stats.getMax()); 
-				Float min = stats.getMin();
-				Float max = stats.getMax();
+				Histogram hs = stats.getHistogram(histogramCt, stats.getMin(), stats.getMax()); 
+				mMin = stats.getMin();
+				mMax = stats.getMax();
+				float mid = (mMin + mMax) * 0.5f;
 				Float mean = stats.getMean();
 				Float median = stats.getMedian();
 				results += " »Value STATS \n";
-				results += String.format("  Min: %.2f    Max: %.2f \n", min, max);
+				results += String.format("  Min: %.2f  Mid: %.2f  Max: %.2f \n", mMin, mid, mMax);
 				results += String.format("  Mean: %.2f\n", mean);
 				results += String.format("  Median: %.2f\n", median);
 				results += " »HISTOGRAM (" + histogramCt + " bins) \n";
@@ -159,8 +162,8 @@ public class Layer_Float extends Layer_Base
 
 		String type = clientRequest.get("type").textValue();
 		if (type.equals("layerRange")) {
-			ret = Json.pack("layerMin", getLayerMin(),
-					"layerMax", getLayerMax());
+			ret = Json.pack("layerMin", getMin(),
+					"layerMax", getMax());
 		}
 		
 		return ret;

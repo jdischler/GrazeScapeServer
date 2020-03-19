@@ -4,6 +4,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import data_types.Farm;
+import models.Yield;
 import play.api.db.evolutions.ApplicationEvolutions;
 import play.inject.ApplicationLifecycle;
 import query.Layer_Base;
@@ -16,16 +17,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import akka.actor.ActorSystem;
+import controllers.FileService;
 
 //-----------------------------------------------------------------------
 @Singleton
 public class ServerStartup {
 	
     private static final Logger logger = LoggerFactory.getLogger("app");
+    private static play.Environment mEnv;
     
 	@Inject
-	public ServerStartup(ApplicationLifecycle lifecycle, ActorSystem as, ExecutionContext ec, ApplicationEvolutions ae) {
-				
+	public ServerStartup(ApplicationLifecycle lifecycle, ActorSystem as, ExecutionContext ec, ApplicationEvolutions ae, play.Environment env) {
+		
+		mEnv = env;
+		
 		logger.error("ServerStartup.....");
         lifecycle.addStopHook(() -> {
         	Layer_Base.removeAllLayers();
@@ -47,6 +52,9 @@ public class ServerStartup {
 				ec
 			);
 	
+		FileService.init(env.rootPath());
+		
+		Yield.setModelPath(env.rootPath());
        // db.Farm.dbInit();
         //db.Farm.testLoadShapes();
         
@@ -64,7 +72,7 @@ public class ServerStartup {
 		logger.info("» " + appVersionInfo);
 		logger.info("│ " + customMessage);
 		logger.info("├───────────────────────────────────────────────────────┼");
-		//logger.error("|  Application Path: " + apPath.toString());
+		logger.info("|  Application Path: " + mEnv.rootPath().toString());
 		logger.info("│  Available Processors: " + 
 			Integer.toString(Runtime.getRuntime().availableProcessors()));
 		logger.info("│  Total Free Memory: " + 

@@ -30,12 +30,12 @@ public class Downsampler {
 	//
 	//--------------------------------------------------------------------------
 	private interface Computable {
-		public float Compute(float[][] data, int fromX, int fromY, int toX, int toY); 
+		public float compute(float[][] data, int fromX, int fromY, int toX, int toY); 
 	};
 	
 	//--------------------------------------------------------------------------
 	private static class ComputeMean implements Computable {
-		public final float Compute(float[][] data, int fromX, int fromY, int toX, int toY) {
+		public final float compute(float[][] data, int fromX, int fromY, int toX, int toY) {
 			
 			float sum = 0, ave = -9999.0f;
 			int ct = 0;
@@ -57,7 +57,7 @@ public class Downsampler {
 
 	//--------------------------------------------------------------------------
 	private static class ComputeMax implements Computable {
-		public final float Compute(float[][] data, int fromX, int fromY, int toX, int toY) {
+		public final float compute(float[][] data, int fromX, int fromY, int toX, int toY) {
 			
 			float max = -9999.0f;
 			boolean mbHasMax = false;
@@ -83,7 +83,7 @@ public class Downsampler {
 	
 	//--------------------------------------------------------------------------
 	private static class ComputeMedian implements Computable {
-		public final float Compute(float[][] data, int fromX, int fromY, int toX, int toY) {
+		public final float compute(float[][] data, int fromX, int fromY, int toX, int toY) {
 			
 			ArrayList<Float> values = new ArrayList<Float>();	
 			for (int y = fromY; y <= toY; y++) {
@@ -142,7 +142,7 @@ public class Downsampler {
 				
 				if (rightX > dataWidth) rightX = dataWidth;//-1;
 				
-				processedData[y][x] = c.Compute(data, leftX, leftY, rightX, rightY);
+				processedData[y][x] = c.compute(data, leftX, leftY, rightX, rightY);
 				leftX = rightX;
 			}
 			leftY = rightY;

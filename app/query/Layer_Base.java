@@ -1,11 +1,8 @@
 package query;
 
-import play.*;
-import play.mvc.Http;
 import query.Layer_Integer.EType;
 import utils.*;
 import java.util.*;
-import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,19 +13,6 @@ import java.nio.channels.*;
 
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.*;
-
-import analysis.Downsampler;
-import analysis.Extract;
-import analysis.AreaStats;
-import analysis.RasterToPNG;
-import analysis.RasterizeFeature;
-import analysis.AreaStats.Stats;
-import analysis.windowing.Moving_CDL_Window;
-import analysis.windowing.Moving_CDL_Window_N;
-import analysis.windowing.Moving_CDL_Window_Z;
-import analysis.windowing.Moving_Window;
-import db.FieldGeometry;
-import fileHandling.Asc_Writer;
 
 //------------------------------------------------------------------------------
 public abstract class Layer_Base
@@ -48,6 +32,7 @@ public abstract class Layer_Base
 	// NOTE: Width, height, cellSize, and corners were deliberately made static because
 	//	no code can currently handle layers of different dimensions or data density.
 	private static Map<String, Layer_Base>	mLayers = new HashMap<String,Layer_Base>();
+	private static Map<String,String> mLayerSynonyms = null; 
 	
 	protected static int mWidth, mHeight;
 	protected static float mCellSize, mCornerX, mCornerY;
@@ -367,14 +352,28 @@ public abstract class Layer_Base
 	//--------------------------------------------------------------------------
 	public static Layer_Base getLayer(String name) {
 		
-		String name_low = name.toLowerCase();
-		if (!mLayers.containsKey(name_low)) {
-			logger.error("getLayer called looking for: <" + name_low + "> but layer doesn't exist");
+		name = resolveName(name);
+		if (!mLayers.containsKey(name)) {
+			logger.error("LayerBase: getLayer failed.");
 			return null;
 		}
-		return mLayers.get(name_low);
+		return mLayers.get(name);
 	}
 
+	//--------------------------------------------------------------------------
+	public static String resolveName(String name) {
+		
+		name = name.toLowerCase();
+		if (mLayerSynonyms.containsKey(name)) {
+			return mLayerSynonyms.get(name);
+		}
+		else if (mLayers.containsKey(name)) {
+			return name;
+		}
+		
+		logger.error("LayerBase: layer name could not be resolved for: <" + name + ">");
+		return null;
+	}
 	// Use carefully...e.g., only if you are temporarily loading data for a process that rarely runs...
 	//--------------------------------------------------------------------------
 	public static void removeLayer(String name) {
@@ -474,11 +473,17 @@ public abstract class Layer_Base
 			newFloatLayer("k").init();				// SSURGO: kffact
 			newFloatLayer("ls").init();				// SSURGO: ls
 			newFloatLayer("slope_length").init();	// SSURGO: slope-length
-			
 		}
 		catch (Exception e) {
 			logger.error(e.toString());
 		}
+
+		// Some convenience helpers...
+		mLayerSynonyms = new HashMap<>();
+		mLayerSynonyms.put("sand", "sand_perc");
+		mLayerSynonyms.put("silt", "silt_perc");
+		mLayerSynonyms.put("silt", "silt_perc");
+		mLayerSynonyms.put("slopelen", "slope_length");
 		
 		logger.info("┌───────────────────────────────────────────────────────┼");
 		logger.info("» Layers are loaded:");
@@ -508,6 +513,11 @@ public abstract class Layer_Base
 		}
 
 		return ret;
+	}
+	
+	//-----------------------------------------------
+	public String getName() {
+		return this.mName;
 	}
 	
 }
