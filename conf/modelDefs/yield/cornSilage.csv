@@ -1,0 +1,22 @@
+; Fit of SSURGO representative CORN yields from the greater Dane county area
+;
+; Model Input Details
+;	- Slopes: slopes above 25 (which corresponds to ~14 degrees) are not computed (result in NoData)
+; 	- Soil Depth: Row crop roots can't exploit soil depths greater than 150cm so the max depth is  
+;		clamped/limited to that value
+;
+; Model Output Details
+; 	Results are bushels per acres, however the results are transformed in the (result-transform) step:
+;		- and clamp to a sane output (0.2 to 25) MG/ha
+; 
+; ------------------------------------------------------------
+(intercept),	22.0
+
+; Raster Data Layer	// Coeff	// Special Input Data Constraints
+slope,				-1.05
+silt,				0.817
+soil_depth,			0.19, 		clamp=? / 150
+cec,				1.32
+
+; Final result transform
+(result-transform), quadratic=2.0393/0.157/0.0001, clamp=0 / 25

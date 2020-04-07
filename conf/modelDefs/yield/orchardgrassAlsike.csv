@@ -1,0 +1,40 @@
+; Model -> Yield for Orchardgrass alsike
+;
+; Fit of SSURGO representative yields from Crawford and Vernon counties
+; Slopes above 45 (which corresponds to ~24 degrees) are not computed
+; All variables are clamped to ranges present in the training data
+; Output is clamped to a reasonable range
+; ------------------------------------------------------------
+(Intercept),	46.75238357
+
+slope,			-0.125376545, 	clamp=1 / ? 
+sand,			-0.653337536,	clamp=6 / 96.8
+silt,			-0.902214846,	clamp=0.7 / 77
+om,				9.374547016,	clamp=0.7 / 6
+ksat,			0.158051697,	clamp=7.7 / 91.74
+cec,			1.255711982,	clamp=2 / 20
+ph,				-13.57729622,	clamp=5.5 / 7.6
+
+slope:sand,		0.00152863
+slope:silt,		0.001097814
+slope:om,		-0.000114387
+slope:ksat,		-0.000127385
+slope:cec,		0.000255318
+slope:ph,		-0.001492475
+sand:silt,		-0.00041538
+sand:om,		-0.099087944
+sand:ksat,		-7.63E-05
+sand:cec,		-0.002231668
+sand:ph,		0.182481192
+silt:om,		-0.089701228
+silt:ksat,		0.001147249
+silt:cec,		0.0054389
+silt:ph,		0.204985791
+om:ksat,		0.006496969
+om:cec,			-0.098437236
+om:ph,			-0.04487064
+ksat:cec,		0.003466992
+ksat:ph,		-0.038435058
+cec:ph,			-0.154169433
+
+(result-transform), clamp=0 / 6

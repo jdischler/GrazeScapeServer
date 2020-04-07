@@ -1,0 +1,34 @@
+; Only one intercept is ever 'active'. The last intercept in the list is the default one 
+;	that is 'active', however the active one can be changed runtime
+;------------------------------------------------------
+; Cover crop (cc) tillage intercepts
+(intercept=cc_nt), -1.600321633430
+(intercept=cc_fc), 0.17712728352553
+(intercept=cc_sc), -0.031632721834
+(intercept=cc_fm), 0.552153277505
+(intercept=cc_sm), 0.549093698358
+
+; No cover crop (nc) tillage intercepts
+(intercept=nc_nt), -1.954896978399
+(intercept=nc_fc), -0.177448061444
+(intercept=nc_sc), -0.386208066803
+(intercept=nc_fm), 0.197577932536
+(intercept=nc_sm), 0.194518353389
+
+; Application specified constant variables. They default to 1 until changed runtime
+;------------------------------------------------------
+@manure_app,	0.00277537745450
+@synthetic_app,	0.00210478873069
+@initial_p,		0.00328978161121
+
+; raster lookup variables
+;------------------------------------------------------
+slope, 			0.07268108586729
+slope_length,	-0.00374287052429
+ls,				-0.14212765910246
+k,				2.43583905849407
+sand,			0.00588279213064, clamp=? / 65
+silt,			0.01441431827988
+om,				0.08113536990160, clamp=? / 8
+
+(result-transform), exp

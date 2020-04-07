@@ -1,0 +1,21 @@
+; Fit of SSURGO representative GENERIC GRASS yields from the greater Dane county area
+;
+; Model Input Details
+;	- Slopes: slopes above 45 (which corresponds to ~24 degrees) are not computed (result in NoData)
+;
+; Model Output Details
+; 	Results are short tons per acres, however the results are transformed in the (result-transform) step:
+;		- adjust for modern yields (1.05x)
+;		- and clamp to a sane output (0.1 to 10) MG/ha
+; 
+; ------------------------------------------------------------
+(intercept),	0.77
+
+; Raster Data Layer	// Coeff	// Special Input Data Constraints 
+slope,			-0.031
+silt_perc,		0.029
+soil_depth,		0.008
+cec,			0.038
+
+; Final result transform
+(result-transform), multiply=1.05, clamp=0 / 10
