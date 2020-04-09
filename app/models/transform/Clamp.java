@@ -1,11 +1,13 @@
 package models.transform;
 
+import query.Layer_Float;
+
 // example: "clamp=?/56"
 //------------------------------------------------------------
 public class Clamp implements Transform {
 	
 	public Boolean mMinClamped= false, mMaxClamped = false;
-	public Double mMinClamp, mMaxClamp;
+	public Float mMinClamp, mMaxClamp;
 
 	//------------------------------------------------------------
 	public Clamp(String value) {
@@ -16,16 +18,17 @@ public class Clamp implements Transform {
 		}
 		if (clmp[0].length() > 0 && !clmp[0].equalsIgnoreCase("?")) {
 			mMinClamped = true;
-			mMinClamp = Double.valueOf(clmp[0]);
+			mMinClamp = Float.valueOf(clmp[0]);
 		}
 		if (clmp[1].length() > 0 && !clmp[1].equalsIgnoreCase("?")) {
 			mMaxClamped = true;
-			mMaxClamp = Double.valueOf(clmp[1]);
+			mMaxClamp = Float.valueOf(clmp[1]);
 		}
 	}
 	
 	//------------------------------------------------------------
-	public final Double apply(Double input) {
+	public final Float apply(Float input) {
+		if (Layer_Float.isNoDataValue(input)) return input;
 		if (mMinClamped && input < mMinClamp) input = mMinClamp;
 		if (mMaxClamped && input > mMaxClamp) input = mMaxClamp;
 		return input;

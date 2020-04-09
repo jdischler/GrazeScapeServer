@@ -29,6 +29,7 @@ Ext.define('DSS.controls.StatsPanel', {
 	requires: [
 		'DSS.controls.Inspector_Limiter',
 		'DSS.controls.Inspector_PLoss',
+		'DSS.controls.Inspector_Yield',
 		'DSS.controls.Management'
 	],
 	
@@ -108,7 +109,7 @@ Ext.define('DSS.controls.StatsPanel', {
 			defaults: {
 				xtype: 'component',
 			},
-			items: [{
+			items: [/*{
 				cls: 'section-title',
 				style: 'color: #ddd; text-shadow: 0 1px rgba(0,0,0,0.2)',
 				html: 'Map Stats <i class="fas fa-chart-area small"></i>',
@@ -124,7 +125,7 @@ Ext.define('DSS.controls.StatsPanel', {
 						}
 					}
 				},
-/*			},{
+			},{
 				DSS_ratio: 0.5,
 				margin: 4,
 				minHeight: 64,
@@ -135,8 +136,8 @@ Ext.define('DSS.controls.StatsPanel', {
 							self.setHeight(Math.floor(w * self.DSS_ratio));
 						}
 					}
-				}*/
-			},{
+				}
+			},*/{
 				flex: 1
 			/*},{
 				xtype: 'container',
@@ -181,19 +182,23 @@ Ext.define('DSS.controls.StatsPanel', {
 									text: 'Models', disabled: true,
 									style: 'border-bottom: 1px solid rgba(0,0,0,0.2);'
 								},
-									makeInspectionMode('Soil Loss', 	'soil-loss', true, 'inspector_p_loss'),
-									makeInspectionMode('P-Loss', 		'p-loss', 	false, 'inspector_p_loss'),
-									makeInspectionMode('P-Loss-Real', 	'p-loss-real', false),//, 'inspector_p_loss'),
-									makeInspectionMode('Crop Yield', 	'crop-yield', false),
+									makeInspectionMode('Soil Loss', 	'soil-loss', 	true, 'inspector_p_loss'),
+									makeInspectionMode('P-Loss', 		'p-loss', 		false, 'inspector_p_loss'),
+									makeInspectionMode('P-Loss-Real', 	'p-loss-real', 	false),//, 'inspector_p_loss'),
+									makeInspectionMode('Crop Yield', 	'crop-yield', 	false, 'inspector_yield'),
 									makeInspectionMode('Bird Habitat', 	'bird-habitat'),
 								{
 									text: 'Land Properties', disabled: true,
 									style: 'border-bottom: 1px solid rgba(0,0,0,0.2);padding-top: 4px'
 								}, 
-									makeInspectionMode('Slope', 		'slope', 	false, 'inspector_limiter', {DSS_units:'º',DSS_min: 0, DSS_max: 60, DSS_value: 10, DSS_step: 2}),
+									makeInspectionMode('WiscLand 2.0', 	'cdl', 		false),
+									makeInspectionMode('Slope (DEM)', 	'slope', 	false, 'inspector_limiter', {DSS_units:'º',DSS_min: 0, DSS_max: 60, DSS_value: 10, DSS_step: 2}),
+									makeInspectionMode('Slope (SSURGO)', 'ssurgo-slope', 	false, 'inspector_limiter', {DSS_units:'º',DSS_min: 1, DSS_max: 45, DSS_value: 10, DSS_step: 2}),
+									makeInspectionMode('Slope Length', 	'slope-length', false, 'inspector_limiter', {DSS_units:' ',DSS_min: 60, DSS_max: 250, DSS_value: 60, DSS_step: 10}),
 									makeInspectionMode('Soil Depth', 	'soil-depth',false, 'inspector_limiter', {DSS_units:'cm',DSS_min: 0, DSS_max: 200, DSS_value: 60, DSS_step: 10}),
 									makeInspectionMode('% Sand', 		'perc-sand', false, 'inspector_limiter', {DSS_units:'%',DSS_min: 0, DSS_max: 100, DSS_value: 30, DSS_step: 5}),
 									makeInspectionMode('% Silt', 		'perc-silt', false, 'inspector_limiter', {DSS_units:'%',DSS_min: 0, DSS_max: 100, DSS_value: 30, DSS_step: 5}),
+									makeInspectionMode('% Clay', 		'perc-clay', false, 'inspector_limiter', {DSS_units:'%',DSS_min: 0, DSS_max: 100, DSS_value: 30, DSS_step: 5}),
 									makeInspectionMode('Distance to Water', 'dist-water', false, 'inspector_limiter', {DSS_units:'m',DSS_min: 0, DSS_max: 1000, DSS_value: 100, DSS_step: 10}),
 									makeInspectionMode('Elevation', 	'dem', 		false, 'inspector_limiter',	{DSS_units:'ft',DSS_min: 650, DSS_max: 1400, DSS_value: 900, DSS_step: 25}),
 									makeInspectionMode('pH', 			'ph', 		false, 'inspector_limiter',	{DSS_units:' ',DSS_min: 4.5, DSS_max: 8, DSS_value: 7, DSS_step: 0.5}),
@@ -202,8 +207,7 @@ Ext.define('DSS.controls.StatsPanel', {
 									makeInspectionMode('K', 			'k', 		false, 'inspector_limiter', {DSS_units:' ',DSS_min: 0, DSS_max: 1, DSS_value: 0.5, DSS_step: 0.1}),
 									makeInspectionMode('ksat', 			'ksat', 	false, 'inspector_limiter', {DSS_units:' ',DSS_min: 0, DSS_max: 300, DSS_value: 20, DSS_step: 10}),
 									makeInspectionMode('LS', 			'ls', 		false, 'inspector_limiter', {DSS_units:' ',DSS_min: 0, DSS_max: 20, DSS_value: 5, DSS_step: 1}),
-									makeInspectionMode('Slope Length', 	'slope-length', false, 'inspector_limiter', {DSS_units:' ',DSS_min: 60, DSS_max: 250, DSS_value: 60, DSS_step: 10}),
-
+									makeInspectionMode('T', 			't', 		false, 'inspector_limiter', {DSS_units:'t/a',DSS_min: 2, DSS_max: 0, DSS_value: 2, DSS_step: 1}),
 								]
 							});
 						}
@@ -354,6 +358,7 @@ Ext.define('DSS.controls.StatsPanel', {
 			timeout: 10000,
 			success: function(response, opts) {
 				var obj = JSON.parse(response.responseText);
+				console.log("Image request",obj);
 				me.DSS_isWorking = false;
 
 				modelResultsLayer.setSource(new ol.source.ImageStatic({
@@ -364,7 +369,12 @@ Ext.define('DSS.controls.StatsPanel', {
 				modelResultsLayer.setOpacity(0.7);
 				modelResultsLayer.setVisible(true);	
 				
-				DSS.MapState.showLegend(obj.palette, obj.values);
+				if (obj.key) {
+					DSS.MapState.showClassifiedLegend(obj.key)
+				}
+				else {
+					DSS.MapState.showContinuousLegend(obj.palette, obj.values);
+				}
 				
 				if (obj.fields) {
 					DSS.fieldList.addStats(me.DSS_mode, obj.fields)

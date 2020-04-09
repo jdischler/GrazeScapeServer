@@ -11,7 +11,6 @@ public class SimpleFlowAnalysis
 {
     private static final Logger logger = LoggerFactory.getLogger("app");
 
-    private int			mWidth = 1500, mHeight = 2600;
     
     //----------------------------------------------------------------
     public SimpleFlowAnalysis() {
@@ -28,15 +27,17 @@ public class SimpleFlowAnalysis
     //----------------------------------------------------------------
     public float [][] go() {
 
-    	float data[][] = new float[mHeight][mWidth];
-		float dem[][] = Layer_Base.getLayer("dem").getFloatData();
+    	Layer_Base dem = Layer_Base.getLayer("dem"); 
+    	int width = dem.getWidth(), height = dem.getHeight();
+		float demData[][] = dem.getFloatData();
+    	float data[][] = new float[height][width];
 
 		float d2w[][] = Layer_Base.getLayer("distance_to_water").getFloatData();
 		List<Dist> mDistances = new ArrayList<>();
 
 		//initialize
-		for (int y = 0; y < mHeight; y++) {
-			for (int x = 0; x < mWidth; x++) {
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
 				data[y][x] = -9999.0f;
 				mDistances.add(new Dist(d2w[y][x], x, y));
 			}

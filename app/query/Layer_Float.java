@@ -23,6 +23,7 @@ public class Layer_Float extends Layer_Base
 	protected float	mMin, mMax;
 	protected float[][] mFloatData;
 	protected int mCountNoDataCells;
+	public static final Float EPSILON = (float) 1e-3;
 	
 	//--------------------------------------------------------------------------
 	public Layer_Float(String name) {
@@ -57,6 +58,10 @@ public class Layer_Float extends Layer_Base
 	}
 
 	//--------------------------------------------------------------------------
+	public static final Boolean isNoDataValue(float value) {
+		return (Math.abs(value - -9999.0f) < EPSILON);
+	}
+	//--------------------------------------------------------------------------
 	protected void allocMemory() {
 		
 		logger.debug("  Allocating FLOAT work array");
@@ -84,7 +89,10 @@ public class Layer_Float extends Layer_Base
 	//--------------------------------------------------------------------------
 	final private void cacheMinMax(float value) {
 		
-		if (value < -9999.1f || value > -9998.9f) { // FIXME
+		if (isNoDataValue(value)) {
+			mCountNoDataCells++;
+		}
+		else {
 			if (!mbInitedMinMaxCache) {
 				mbInitedMinMaxCache = true;
 				mMin = value;
@@ -97,9 +105,6 @@ public class Layer_Float extends Layer_Base
 			else if (value < mMin) {
 				mMin = value;
 			}
-		}
-		else {
-			mCountNoDataCells++;
 		}
 	}
 	

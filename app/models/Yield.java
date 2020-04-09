@@ -1,6 +1,5 @@
 package models;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -9,28 +8,24 @@ import org.slf4j.LoggerFactory;
 
 import query.Layer_CDL;
 import query.Layer_Integer;
+import utils.ServerStartup;
 
+//---------------------------------------------------------------------
 public class Yield {
 
-	private static String mApplicationRoot;
     private static final Logger logger = LoggerFactory.getLogger("app");
-	
-	public static void setModelPath(File applicationRoot) {
-		mApplicationRoot = applicationRoot.getPath();
-	}
-	
-	public float[][] compute() {
+
+    //---------------------------------------------------------------------
+	public float[][] compute(String cropModel) {
 		
 		LinearModel lm = null;
 		
 		try {
-//			String modelPath = mApplicationRoot + "/conf/modelDefs/bluegrassWhiteClover.csv";
-			String modelPath = mApplicationRoot + "/conf/modelDefs/cornYield.csv";
+//			String modelPath = mApplicationRoot + "/conf/modelDefs/yield/bluegrassWhiteClover.csv";
+			String modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/yield/" + cropModel + ".csv";
 	        String definition = new String( Files.readAllBytes( Paths.get(modelPath) ));
 			lm = new LinearModel().init(definition);
 
-			lm.debug();
-			lm.measureResponse();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

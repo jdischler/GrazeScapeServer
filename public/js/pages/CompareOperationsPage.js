@@ -1,5 +1,5 @@
 
-DSS.utils.addStyle('.x-tip-default { background-color: #666666ff; border-color:#444}');
+DSS.utils.addStyle('.x-tip-default { background-color: #666666ff; border-color:#444; box-shadow: 0 4px 6px rgba(0,0,0,0.2)}');
 DSS.utils.addStyle('.x-tip-body-default {color: #fff}');
 
 Ext.create('Ext.data.Store', {

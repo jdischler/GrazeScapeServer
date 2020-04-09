@@ -1,4 +1,4 @@
-Ext.tip.QuickTipManager.init(); // Instantiate the QuickTipManager
+Ext.tip.QuickTipManager.init(true, {shadow: false}); // Instantiate the QuickTipManager
 
 Ext.Loader.setConfig({
 	enabled: true,

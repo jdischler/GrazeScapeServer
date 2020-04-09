@@ -2,6 +2,7 @@ package utils;
 
 import play.*;
 
+import java.awt.Color;
 import java.io.*;
 
 // PNGJ api docs....
@@ -21,6 +22,12 @@ public class Png {
 			mR = r;
 			mG = g;
 			mB = b;
+		}
+		public RGB(String hexString) {
+			Color c = Color.decode(hexString);
+			mR = c.getRed();
+			mG = c.getGreen();
+			mB = c.getBlue();
 		}
 	}
 

@@ -2,6 +2,10 @@ package analysis;
 
 import utils.*;
 import java.io.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,6 +13,8 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.*;
 
 import ar.com.hjg.pngj.chunks.*;
+import query.Layer_Integer.KeyItem;
+import utils.Png.RGB;
 
 //------------------------------------------------------------------------------
 public class RasterToPNG {
@@ -207,6 +213,75 @@ public class RasterToPNG {
 		png.mPngWriter.end();
 		
 		return results;
+	}
+
+	
+	//--------------------------------------------------------------------------
+	private static void makePalette(Png png, List<KeyItem> colorMap) throws Exception {
+			
+		int colors = colorMap.size() + 1; // for transparent color
+		PngChunkPLTE palette = png.createPalette(colors );
+		
+		int ct = 1;
+		for (KeyItem ki: colorMap) {
+			RGB rgb = new RGB(ki.mHexColor.toUpperCase());
+			palette.setEntry(ct, rgb.mR, rgb.mG, rgb.mB);ct++;
+		}
+
+		int[] alpha = new int[colors];
+		
+		for (int i=1; i < colors; i++) {
+			alpha[i] = 255;
+		}
+		// the zero index color is always transparent
+		alpha[0] = 0;
+		png.setTransparentArray(alpha);
+	}
+
+	//--------------------------------------------------------------------------
+	private static JsonNode getPaletteKey(List<KeyItem> colorMap) {
+
+		ArrayNode data = JsonNodeFactory.instance.arrayNode();
+		for (KeyItem ki: colorMap) {
+			data.add(Json.pack("color", ki.mHexColor, "label", ki.mName));
+		}
+		return Json.pack("key", data);
+	}
+	
+	//--------------------------------------------------------------------------
+	private static byte [][] convertToIndexed(int [][]data, int width, int height) {
+			
+		Map<Integer,Integer> deMask = new HashMap<>();
+		for (int i = 1; i < 31; i++) {
+			deMask.put((1 << (i-1)), i);
+		}
+		byte[][] idxs = new byte[height][width];
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				idxs[y][x] = deMask.get(data[y][x]).byteValue();
+			}
+		}
+		
+		return idxs;
+	}
+
+	//--------------------------------------------------------------------------
+	public static JsonNode saveClassified(int [][]data, List<KeyItem> colorMap, int width, int height, File file) {
+		
+		byte[][] idx = convertToIndexed(data, width, height);
+	
+		Png png = new Png(width, height, 8, 1, file.getPath());
+		try {
+			makePalette(png, colorMap);
+		}
+		catch(Exception e) {
+			logger.error(e.toString());
+		}
+		
+		png.mPngWriter.writeRowsByte(idx);
+		png.mPngWriter.end();
+		
+		return getPaletteKey(colorMap); 
 	}
 
 

@@ -5,8 +5,8 @@ package models.transform;
 public class Exp implements Transform {
 	
 	//-------------------------------------------------
-	public final Double apply(Double input) {
-		return Math.exp(input);
+	public final Float apply(Float input) {
+		return (float) Math.exp(input);
 	}
 
 	//-------------------------------------------------

@@ -1,13 +1,15 @@
 package models.transform;
 
+import query.Layer_Float;
+
 // example: "valid-range=?/56"
 //------------------------------------------------------------
 public class ValidRange {
 	
 	private Boolean mHasMinLegalValue= false, mHasMaxLegalValue = false;
-	private Double mMinValue, mMaxValue;
+	private Float mMinValue, mMaxValue;
 	
-	private Double mNoDataValue = -9999.0;
+	private Float mNoDataValue = -9999.0f;
 
 	//------------------------------------------------------------
 	public ValidRange(String value) {
@@ -18,22 +20,23 @@ public class ValidRange {
 		}
 		if (clmp[0].length() > 0 && !clmp[0].equalsIgnoreCase("?")) {
 			mHasMinLegalValue = true;
-			mMinValue = Double.valueOf(clmp[0]);
+			mMinValue = Float.valueOf(clmp[0]);
 		}
 		if (clmp[1].length() > 0 && !clmp[1].equalsIgnoreCase("?")) {
 			mHasMaxLegalValue = true;
-			mMaxValue = Double.valueOf(clmp[1]);
+			mMaxValue = Float.valueOf(clmp[1]);
 		}
 	}
 	
 	//------------------------------------------------------------
-	public ValidRange setNoDataValue(Double noDataValue) {
+	public ValidRange setNoDataValue(Float noDataValue) {
 		mNoDataValue = noDataValue;
 		return this;
 	}
 	
 	//------------------------------------------------------------
-	public final Boolean isValid(Double input) {
+	public final Boolean isValid(Float input) {
+		if (Layer_Float.isNoDataValue(input)) return false;
 		if (mHasMinLegalValue && input < mMinValue) {
 			return false;
 		}
@@ -44,7 +47,8 @@ public class ValidRange {
 	}
 	
 	//------------------------------------------------------------
-	public final Double apply(Double input) {
+	public final Float apply(Float input) {
+		if (Layer_Float.isNoDataValue(input)) return input;
 		if (mHasMinLegalValue && input < mMinValue) {
 			return mNoDataValue;
 		}

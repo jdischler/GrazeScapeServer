@@ -1,7 +1,5 @@
 package utils;
 
-//import play.Logger;
-
 public class PerformanceTimer {
 	
 	private long mStartTime;

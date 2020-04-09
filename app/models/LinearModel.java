@@ -24,60 +24,84 @@ public class LinearModel {
     public interface DataSource {
     	public Boolean canComputeValue(int rasterX, int rasterY);
     	public float getData(int rasterX, int rasterY);
+		public float measureGetRanged(float alpha);
+		public String debug();
     }
     
+	//------------------------------------------------------------
     public final class DataConstant implements DataSource {
-    	public float mValue;
+    	public Float mValue = 1.0f;
     	public Boolean canComputeValue(int rasterX, int rasterY) {
     		return true;
     	}
     	public float getData(int rasterX, int rasterY) {
     		return mValue;
     	}
+		public float measureGetRanged(float alpha) {
+			return mValue;
+		}
+		public String debug() {
+			return " DataConstant: " +  mValue;
+		}
     }
+    
+	//------------------------------------------------------------
     public final class DataLayer implements DataSource {
 		public Layer_Float mDataLayer;
 		public float mDataSource[][];
 		public ValidRange mValidRange = null;  
 		public List<Transform> mTransforms = new ArrayList<>();
     	public Boolean canComputeValue(int rasterX, int rasterY) {
-    		return true;
+			float data = mDataSource[rasterY][rasterX];
+			if (Layer_Float.isNoDataValue(data)) {
+				return false;
+			}
+			else if (mValidRange == null) {
+				return true;
+			}
+			return mValidRange.isValid(data);
     	}
     	public float getData(int rasterX, int rasterY) {
+			Float data = mDataSource[rasterY][rasterX];
+			for (Transform t: mTransforms) {
+				data = t.apply(data);
+			}
+			return data.floatValue();
     	}
+		public float measureGetRanged(float alpha) {
+			Float value = (mDataLayer.getMin() + (mDataLayer.getMax() - mDataLayer.getMin()) * alpha);
+			for (Transform t: mTransforms) {
+				value = t.apply(value);
+			}
+			return value.floatValue();
+		}
+		public String debug() {
+			return " DataLayer: " + mDataLayer.getName() + " ...more details soon";
+		}
     }
     
 	//------------------------------------------------------------
 	private final class InputData {
 		
-		// TODO: encapsulate these into a DataSource object that can also abstract constant model inputs
-		//	vs. raster inputs
-		public Layer_Float mDataLayer;
-		public float mDataSource[][];
-		
-		public ValidRange mValidRange = null;  
-		public List<Transform> mTransforms = new ArrayList<>();
+		public DataSource mDataSource;
 		public List<Position> mAt = new ArrayList<>();
 		
-		public Boolean canComputeValue(int rasterX, int rasterY) {
-			if (mValidRange == null) return true;
-			
-			float data = mDataSource[rasterY][rasterX];
-			 return mValidRange.isValid((double) data);
+		public final Boolean canComputeValue(int rasterX, int rasterY) {
+			return mDataSource.canComputeValue(rasterX, rasterY);
 		}
+		
 		public float getData(int rasterX, int rasterY) {
-			Double data = (double) mDataSource[rasterY][rasterX];
-			for (Transform t: mTransforms) {
-				data = t.apply(data);
-			}
-			return data.floatValue();
+			return mDataSource.getData(rasterX, rasterY);
 		}
 		public String debugData(int rasterX, int rasterY) {
-			String result = mDataLayer.getName() + ":" + getData(rasterX, rasterY);
+			String result = mDataSource.debug() + ":" + getData(rasterX, rasterY);
 			return result;
 		}
 		public String debug() {
-			String result = "Data Item <" + mDataLayer.getName() + ">:\n";
+			if (mDataSource == null) {
+				logger.warn(" mDataSource is null");
+			}
+			String result = "Data Item <" + mDataSource.debug() + ">:\n";
 			for (Position p: mAt) {
 				result += p.debug() + "\n";
 			}
@@ -89,24 +113,20 @@ public class LinearModel {
 		//	an alpha of 0 returns min, an alpha of 1 returns max, an alpha of 0.5 = the mean
 		// The unit conversion is applied however any range checking is skipped
 		public float measureGetRanged(float alpha) {
-			Double value = (double) (mDataLayer.getMin() + (mDataLayer.getMax() - mDataLayer.getMin()) * alpha);
-			for (Transform t: mTransforms) {
-				value = t.apply(value);
-			}
-			return value.floatValue();
+			return mDataSource.measureGetRanged(alpha);
 		}
 	}
 	
 	//------------------------------------------------------------
 	private final class Element {
-		public Double mValue[] = {1.0,1.0};
-		public Double mCoefficient;
+		public Float mValue[] = {1.0f,1.0f};
+		public Float mCoefficient;
 		public Boolean mbInteracting = false;
-		public Element(Double coefficient, Boolean interacting) {
+		public Element(Float coefficient, Boolean interacting) {
 			mCoefficient = coefficient; 
 			mbInteracting = interacting;
 		}
-		public final Double apply() {
+		public final Float apply() {
 			if (mbInteracting) {
 				return mValue[0] * mValue[1] * mCoefficient;
 			}
@@ -130,15 +150,35 @@ public class LinearModel {
 		}
 	}
 	
-	private Double mNoDataValue = -9999.0;
-	private Double mIntercept;
+	private Float mNoDataValue = -9999.0f;
+	private Float mIntercept = 0.0f;
+	private Map<String,Float> mVariableIntercept = new HashMap<>();
+	
 	private List<InputData> mData = new ArrayList<>();
+	private Map<String,DataConstant> mMappedConstants = new HashMap<>();
+	
 	private List<Element> mElements = new ArrayList<>();
 	private List<Transform> mResultTransforms = new ArrayList<>();
 	
 	private final Integer VARIABLE = 0;
 	private final Integer COEFFICIENT = 1;
 	
+	//------------------------------------------------------------
+	public final void setConstant(String constant, Float value) throws Exception {
+		DataConstant dc = mMappedConstants.get(constant);
+		if (dc == null) {
+			throw new Exception(" LinearModel: mapped constant not found: " + constant);
+		}
+		dc.mValue = value;
+	}
+	//------------------------------------------------------------
+	public final void setIntercept(String interceptVariable) throws Exception {
+		Float intercept = mVariableIntercept.get(interceptVariable);
+		if (intercept == null) {
+			throw new Exception(" LinearModel: mapped intercept not found: " + interceptVariable);
+		}
+		mIntercept = intercept;
+	}
 	//------------------------------------------------------------
 	public final LinearModel init(String csv) throws Exception {
 		
@@ -163,8 +203,13 @@ public class LinearModel {
 			}
 			
 			if (el[VARIABLE].contains("intercept")) {
-				Double coeff = Double.valueOf(el[COEFFICIENT]);
+				Float coeff = Float.valueOf(el[COEFFICIENT]);
 				this.mIntercept = coeff;
+				String ex[] = el[VARIABLE].replace(")", "").split("=");
+				if (ex.length > 1) {
+					String interceptVar = ex[1].trim().toLowerCase();
+					mVariableIntercept.put(interceptVar,  coeff);
+				}
 				continue;
 			}
 			else if (el[VARIABLE].contains("result-transform")) {
@@ -177,7 +222,7 @@ public class LinearModel {
 				continue;
 			}
 			
-			Double coeff = Double.valueOf(el[COEFFICIENT]);
+			Float coeff = Float.valueOf(el[COEFFICIENT]);
 			
 			// look for interaction specifiers, expected to have a ":" between but likely also enclosed in "`"
 			String variable = el[VARIABLE].replace("`", "");
@@ -185,61 +230,85 @@ public class LinearModel {
 			int idx = mElements.size();
 			
 			// Is an interacting input. Unit conversion and range handling are not currently applicable here -- these features only			
-			if (interactingVariable.length > 1) { 
-				//	apply to "solo" input transformation
-				InputData d = dataMap.get(interactingVariable[0]);
+			if (interactingVariable.length > 1) {
+				String iv0  = interactingVariable[0], iv1 = interactingVariable[1];
+				if (iv0.startsWith("@")) {
+					iv0 = iv0.substring(1);
+				}
+				else {
+					iv0 = Layer_Base.resolveName(iv0);
+				}
+				InputData d = dataMap.get(iv0);
 				
 				// TODO: d may be null
 				d.mAt.add(new Position(idx, 0));
-				d = dataMap.get(interactingVariable[1]);
+				if (iv1.startsWith("@")) {
+					iv1 = iv1.substring(1);
+				}
+				else {
+					iv1 = Layer_Base.resolveName(iv1);
+				}
+				d = dataMap.get(iv1);
 				d.mAt.add(new Position(idx, 1));
 				
 				mElements.add(new Element(coeff, true));
 				continue;
 			}
 			
-			// "Solo" input, which wires up the data access-or plus extra bits, such as:
-			//	-accepts unit conversion arguments
-			//	-range clamping
-			//	-out-of-range handling
-			// Any of these traits are processed first and the result is passed along as a "solo" input or to the interacting inputs
+			// "Solo" input, which wires up the data access-or plus extra bits that can be created from a 
+			//	TransformFactory...
+			// Any of these transforms are processed first and the result is passed along as a "solo" input or to the interacting inputs
 			InputData d = new InputData();
-			// layer name "synonyms" exist so resolve those back to the real name for simplicity
-			variable = Layer_Base.resolveName(variable);
-			d.mDataLayer = (Layer_Float)Layer_Base.getLayer(variable);
-			d.mDataSource = d.mDataLayer.getFloatData();
+			if (variable.startsWith("@")) {
+				// Strip the '@' and put the variable in a map for easy run-time access to change the consts
+				variable = variable.substring(1);
+				DataConstant constant = new DataConstant();
+				mMappedConstants.put(variable, constant);
+				d.mDataSource = constant;
+			}
+			else {
+				// layer name "synonyms" exist so resolve those back to the real name for simplicity
+				variable = Layer_Base.resolveName(variable);
+				DataLayer src = new DataLayer();
+				src.mDataLayer = (Layer_Float)Layer_Base.getLayer(variable);
+				src.mDataSource = src.mDataLayer.getFloatData();
+				d.mDataSource = src;
+				
+				// DataLayer source may have other bits
+				// examples: "unit-convert=feet-to-meters", "input-clamp=?/56", "legal-range=?/32"
+				for (int extras = 2; extras < el.length; extras++) {
+					String extra = el[extras].trim().toLowerCase();
+					
+					Transform trx = TransformFactory.create(extra);
+					if (trx == null) {
+						// Split and minimally sanitize
+						String ex[] = extra.split("=");
+						for (int i = 0; i < ex.length; i++) {
+							ex[i] = ex[i].trim().toLowerCase();
+						}
+						if (ex[0].equalsIgnoreCase("valid-range")) {
+							src.mValidRange = new ValidRange(ex[1]);
+						}
+						else {
+							logger.warn("---------------------------------------");
+							logger.warn(" Unhandled extra bit: " + extra);
+							logger.warn("---------------------------------------");
+						}
+					}
+					else {
+						src.mTransforms.add(trx);
+					}
+				}
+				
+				// TODO: OPTIMIZE: inspect any adjacent transforms to see if they can be collapsed
+				//	Example: two multiplies can turn into a single one
+			}
 			d.mAt.add(new Position(idx, 0));
 			dataMap.put(variable, d);
 			
 			mData.add(d);
 			
 			mElements.add(new Element(coeff, false));
-			
-			// may have other bits
-			// examples: "unit-convert=feet-to-meters", "input-clamp=?/56", "legal-range=?/32"
-			for (int extras = 2; extras < el.length; extras++) {
-				String extra = el[extras].trim().toLowerCase();
-				
-				Transform trx = TransformFactory.create(extra);
-				if (trx == null) {
-					// Split and minimally sanitize
-					String ex[] = extra.split("=");
-					for (int i = 0; i < ex.length; i++) {
-						ex[i] = ex[i].trim().toLowerCase();
-					}
-					if (ex[0].equalsIgnoreCase("valid-range")) {
-						d.mValidRange = new ValidRange(ex[1]);
-					}
-					else {
-						logger.warn("---------------------------------------");
-						logger.warn(" Unhandled extra bit: " + extra);
-						logger.warn("---------------------------------------");
-					}
-				}
-				else {
-					d.mTransforms.add(trx);
-				}
-			}
 		}//);
 		
 		return this;
@@ -257,27 +326,27 @@ public class LinearModel {
 	}
 	
 	//------------------------------------------------------------
-	public final Double calculate(int rasterX, int rasterY) {
+	public final Float calculate(int rasterX, int rasterY) {
 		
 		// populate data
 		for(InputData d: mData) {
 			if (!d.canComputeValue(rasterX, rasterY)) {
-			//	logger.warn(debugInputs("No Data", rasterX, rasterY));
 				return mNoDataValue;
 			}
-			
+			// This data may have been transformed
 			final float val = d.getData(rasterX, rasterY);
 			for(Position p: d.mAt) {
+				// put the final data result into all needed element slots...
 				final Element e = mElements.get(p.mIndex);
-				e.mValue[p.mSlot] = (double) val;
+				e.mValue[p.mSlot] = val;
 			}
 		}
 		// Compute all elements
-		Double result = mIntercept;
+		Float result = mIntercept;
 		for(Element e: mElements) {
 			result += e.apply();
 		}
-		
+		// Do any transforms requested on the final result
 		for (Transform t: mResultTransforms) {
 			result = t.apply(result);
 		}
@@ -350,17 +419,17 @@ public class LinearModel {
 				Float val = d.measureGetRanged(alpha);
 				for(Position p: d.mAt) {
 					final Element e = mElements.get(p.mIndex);
-					e.mValue[p.mSlot] = (double) val;
+					e.mValue[p.mSlot] = val;
 				}
 			}
 			// Compute all elements
-			Double result = mIntercept;
+			Float result = mIntercept;
 			for(Element e: mElements) {
 				result += e.apply();
 			}
 			// Apply final transforms
 			for (Transform t: mResultTransforms) {
-				result = t.apply(result);
+				result = t.apply(result.floatValue());
 			}
 			
 			float val = result.floatValue();

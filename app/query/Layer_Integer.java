@@ -30,11 +30,17 @@ public class Layer_Integer extends Layer_Base
 		ERaw					// data is loaded raw and unmodified
 	}	
 	
+	public class KeyItem {
+		public String mName, mHexColor;
+		KeyItem(String nm, String hex) {
+			mName = nm; mHexColor = hex;
+		}
+	};
 	// Internal helper class to store color key information...
 	//--------------------------------------------------------------------------
 	protected class Layer_Key {
 
-		protected class ReclassifiedKey {
+		protected class ReclassifiedKey implements Comparable<ReclassifiedKey> {
 			public int mCode;
 			public String mName, mHexColor;
 			public List<String> mOriginalNames = new ArrayList<String>(); 
@@ -59,6 +65,10 @@ public class Layer_Integer extends Layer_Base
 						"name", mName,
 						"color", mHexColor);
 			}
+		    @Override
+		    public int compareTo(ReclassifiedKey o) {
+		        return this.mCode - o.mCode;
+		    }			
 		}
 
 		// Only keeping some of this around in case it's useful runtime?
@@ -208,6 +218,16 @@ public class Layer_Integer extends Layer_Base
 
 			return ret;
 		}
+		public List<KeyItem> toKeyItem() {
+			List<KeyItem> ki = new ArrayList<>();
+			
+			List<ReclassifiedKey> rkl = new ArrayList<>(mKeys.values());
+			Collections.sort(rkl);
+			for (ReclassifiedKey rk: rkl) {
+				ki.add(new KeyItem(rk.mName, rk.mHexColor));
+			}
+			return ki;
+		}
 	}
 	
 	private Layer_Key mLayerKey = new Layer_Key();
@@ -247,6 +267,11 @@ public class Layer_Integer extends Layer_Base
 		
 		mConvertedNoDataValue = newConversionValue;
 		return this;
+	}
+	
+	//--------------------------------------------------------------------------
+	public List<KeyItem> getKey() {
+		return mLayerKey.toKeyItem();
 	}
 	
 	//--------------------------------------------------------------------------

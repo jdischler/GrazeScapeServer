@@ -12,14 +12,14 @@ public class Asc_Writer {
 
     public static void quickDump(float[][] raster) {
 		PrintWriter ascOut = null;
-		int width = 1900, height = 3400;
+		int width = 1500, height = 2600;
 		try {
-			File writeFile = new File("./test.asc");
+			File writeFile = new File("./testLS_convert.asc");
 			ascOut = new PrintWriter(new BufferedWriter(new FileWriter(writeFile)));
-			ascOut.println("ncols         1900");
-			ascOut.println("nrows         3400");
-			ascOut.println("xllcorner     -10128000.0");
-			ascOut.println("yllcorner     5358000.0");
+			ascOut.println("ncols         1500");
+			ascOut.println("nrows         2600");
+			ascOut.println("xllcorner     440000.0");
+			ascOut.println("yllcorner     314000.0");
 			ascOut.println("cellsize      10");
 			ascOut.println("NODATA_value  -9999");
 		} 

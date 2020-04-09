@@ -1,9 +1,9 @@
 package controllers;
 
 import play.mvc.*;
+import utils.ServerStartup;
+
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +13,16 @@ public class FileService extends Controller {
 
 	private static final Logger logger = LoggerFactory.getLogger("app");
 
-	public static String mDirPath; // call init() to configure this
-      
+	private static String mDirPath; // call init() to configure this
+     
+	//--------------------------------------------------------------------------
+	public static final String getDirectory() {
+		return mDirPath;
+	}
+	
 	//--------------------------------------------------------------------------
 	public Result getFile(String file) {
+		
 		File myfile = new File (mDirPath + file);
 		if (myfile.exists()) {
 			return ok(myfile);
@@ -28,9 +34,9 @@ public class FileService extends Controller {
 	}
 	
 	//-----------------------------------------------------------------------
-	public static void init(File rootPath) {
+	public static void init() {
 		
-		mDirPath = rootPath.toString() + "/dynamicFiles/";
+		mDirPath = ServerStartup.getApplicationRoot().toString() + "/dynamicFiles/";
 
 		logger.info(" > Ensuring dynamicFiles path <" + mDirPath + "> exists...");
 		File dir = new File(mDirPath);
@@ -43,4 +49,5 @@ public class FileService extends Controller {
 		    }
 		}
 	}
+	
 }

@@ -272,7 +272,7 @@ Ext.define('DSS.app.MapStateTools', {
     },
     
     //-------------------------------------------------------------
-    showLegend: function(paletteArray, valuesArray) {
+    showContinuousLegend: function(paletteArray, valuesArray) {
 
     	var me = this;
     	
@@ -280,13 +280,35 @@ Ext.define('DSS.app.MapStateTools', {
 		
 		me.DSS_legend = Ext.create('DSS.controls.MapLegend', {
 			DSS_colors: paletteArray,
-			DSS_values: valuesArray
+			DSS_values: valuesArray,
+			DSS_keys: false
 		});
 		
 		let cmp = Ext.getCmp('ol_map');
 		me.DSS_legend.showAt(DSS_viewport.getWidth() - 120, 0);
 		me.DSS_legend.setX(cmp.getX() + cmp.getWidth() - (me.DSS_legend.getWidth() + 8))
     },
+    
+    //-------------------------------------------------------------
+    showClassifiedLegend: function(keyArray) {
+
+    	var me = this;
+    	
+		me.destroyLegend();
+		
+		me.DSS_legend = Ext.create('DSS.controls.MapLegend', {
+			style: 'opacity: 0.8;background-color: rgba(0,0,0,0.5); border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; box-shadow: 0 6px 8px rgba(0,0,0,0.2);',
+			height: 380,
+			DSS_keys: keyArray,
+			DSS_colors: false,
+			DSS_values: false
+		});
+		
+		let cmp = Ext.getCmp('ol_map');
+		me.DSS_legend.showAt(DSS_viewport.getWidth() - 120, 0);
+		me.DSS_legend.setX(cmp.getX() + cmp.getWidth() - (me.DSS_legend.getWidth() + 8))
+    },
+
     
     //-------------------------------------------------------------
     destroyLegend: function() {

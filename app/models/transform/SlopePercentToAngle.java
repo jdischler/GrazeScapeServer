@@ -2,25 +2,20 @@ package models.transform;
 
 import query.Layer_Float;
 
-// scale=1.2
 //------------------------------------------------------------
-public class Multiply implements Transform {
-	
-	private Float mCoefficient;
+public class SlopePercentToAngle implements Transform {
 	
 	//------------------------------------------------------------
-	public Multiply(String value) {
-		mCoefficient = Float.valueOf(value); 
-	}
+//	public SlopePercentToAngle(String value) {}
 	
 	//------------------------------------------------------------
 	public final Float apply(Float input) {
 		if (Layer_Float.isNoDataValue(input)) return input;
-		return input * mCoefficient;
+		else return (float) (Math.atan(input / 100.0f) * (180.0f / Math.PI));
 	}
 	
 	//-------------------------------------------------
 	public final String debug() {
-		return "> Multiply: <" + mCoefficient + "> ";
+		return "> SlopePercentToAngle ";
 	}
 }

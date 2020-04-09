@@ -462,28 +462,34 @@ public abstract class Layer_Base
 //			newIntegerLayer("non_ag_mask",EType.ERaw).init();	// Hybrid of Wisc-Land, DNR perennial streams, DNR open water, and DMV road data
 			
 			// SSURGO-Derived layers: topmost horizon only
+			newFloatLayer("ssurgo_slope").init();	// SSURGO: slope
+			newFloatLayer("slope_length").init();	// SSURGO: slope-length
 			newFloatLayer("soil_depth").init();		// SSURGO: hzdept_r
-			newFloatLayer("ph").init();				// SSURGO: ph1to1h2o_r
-			newFloatLayer("ksat").init();			// SSURGO: ksat_r
-//			newFloatLayer("clay_perc").init();		// SSURGO: claytotal_r
+			newFloatLayer("clay_perc").init();		// SSURGO: claytotal_r
 			newFloatLayer("sand_perc").init();		// SSURGO: sandtotal_r
 			newFloatLayer("silt_perc").init();		// SSURGO: silttotal_r			
 			newFloatLayer("cec").init();			// SSURGO: cec7_r
 			newFloatLayer("om").init();				// SSURGO: om_r
 			newFloatLayer("k").init();				// SSURGO: kffact
 			newFloatLayer("ls").init();				// SSURGO: ls
-			newFloatLayer("slope_length").init();	// SSURGO: slope-length
+			newFloatLayer("t").init();				// SSURGO: t (acceptable soil loss)
+			newFloatLayer("ksat").init();			// SSURGO: ksat_r
+			newFloatLayer("ph").init();				// SSURGO: ph1to1h2o_r
+			newFloatLayer("albedo").init();			// SSURGO: ?
 		}
 		catch (Exception e) {
 			logger.error(e.toString());
 		}
+		newFloatLayer("ls_2").init();				// SSURGO: ls
 
 		// Some convenience helpers...
 		mLayerSynonyms = new HashMap<>();
 		mLayerSynonyms.put("sand", "sand_perc");
-		mLayerSynonyms.put("silt", "silt_perc");
+		mLayerSynonyms.put("clay", "clay_perc");
 		mLayerSynonyms.put("silt", "silt_perc");
 		mLayerSynonyms.put("slopelen", "slope_length");
+//		mLayerSynonyms.put("ls", "ls_2");
+//		mLayerSynonyms.put("slope", "ssurgo_slope");
 		
 		logger.info("┌───────────────────────────────────────────────────────┼");
 		logger.info("» Layers are loaded:");

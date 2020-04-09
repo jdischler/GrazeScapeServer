@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import analysis.Histogram;
 import models.transform.UnitConvert;
+import query.Layer_Float;
 
 //---------------------------------------------
 public class Stats {
@@ -39,7 +40,7 @@ public class Stats {
 	public void record(float element) {
 		
 		mConsideredCells++;
-		if (Math.abs(element - mNoDataValue) < 0.001f) {
+		if (Layer_Float.isNoDataValue(element)) {
 			mNoDataCount++;
 			return;
 		}

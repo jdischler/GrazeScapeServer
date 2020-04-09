@@ -2,12 +2,15 @@ package controllers;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import play.mvc.*;
+import play.twirl.api.Content;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +28,9 @@ import data_types.Farm;
 import db.FieldGeometry;
 import io.ebean.Ebean;
 import io.ebean.SqlRow;
+import models.LinearModel;
 import models.Yield;
-
-
+import models.transform.*;
 import utils.Json;
 import utils.ServerStartup;
 
@@ -108,7 +111,7 @@ public class HomeController extends Controller {
 	//------------------------------------------------------------------
 	public Result app() {
 
-		return ok(views.html.app.render());
+		return ok((Content) views.html.app.render());
 	}
 
 	//------------------------------------------------------------------
@@ -194,12 +197,13 @@ public class HomeController extends Controller {
 		else if (mode.equalsIgnoreCase("p-loss")) mc = new PLossModel();
 		else if (mode.equalsIgnoreCase("p-loss-real")) mc = new AwePLossModel();
 		
-		else if (mode.equalsIgnoreCase("slope")) mc = new RasterInspection().dataLayer("slope").setTransform(new SlopePercentToAngle());
+		else if (mode.equalsIgnoreCase("slope")) mc = new RasterInspection().dataLayer("slope");//.setTransform(new SlopePercentToAngle());
 		else if (mode.equalsIgnoreCase("soil-depth")) mc = new RasterInspection().dataLayer("soil_depth");
 		else if (mode.equalsIgnoreCase("dem")) mc = new RasterInspection().dataLayer("dem");
 		else if (mode.equalsIgnoreCase("dist-water")) mc = new RasterInspection().dataLayer("distance_to_water");
 		else if (mode.equalsIgnoreCase("perc-sand")) mc = new RasterInspection().dataLayer("sand_perc");
 		else if (mode.equalsIgnoreCase("perc-silt")) mc = new RasterInspection().dataLayer("silt_perc");
+		else if (mode.equalsIgnoreCase("perc-clay")) mc = new RasterInspection().dataLayer("clay_perc");
 		else if (mode.equalsIgnoreCase("om")) mc = new RasterInspection().dataLayer("om");
 		else if (mode.equalsIgnoreCase("k")) mc = new RasterInspection().dataLayer("k");
 		else if (mode.equalsIgnoreCase("ls")) mc = new RasterInspection().dataLayer("ls");
@@ -207,23 +211,31 @@ public class HomeController extends Controller {
 		else if (mode.equalsIgnoreCase("cec")) mc = new RasterInspection().dataLayer("cec");
 		else if (mode.equalsIgnoreCase("ph")) mc = new RasterInspection().dataLayer("ph");
 		else if (mode.equalsIgnoreCase("slope-length")) mc = new RasterInspection().dataLayer("slope_length");
+		else if (mode.equalsIgnoreCase("ssurgo-slope")) mc = new RasterInspection().dataLayer("ssurgo_slope");//.setTransform(new SlopePercentToAngle());
+		else if (mode.equalsIgnoreCase("t")) mc = new RasterInspection().dataLayer("t");
+		else if (mode.equalsIgnoreCase("cdl")) {
+			return processCategorical(request);
+		}
 		
 		return computeModel(request, mc);
 	}
 
-	
-	private interface Transform {
-		public abstract float transform(float input);
-	}
-	
-	private class PassThrough implements Transform {
-		final public float transform(float input) { return input; }
-	}
-	private class SlopePercentToAngle implements Transform {
-
-		public float transform(float input) {
-			return (float)(Math.atan(input / 100.0f) * (180.0f / Math.PI));
-		}
+	//-------------------------------------------------------
+	public Result processCategorical(Http.Request request) {
+		Layer_Integer cdl = Layer_CDL.get();
+		int[][] cdlData = cdl.getIntData();
+		
+		JsonNode node = request.body().asJson();
+		Extents ext = new Extents().fromJson((ArrayNode)node.get("extent")).toRasterSpace();
+		ObjectNode result = null;
+		File fp = new File(FileService.getDirectory() + "yes" + pngCounter + ".png");
+		result  = (ObjectNode)RasterToPNG.saveClassified(cdlData, cdl.getKey(), ext.width(), ext.height(), fp);
+		
+		Json.addToPack(result, "url", "renders/yes" + pngCounter + ".png", 
+						"extent", ext.toJson());	
+		
+		pngCounter++;
+		return ok(result);
 	}
 	
 	//-------------------------------------------------------
@@ -414,7 +426,7 @@ public class HomeController extends Controller {
 			ext.mWidth = newW;
 		}
 */				
-		File fp = new File(FileService.mDirPath + "yes" + pngCounter + ".png");
+		File fp = new File(FileService.getDirectory() + "yes" + pngCounter + ".png");
 		result  = (ObjectNode)RasterToPNG.save(clipped, ext.width(), ext.height(), fp);
 		
 		Json.addToPack(result, "url", "renders/yes" + pngCounter + ".png", 
@@ -469,7 +481,7 @@ public class HomeController extends Controller {
 				logger.info("Using filtered view...");
 				for (int y = ext.y2(); y < ext.y1(); y++) {
 					for (int x = ext.x1(); x < ext.x2(); x++) {
-						float data = mDataTransform.transform(dataIn[y][x]);
+						Float data = mDataTransform.apply(dataIn[y][x]);
 						if (lessThan && data < filterValue) {
 							dataOut[y][x] = data;
 						}
@@ -485,7 +497,7 @@ public class HomeController extends Controller {
 			else { // straight copy
 				for (int y = ext.y2(); y < ext.y1(); y++) {
 					for (int x = ext.x1(); x < ext.x2(); x++) {
-						float data = mDataTransform.transform(dataIn[y][x]);
+						float data = mDataTransform.apply(dataIn[y][x]);
 						dataOut[y][x] = data;
 					}
 				}
@@ -508,8 +520,10 @@ public class HomeController extends Controller {
 		
 		public float[][] compute(Extents ext, JsonNode options) throws Exception { 
 			
+			logger.error(options.toString());
+			String cropModel = Json.safeGetOptionalString(options, "crop", "corn");
 			Yield test = new Yield();
-			return test.compute();
+			return test.compute(cropModel);
 			
 /*			Boolean filterEnabled = false;
 			Boolean lessThan = true; // if false, then is in greater-than mode
@@ -694,126 +708,42 @@ public class HomeController extends Controller {
 			float c_sandtotal_r = 0;
 			float c_silttotal_r = 0;
 			float c_OM 			= 0;
+			Layer_Base s_layer = Layer_Base.getLayer("slope");
+			
 			// Continuous Corn
 			//-------------------------------------------------------------
-			if (landcoverCode.equalsIgnoreCase("cc")) {
-				if (coverCropCode.equalsIgnoreCase("cc")) {
-					switch(tillageCode) {
-					case "fc":
-						intercept = 0.0566591768276325f;
-						break;
-					case "sc":
-						intercept = 0.002108137081453f;
-						break;
-					case "fm":
-						intercept = 0.674846327508485f;
-						break;
-					case "sm":
-						intercept = 0.719958719846611f;
-						break;
-					case "nt":
-						intercept = -1.78349735992302f;
-						break;
-					default:
-						logger.error("Unhandled tillage code:" + tillageCode);
-					}
-				}
-				else if (coverCropCode.equalsIgnoreCase("nc")) {
-					switch(tillageCode) {
-					case "fc":
-						intercept = -0.579261936378879f;
-						break;
-					case "sc":
-						intercept = -0.633812975746179f;
-						break;
-					case "fm":
-						intercept = 0.038925214680853f;
-						break;
-					case "sm":
-						intercept = 0.084037607018978f;
-						break;
-					case "nt":
-						intercept = -2.41941847275065f;
-						break;
-					default:
-						logger.error("Unhandled tillage code:" + tillageCode);
-					}
-				}
-				else {
-					logger.error("Unhandled cover crop code:" + coverCropCode);
+			if (landcoverCode.equalsIgnoreCase("cc") || landcoverCode.equalsIgnoreCase("cg")) {
+				LinearModel lm = null;
+				
+				try {
+					String model = landcoverCode.equalsIgnoreCase("cc") ? 
+							String.format("continuous_corn.csv") :
+							String.format("cash_grain.csv");
+					String modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/" + model;
+			        String definition = new String( Files.readAllBytes( Paths.get(modelPath) ));
+					lm = new LinearModel().init(definition);
+
+//					lm.debug();
+//					lm.measureResponse();
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				
-				c_ManureApp 	= 0.00359206803416f;
-				c_SyntheticApp 	= 0.00252837564114f;
-				c_initialP 		= 0.00337386285029f;
-				c_Slope 		= 0.06857203548177f;
-				c_SlopeLength 	= -0.0034862913967f;
-				c_LS 			= -0.1297218451209f;
-				c_K 			= 2.25186015396712f;
-				c_sandtotal_r 	= 0.00388356367312f;
-				c_silttotal_r 	= 0.01238149285957f;
-				c_OM 			= 0.07928443256857f;	
-			}
-			// Cash Grain (Corn + Soy)
-			//-------------------------------------------------------------
-			else if (landcoverCode.equalsIgnoreCase("cg")) {
-				if (coverCropCode.equalsIgnoreCase("cc")) {
-					switch(tillageCode) {
-					case "fc":
-						intercept = 0.17712728352553f;
-						break;
-					case "sc":
-						intercept = -0.031632721834f;
-						break;
-					case "fm":
-						intercept = 0.552153277505f;
-						break;
-					case "sm":
-						intercept = 0.549093698358f;
-						break;
-					case "nt":
-						intercept = -1.600321633430f;
-						break;
-					default:
-						logger.error("Unhandled tillage code:" + tillageCode);
+				lm.setConstant("manure_app", percManure);
+				lm.setConstant("synthetic_app", percSynth);
+				lm.setConstant("initial_p", initialP);
+				lm.setIntercept(coverCropCode + "_" + tillageCode);
+				
+				float[][] ploss = new float[s_layer.getHeight()][s_layer.getWidth()];
+				
+				for (int y = ext.y2(); y < ext.y1(); y++) {
+					for (int x = ext.x1(); x < ext.x2(); x++) {
+						ploss[y][x] = lm.calculate(x, y).floatValue();
 					}
-				}
-				else if (coverCropCode.equalsIgnoreCase("nc")) {
-					switch(tillageCode) {
-					case "fc":
-						intercept = -0.177448061444f;
-						break;
-					case "sc":
-						intercept = -0.386208066803f;
-						break;
-					case "fm":
-						intercept = 0.197577932536f;
-						break;
-					case "sm":
-						intercept = 0.194518353389f;
-						break;
-					case "nt":
-						intercept = -1.954896978399f;
-						break;
-					default:
-						logger.error("Unhandled tillage code:" + tillageCode);
-					}
-				}
-				else {
-					logger.error("Unhandled cover crop code:" + coverCropCode);
 				}
 				
-				c_ManureApp 	= 0.00277537745450f;
-				c_SyntheticApp 	= 0.00210478873069f;
-				c_initialP 		= 0.00328978161121f;
-				c_Slope 		= 0.07268108586729f; 
-				c_SlopeLength 	= -0.00374287052429f;
-				c_LS 			= -0.14212765910246f;
-				c_K 			= 2.43583905849407f;
-				c_sandtotal_r 	= 0.00588279213064f;
-				c_silttotal_r 	= 0.01441431827988f;
-				c_OM 			= 0.08113536990160f;	
-			}
+				return ploss; 
+			}				
 			// Dairy Rotation
 			//-------------------------------------------------------------
 			else if (landcoverCode.equalsIgnoreCase("dr")) {
@@ -966,10 +896,7 @@ public class HomeController extends Controller {
 				logger.error("Unhandled landcover code:" + landcoverCode);
 			}
 			
-			
-			Layer_Base s_layer = Layer_Base.getLayer("slope");
-			
-			float slope[][] = Layer_Base.getLayer("slope").getFloatData();
+			float slope[][] = s_layer.getFloatData();
 			float silt[][] = Layer_Base.getLayer("silt_perc").getFloatData();
 			float sand[][] = Layer_Base.getLayer("sand_perc").getFloatData();
 			float om[][] = Layer_Base.getLayer("om").getFloatData();
@@ -1153,7 +1080,7 @@ public class HomeController extends Controller {
 						om[y][x] 	* c_OM +
 						slp_len[y][x] * c_SlopeLength;
 					
-					value = (float)Math.exp(value);// * 0.024f; // convert to pounds per 100m2
+					value = (float)Math.exp(value) * 0.024f; // convert to pounds per 100m2
 					
 					double fixedSlope = 1;
 					double distance = distanceToWater[y][x] * 3.281; // convert meters to feet
@@ -1165,15 +1092,34 @@ public class HomeController extends Controller {
 					else if (factor < 0) factor = 0.0;
 					
 					value *= factor;
-					if (value < 1.0f) value = -9999.0f;
-					else if (value > 8) value = 8.0f;
+					if (value < 0.05f) value = -9999.0f;
+					else if (value > 2) value = 2.0f;
 					ploss[y][x] = value;  
 				}
 			}
+			// slope:
+			//	< 1: factor = 0.2
+			//	1-3: factor = 0.3
+			//	3-4: factor = 0.4
+			// else (>4): factor = 0.5
 			
+			// LS = (((slope/((10000+(slope^2))^0.5))*4.56)+(slope/(10000+(slope^2))^0.5)^2*(65.41)+0.065)*(slopelength(in meters)/72.6)^(factor)
+			
+			// a = slope / ((10000 + slope * slope)^0.5) * 4.56
+			// b = slope / (10000 + slope * slope)^0.5
+			//		b = b * b * 65.41 + 0.065
+			//		b = b * Math.pow(slopelength/72.6, factor);
+			// LS = a + b;
+			
+			/*double slp = 3.0;
+			double factor = 0.5;
+			double slpLen = 76;
+			double a = Math.pow(10000.0 + slp * slp, 0.5);
+			double b = Math.pow(Math.pow(slp/(10000.0 + slp * slp), 0.5), 2.0);
+			double lls = ((slp / a * 4.56) + b * 65.41+0.065) * Math.pow(slpLen / 72.6, 0.5);
+			*/
 			return ploss;
 		}
 	}
 
 }
-
