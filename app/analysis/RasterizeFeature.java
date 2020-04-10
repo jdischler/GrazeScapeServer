@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import play.libs.Json;
+import raster.Extents;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,8 +51,8 @@ public class RasterizeFeature {
     //-----------------------------------------------------------------------------
 	private static RPoint alignPoint(float x, float y) {
 		
-    	x = x - 440000;
-    	y = 340000 - y;
+    	x = x - Extents.areaExtents[0]; // 440000; 
+    	y = Extents.areaExtents[3] - y; //340000;
     	
 		return new RPoint(Math.round(x / 10.0f), 
 					Math.round(y / 10.0f));	

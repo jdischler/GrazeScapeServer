@@ -19,6 +19,8 @@ javacOptions ++= Seq(
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor-typed"  % "2.6.3",
   guice,
+  cacheApi,
+  caffeine,
   javaCore,
   "commons-io" % "commons-io" % "2.6",
   "com.h2database" % "h2" % "1.4.200",

@@ -1,6 +1,7 @@
 package controllers;
 
 import javax.inject.Inject;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -8,9 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import play.mvc.*;
+import play.mvc.Http.Session;
 import play.twirl.api.Content;
+import play.api.cache.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +24,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import analysis.*;
 import analysis.windowing.*;
@@ -32,6 +39,7 @@ import models.LinearModel;
 import models.Yield;
 import models.transform.*;
 import utils.Json;
+import utils.RandomString;
 import utils.ServerStartup;
 
 //• On connect:
@@ -103,15 +111,30 @@ public class HomeController extends Controller {
     private static final Logger logger = LoggerFactory.getLogger("app");
     private static Integer pngCounter = 1;
 
+    private Cache<String,session.Session> mSessions = null;
+    
 	//------------------------------------------------------------------
 	@Inject
 	public HomeController(ServerStartup startup) {
+		mSessions = Caffeine.newBuilder().expireAfterAccess(8, TimeUnit.DAYS) .build();
 	}
 	
 	//------------------------------------------------------------------
-	public Result app() {
+	public Result app(Http.Request request) {
 
-		return ok((Content) views.html.app.render());
+		Session session = request.session();
+		if (session != null) {
+			Optional<String> user = session.get("user");
+			if (user.isEmpty()) {
+				String userID = RandomString.get(12);
+				session = session.adding("user", userID);
+				mSessions.put(userID, new session.Session());
+			}
+			else {
+				logger.info("User is: " + user.get());
+			}
+		}
+		return ok((Content) views.html.app.render()).withSession(session);
 	}
 
 	//------------------------------------------------------------------
@@ -351,7 +374,7 @@ public class HomeController extends Controller {
 						}
 						results += "─────────────────────────────────────────────────────\n";
 						
-						logger.info(results);
+					//	logger.info(results);
 					}
 				}
 				catch(Exception e) {

@@ -1,8 +1,8 @@
 # Routes
 # ~~~~
 
-GET     /                        	controllers.HomeController.app()
-GET     /app                        controllers.HomeController.app()
+GET     /                        	controllers.HomeController.app(request: Request)
+GET     /app                        controllers.HomeController.app(request: Request)
 GET		/get_farms					controllers.HomeController.getFarms()
 POST	/test_fetch					controllers.HomeController.testFetch(request: Request)
 POST	/fetch_image				controllers.HomeController.fetchImage(request: Request)

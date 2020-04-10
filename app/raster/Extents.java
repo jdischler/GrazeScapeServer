@@ -63,6 +63,18 @@ public class Extents {
 		return this;
 	}
 	
+	public Extents() {}
+	
+	//-------------------------------------------------------------------------------------
+	public Extents(int x1, int y1, int x2, int y2) {
+		
+		mX1 = x1;	mY1 = y1;
+		mX2 = x2;	mY2 = y2;
+		
+		mWidth = x2 - x1;
+		mHeight = y1 - y2;
+	}
+	
 	//-------------------------------------------------------------------------------------
 	public JsonNode toJson() {
 		
