@@ -8,5 +8,5 @@ layerData
 *.asc
 *.dss
 *.tif
-public/dynamicFiles
+dynamicFiles
 target/.history

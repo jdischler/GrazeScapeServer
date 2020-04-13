@@ -5,8 +5,8 @@ DSS.utils.addStyle('.x-btn-default-toolbar-small {box-shadow: -1px 2px 2px rgba(
 DSS.utils.addStyle('.x-btn-pressed {z-index:2000; box-shadow: 0 4px 6px rgba(0,0,0,0.4)!important;}')
 DSS.utils.addStyle('.x-btn-inner-default-small {font-size: 1rem}');
 
-DSS.utils.addStyle('.layer-menu { padding: 0.5rem; color: #28c; font-size: 1rem; cursor: pointer; text-shadow: 0 2px 2px rgba(0,0,0,0.6), 1px 0 rgba(0,0,0,0.3), -1px 0 rgba(0,0,0,0.3), 0 -1px 1px rgba(255,255,255,0.4)}');
-DSS.utils.addStyle('.layer-menu:hover { color: #37a}');
+DSS.utils.addStyle('.layer-menu { padding: 0.5rem; color: #27b; font-size: 1rem; cursor: pointer; text-shadow: 1px 0 rgba(0,0,0,0.3), -1px 0 rgba(0,0,0,0.3)}');
+DSS.utils.addStyle('.layer-menu:hover { color: #48f; text-shadow: 0 2px 2px rgba(0,0,0,0.8), 1px 0 rgba(0,0,0,0.5), -1px 0 rgba(0,0,0,0.5)}');
 
 //------------------------------------------------------------------------------
 Ext.define('DSS.view.AppViewport', {

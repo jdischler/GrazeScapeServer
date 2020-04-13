@@ -31,18 +31,18 @@ Ext.define('DSS.controls.Inspector_Yield', {
 				columns: 1,
 				vertical: true,
 				items: [{
-					boxLabel: 'Bluegrass WhiteClvr', name: 'yield', inputValue: 'bluegrassWhiteClover', checked: true
+					boxLabel: 'Bluegrass White Clover', name: 'yield', inputValue: 'bluegrassWhiteClover', checked: true,
 				},{
-					boxLabel: 'Orchardgrass Alsike', name: 'yield', inputValue: 'orchardgrassAlsike'
+					boxLabel: 'Orchardgrass Alsike', name: 'yield', inputValue: 'orchardgrassAlsike',
 				},{
-					boxLabel: 'Orchardgrass RedClvr', name: 'yield', inputValue: 'orchardgrassRedClover'
+					boxLabel: 'Orchardgrass Red Clover', name: 'yield', inputValue: 'orchardgrassRedClover',
 				},{
 					boxLabel: 'Timothy Alsike', name: 'yield', inputValue: 'timothyAlsike'
 				},{
 					boxLabel: 'Generic Grass', name: 'yield', inputValue: 'genericGrass'
 				},{
 					xtype: 'component',
-					html: '-------'
+					html: '<span style="color: #ccc">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;</style>'
 				},{
 					boxLabel: 'Alfalfa', name: 'yield', inputValue: 'alfalfa'
 				},{
