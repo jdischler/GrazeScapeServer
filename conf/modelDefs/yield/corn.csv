@@ -6,9 +6,9 @@
 ;
 ; Model Output Details
 ; 	Results are bushels per acres, however the results are transformed in the (result-transform) step:
-;		- adjust for modern yields (1.3x)
+;		- adjust for modern yields (1.5x)
 ;		- convert to MG/ha (0.053)
-;		- and clamp to a sane output (0.2 to 20) MG/ha
+;		- and clamp to a sane output (0.2 to 13) MG/ha
 ; 
 ; ------------------------------------------------------------
 (intercept),	22.0
@@ -20,4 +20,4 @@ soil_depth,			0.19, 		clamp=? / 150
 cec,				1.32
 
 ; Final result transform
-(result-transform), multiply=1.3, multiply=0.053, clamp=0 / 20
+(result-transform), multiply=1.5, multiply=0.053, clamp=0 / 13

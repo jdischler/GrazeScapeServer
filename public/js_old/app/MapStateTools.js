@@ -8,7 +8,7 @@ Ext.define('DSS.app.MapStateTools', {
     singleton: true,	
 
 	requires: [
-		'DSS.map.Legend'
+		'DSS.controls.MapLegend'
 	],
 	
     // Style elements
@@ -241,9 +241,8 @@ Ext.define('DSS.app.MapStateTools', {
 					me.setPinMarker(g.getFirstCoordinate());
 					me.zoomToExtent(g.getFirstCoordinate(),15);
 					// if results were already being computed (extents chosen and model), then trigger a recompute
-				//	DSS.StatsPanel.computeResults(undefined, DSS.layer.ModelResult);
+					DSS.StatsPanel.computeResults(undefined, DSS.layer.ModelResult);
 					DSS.map.getViewport().style.cursor = '';
-					AppEvents.triggerEvent('activate_operation')
 					break;
 				}
 			}
@@ -279,7 +278,7 @@ Ext.define('DSS.app.MapStateTools', {
     	
 		me.destroyLegend();
 		
-		me.DSS_legend = Ext.create('DSS.map.Legend', {
+		me.DSS_legend = Ext.create('DSS.controls.MapLegend', {
 			DSS_colors: paletteArray,
 			DSS_values: valuesArray,
 			DSS_keys: false
@@ -297,7 +296,7 @@ Ext.define('DSS.app.MapStateTools', {
     	
 		me.destroyLegend();
 		
-		me.DSS_legend = Ext.create('DSS.map.Legend', {
+		me.DSS_legend = Ext.create('DSS.controls.MapLegend', {
 			style: 'opacity: 0.8;background-color: rgba(0,0,0,0.5); border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; box-shadow: 0 6px 8px rgba(0,0,0,0.2);',
 			height: 380,
 			DSS_keys: keyArray,

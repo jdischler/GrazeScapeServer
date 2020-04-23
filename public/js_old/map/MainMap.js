@@ -59,15 +59,15 @@ Ext.define('DSS.map.MainMap', {
 	],
 	
 	layout: 'border',
-	listeners: {
-		afterrender: function(self) {
-			self.instantiateMap()
-		},
+/*	listeners: {
+	//	afterrender: function(self) {
+	//		self.instantiateMap()
+	//	},
 		resize: function(self, w, h) {
 			let mapSize = self.down('#ol_map').getSize();
 			self.map.setSize([mapSize.width, mapSize.height]);
 		}
-	},
+	},*/
 		
 	//--------------------------------------------------------------------------
 	initComponent: function() {
@@ -86,6 +86,12 @@ Ext.define('DSS.map.MainMap', {
 						resize: function(self, w, h) {
 							me.map.setSize([w,h]);
 							DSS.MapState.mapResize();
+							
+							let cs = Ext.getCmp('crap-state');
+							let om = Ext.getCmp('ol_map');
+							if (cs && om) {
+								cs.setX(om.getX() + (om.getWidth() - cs.getWidth()) * 0.5);
+							}
 						}
 					}
 				},{
@@ -97,7 +103,12 @@ Ext.define('DSS.map.MainMap', {
 			]
 		});
 		me.callParent(arguments);
-
+		me.on({
+			resize: function(self, w, h) {
+				let mapSize = self.down('#ol_map').getSize();
+				self.map.setSize([mapSize.width, mapSize.height]);
+			}
+		});
 		proj4.defs('urn:ogc:def:crs:EPSG::3071', "+proj=tmerc +lat_0=0 +lon_0=-90 +k=0.9996 +x_0=520000 +y_0=-4480000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 		proj4.defs('EPSG:3071', "+proj=tmerc +lat_0=0 +lon_0=-90 +k=0.9996 +x_0=520000 +y_0=-4480000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 		ol.proj.proj4.register(proj4);		

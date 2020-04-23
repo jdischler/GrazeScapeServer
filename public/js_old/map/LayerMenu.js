@@ -46,7 +46,6 @@ Ext.define('DSS.map.LayerMenu', {
 	                },
 	                handler: function(self, checked) {
 	                	DSS.layer.bingAerial.setVisible(checked);
-	                	if (checked) Ext.util.Cookies.set("baselayer:visible", "1");	                	
 	                }
 				},{
 					boxLabel: 'Bing Road',
@@ -58,7 +57,6 @@ Ext.define('DSS.map.LayerMenu', {
 	                },
 	                handler: function(self, checked) {
 	                	DSS.layer.bingRoad.setVisible(checked);
-	                	if (checked) Ext.util.Cookies.set("baselayer:visible", "2");	                	
 	                }
 				},{
 					boxLabel: 'Open-Street',
@@ -70,7 +68,6 @@ Ext.define('DSS.map.LayerMenu', {
 	                },
 	                handler: function(self, checked) {
 	                	DSS.layer.osm.setVisible(checked);
-	                	if (checked) Ext.util.Cookies.set("baselayer:visible", "3");	                	
 	                }
 				}]
 			},{

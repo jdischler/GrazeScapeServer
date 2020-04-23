@@ -1,0 +1,79 @@
+; Only one intercept is ever 'active'. The last intercept in the list is the default one 
+;	that is 'active', however the active one can be changed runtime
+;------------------------------------------------------
+(intercept),	-5.161149503
+
+; Application specified constant variables. They default to 1 until changed runtime
+;------------------------------------------------------
+@manure_app,	0.007868066
+@synthetic_app,	0.004698034
+@initial_p,		0.011214083
+
+; raster lookup variables
+;------------------------------------------------------
+slope,			-7.11E-05, clamp=?/50
+slope_length,	-0.101035723, unit_transform=meters-to-feet
+ls,				-0.03383519
+k,				-38.5868283
+sand,			0.074442241
+silt,			0.223515142
+om, 			-0.29501589 
+soil_depth,		0.070759704
+
+`@manure_app:@synthetic_app`,	-1.30E-05
+`@manure_app:@initial_p`,		-2.08E-05
+`@manure_app:slope`,			-4.67E-05
+`@manure_app:om`,				-7.78E-05
+`@manure_app:slope_length`,		4.31E-06
+`@manure_app:sand`,				-3.19E-05
+`@manure_app:silt`,				-3.80E-05
+`@manure_app:k`,				0.000734983
+`@manure_app:soil_depth`,		-1.89E-06
+`@manure_app:ls`,				8.95E-05
+`@synthetic_app:@initial_p`,	-1.05E-05
+`@synthetic_app:slope`,			-4.25E-05
+`@synthetic_app:om`,			-3.46E-05
+`@synthetic_app:slope_length`,	-3.07E-06
+`@synthetic_app:sand`,			-1.85E-05
+`@synthetic_app:silt`,			-1.02E-05
+`@synthetic_app:k`,				0.00063597
+`@synthetic_app:soil_depth`,	-5.32E-06
+`@synthetic_app:ls`,			0.00012551
+`@initial_p:slope`,				-4.25E-05
+`@initial_p:om`,				-0.000122295
+`@initial_p:slope_length`,		2.86E-05
+`@initial_p:sand`,				-4.23E-05
+`@initial_p:silt`,				-6.30E-05
+`@initial_p:k`,					0.000811481
+`@initial_p:soil_depth`,		-3.16E-06
+`@initial_p:ls`,				3.81E-05
+`slope:om`,						0.002011003
+`slope:slope_length`,			0.000795256
+`slope:sand`,					0.000415844
+`slope:silt`,					0.000562025
+`slope:k`,						-0.024297466
+`slope:soil_depth`,				6.18E-05
+`slope:ls`,						-0.003240966
+`om:slope_length`,				0.000626816
+`om:sand`,						0.00229694
+`om:silt`,						0.003305472
+`om:k`,							-0.591704011
+`om:soil_depth`,				0.001671844
+`om:ls`,						0.008834431
+`slope_length:sand`,			0.000757438
+`slope_length:silt`,			0.000418849
+`slope_length:k`,				0.054985197
+`slope_length:soil_depth`,		0.000126054
+`slope_length:ls`,				-0.001543858
+`sand:silt`,					-0.000410243
+`sand:k`,						0.27103082
+`sand:soil_depth`,				-0.001090336
+`sand:ls`,						-0.000533172
+`silt:k`,						0.196412454
+`silt:soil_depth`,				-0.001685776
+`silt:ls`,						-0.002859886
+`k:soil_depth`,					0.103730347
+`k:ls`,							0.570799239
+`soil_depth:ls`,				-7.15E-05
+
+(result-transform), exp, multiply=0.4

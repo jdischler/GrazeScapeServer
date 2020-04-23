@@ -20,30 +20,26 @@ Ext.define('DSS.map.BoxModel', {
 
 		map.addInteraction(DSS.dragBox);
 		
-		setTimeout(function() {
-			// EVIL:
-			// Hijacking prepare frame function so that image layer can update during animations, otherwise it looks really bad
-			ol.renderer.canvas.ImageLayer.prototype.prepFrame = ol.renderer.canvas.ImageLayer.prototype.prepareFrame; 
-			ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState) {
-				frameState.viewHints[0] = frameState.viewHints[1] = 0
-				return this.prepFrame(frameState); 
-			}
-		}, 2000);
+		// EVIL:
+		// Hijacking prepare frame function so that image layer can update during animations, otherwise it looks really bad
+		ol.renderer.canvas.ImageLayer.prototype.prepFrame = ol.renderer.canvas.ImageLayer.prototype.prepareFrame; 
+		ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState) {
+			frameState.viewHints[0] = frameState.viewHints[1] = 0
+			return this.prepFrame(frameState); 
+		}
 
 		DSS.layer.ModelResult = new ol.layer.Image({
 			updateWhileAnimating: true,
 			updateWhileInteracting: true,
 			opacity: 1,
-			visible: false,
 			source: new ol.source.ImageStatic({
 				projection: 'EPSG:3071'
 			})
 		})
-
+		
 		map.addLayer(DSS.layer.ModelResult);
 		
 		DSS.dragBox.on('boxend', function() {
-
 			let ex = DSS.dragBox.getGeometry().getExtent();	
 			
 			let pt1 = ol.proj.transform([ex[0],ex[1]], 'EPSG:3857', 'EPSG:3071'),
@@ -51,9 +47,8 @@ Ext.define('DSS.map.BoxModel', {
 
 			ex = [pt1[0], pt1[1], pt2[0], pt2[1]];
 			
-			AppEvents.triggerEvent('set_inspector_bounds', ex);
 			// FIXME:
-			//DSS.StatsPanel.computeResults(ex, DSS.layer.ModelResult);
+			DSS.StatsPanel.computeResults(ex, DSS.layer.ModelResult);
 		});
 		
 		return me;

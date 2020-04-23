@@ -1,33 +1,7 @@
 
 
-DSS.utils.addStyle('.info-panel { border-left: 1px solid #222;  border-bottom: 1px solid rgba(0,0,0,0.25); background-color: #555; background-repeat: no-repeat; background-image: linear-gradient(to right, #333 0%, #3f3f3f 25%, #4a4a4a 50%, #535353 80%, #555 100%); background-size: 2rem 100%;');
-DSS.utils.addStyle('.x-resizable-handle-west {width: 6px; background-color: rgba(255,255,255,0.25)}');
-DSS.utils.addStyle('.box-label-cls {color: #eee; text-shadow: 0 1px rgba(0,0,0,0.2),1px 0 rgba(0,0,0,0.2); font-size: 0.9rem}');
-DSS.utils.addStyle('.small {  font-size: 1rem}');
-DSS.utils.addStyle('.light-color {color: #bbb; text-shadow: 0 1px rgba(0,0,0,0.3),1px 0 rgba(0,0,0,0.2);}');
-DSS.utils.addStyle('.drop {overflow: visible!important}');
-DSS.utils.addStyle('.drop:after {overflow: visible!important; display: block; position: absolute; bottom: -8px; left: calc(50% - 8px); content: ""; background-color: transparent; border-top: 8px solid #666; width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent;}');
-
-DSS.utils.addStyle('.accent-text { color: #48b;}')
-DSS.utils.addStyle('.light-text { color: #ddd;}')
-DSS.utils.addStyle('.med-text { color: #999;}')
-DSS.utils.addStyle('.text-drp-20 { text-shadow: 0 1px rgba(0,0,0,0.2)}');
-DSS.utils.addStyle('.text-drp-50 { text-shadow: 0 1px rgba(0,0,0,0.3),1px 0 rgba(0,0,0,0.2)}');
-DSS.utils.addStyle('.font-10 { font-size: 1rem }');
-DSS.utils.addStyle('.font-9 { font-size: 0.9rem }');
-DSS.utils.addStyle('.bold { font-weight: bold}');
-
-DSS.utils.addStyle('.section-title { padding: 0.5rem; font-size: 1.2rem; text-align: center; font-weight: bold}');
-
-DSS.utils.addStyle('.x-mask { background-color: rgba(102,102,102,0.6);}')
+DSS.utils.addStyle('.x-mask { background-color: rgba(0,0,0,0.5);}')
 DSS.utils.addStyle('.footer-text {border-top: 1px solid rgba(0,0,0,0.15); background: rgba(0,0,0,0.5);padding: 0.72rem; color: #fff; font-size: 0.8rem; text-align: center}')
-
-DSS.utils.addStyle('.button-margin { margin: 0.5rem 1.75rem 0.75rem;}')
-DSS.utils.addStyle('.button-text-pad { padding: 0.33rem;}')
-
-DSS.utils.addStyle('.information { padding: 0.5rem 0 0.25rem 0; font-size: 0.9rem; text-align: center}')
-DSS.utils.addStyle('.section-title { padding: 0.5rem; font-size: 1.2rem; text-align: center; font-weight: bold}');
-DSS.utils.addStyle('.section { margin: 0.5rem; padding: 0.75rem; background-color: #fff; border: 1px solid #bbb; border-radius: 0.3rem; box-shadow: 0px 4px 8px rgba(0,0,0,0.25) }')
 
 // Section that roughly corresponds to the left portion of the application. This area will contain logos, titles, controls, etc
 //	and generally be the starting point/container for controlling the entire application flow...whereas the remainder of the
@@ -41,9 +15,18 @@ Ext.define('DSS.controls.ApplicationFlow', {
 
 	requires: [
 		'DSS.app.MapStateTools',
+		'DSS.section_headers.ActiveOperation',
+		'DSS.section_headers.TitleBase',
+		
+		'DSS.controls.FieldShapesBase',
 		'DSS.controls.FieldShapeManager',
-		'DSS.state.operation.BrowseOrCreate',
-		'DSS.state.operation.Main'		
+		'DSS.controls.OperationInfo',
+		'DSS.controls.OperationsBase',
+		'DSS.controls.CompareOperationsBase',
+		'DSS.controls.GrazingToolsBase',
+		'DSS.controls.NavigationMenu',
+		'DSS.controls.ScenarioBuilder',
+		'DSS.controls.Management'
 	],
 	
 	layout: DSS.utils.layout('vbox', 'start', 'stretch'),
@@ -70,7 +53,7 @@ Ext.define('DSS.controls.ApplicationFlow', {
 				//----------------------------------------------------------------------------------
 				items: [{
 					xtype: 'component',
-					cls: 'accent-text section-title',
+					cls: 'primary-title',
 					padding: '4 8',
 					html: '<i class="fas fa-bars"></i>',
 					listeners: {
@@ -85,23 +68,16 @@ Ext.define('DSS.controls.ApplicationFlow', {
 				},{
 					xtype: 'container',
 					flex: 1,
-					layout: 'fit',
 					minHeight: me.DSS_minTitleHeight,
 					listeners: {
 						afterrender: function(self) { me.DSS_App = {TitleContainer: self} }
-					},
-					items: {
-						xtype: 'component',
-						height: 110, margin: '8 8 0 0',
-						style: 'background-image: url("assets/images/graze_logo.png"); background-size: contain; background-repeat: no-repeat',
-						
-					}
-/*				},{
+					}					
+				},{
 					xtype: 'component',
 					padding: '4 8',
 
-					cls: 'accent-text section-title',
-					html: '<i class="fas fa-user"></i>'*/
+					cls: 'primary-title',
+					html: '<i class="fas fa-user"></i>'
 				}]
 			},{
 				// Container for controls necessary at each step in the application flow
@@ -150,22 +126,20 @@ Ext.define('DSS.controls.ApplicationFlow', {
 	//----------------------------------------------------------------------------------
 	showLandingPage: function() {
 		let me = this;
-
 		
 		Ext.suspendLayouts();
-/*			me.setTitleBlock({
+			me.setTitleBlock({
 				xtype: 'component',
 				height: 110, margin: '8 0 0 0',
 				style: 'background-image: url("assets/images/graze_logo.png"); background-size: contain; background-repeat: no-repeat',
-			});*/
+			});
 			me.setControlBlock([
-				DSS.BrowseOrCreate.get(),
-//				DSS.controls.OperationsBase.get(),
-//				DSS.controls.CompareOperationsBase.get(),
-//				DSS.controls.GrazingToolsBase.get()
+				DSS.controls.OperationsBase.get(),
+				DSS.controls.CompareOperationsBase.get(),
+				DSS.controls.GrazingToolsBase.get()
 			]);
-//			if (DSS.mainViewport)
-//				DSS.mainViewport.doMapWorkPanel();			
+			if (DSS.mainViewport)
+				DSS.mainViewport.doMapWorkPanel();			
 		Ext.resumeLayouts(true);
 		
 		DSS.mouseMoveFunction = DSS.MapState.mouseoverFarmHandler();
@@ -178,7 +152,7 @@ Ext.define('DSS.controls.ApplicationFlow', {
 		DSS.layer.farms.setOpacity(1);
 		DSS.layer.markers.setVisible(false);
 		
-//		DSS.layer.ModelResult.setVisible(false);
+		DSS.layer.ModelResult.setVisible(false);
 	},
 	
 	//----------------------------------------------------------------------------------
@@ -190,8 +164,8 @@ Ext.define('DSS.controls.ApplicationFlow', {
 			me.setControlBlock([
 				DSS.controls.OperationInfo.get(),
 			]);
-/*			if (DSS.mainViewport)
-				DSS.mainViewport.doMapWorkPanel();*/			
+			if (DSS.mainViewport)
+				DSS.mainViewport.doMapWorkPanel();			
 		Ext.resumeLayouts(true);
 	},
 	
@@ -202,16 +176,17 @@ Ext.define('DSS.controls.ApplicationFlow', {
 		operationName = operationName || "Grazing Acres";
 		
 		Ext.suspendLayouts();
-/*			me.setTitleBlock({
+			me.setTitleBlock({
 				xtype: 'active_operation', 
 				DSS_operationName:operationName
 			});
-*/
-			me.setControlBlock([	
-				DSS.OperationMain.get()
-			]);
-/*			if (DSS.mainViewport)
-				DSS.mainViewport.doMapWorkPanel();*/			
+			me.setControlBlock([{	
+				xtype: 'field_shapes_base'
+			},{ 
+				xtype: 'scenario_builder'
+			}]);
+			if (DSS.mainViewport)
+				DSS.mainViewport.doMapWorkPanel();			
 		Ext.resumeLayouts(true);
 		
 		DSS.mouseMoveFunction = undefined;

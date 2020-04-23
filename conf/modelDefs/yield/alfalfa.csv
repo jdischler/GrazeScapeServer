@@ -4,7 +4,7 @@
 ; 	Results are short tons per acres, however the results are transformed in the (result-transform) step:
 ;		- adjust for modern yields (1.05x)
 ;		- convert to MG/ha (0.053)
-;		- and clamp to a sane output (0 to 15) MG/ha
+;		- and clamp to a sane output (0 to 11) MG/ha
 ; 
 ; ------------------------------------------------------------
 (intercept),	1.26
@@ -16,4 +16,4 @@ soil_depth,		0.007
 cec,			0.041
 
 ; Final result transform
-(result-transform), multiply=1.05, multiply=1.91, clamp=0 / 15
+(result-transform), multiply=1.05, multiply=1.91, clamp=0 / 11

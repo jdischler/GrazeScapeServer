@@ -14,14 +14,18 @@ Ext.define('DSS.view.AppViewport', {
 	extend: 'Ext.container.Viewport',
 	
 	requires: [
-		'DSS.map.Main',
+		'DSS.data.ApplicationState',
+		'DSS.map.MainMap',
+		'DSS.map.LayerMenu',
+		'DSS.pages.CompareOperationsPage',
+		'DSS.pages.ManageAssumptionsPage',
 		'DSS.controls.ApplicationFlow',
-		'DSS.inspector.Main',
+		'DSS.controls.ApplicationState',
 	],
 
-	minWidth: 800,
-	minHeight: 480,
-	style: 'background-color: #000',
+	minWidth: 480,
+	minHeight: 240,
+	style: 'background-color: #fff',
 
 	scrollable: false,
     renderTo: Ext.getBody(),
@@ -48,11 +52,17 @@ Ext.define('DSS.view.AppViewport', {
 				layout: 'fit',
 				items: [{
 					xtype: 'main_map',
+//					xtype: 'container',
 					autoDestroy: false,
+//					layout: 'border',
+//					items: [{
+//						xtype: 'main_map',
+//						region: 'center',
+//					}],
 					listeners: {
 						afterrender: function(self) { 
 							me.DSS_MapWidget = self;
-							//self.instantiateMap()
+							self.instantiateMap()
 						}
 					}
 				}],
@@ -63,46 +73,17 @@ Ext.define('DSS.view.AppViewport', {
 				xtype: 'container',
 				region: 'west',
 				style: 'background: #ede9d9; border-right: 1px solid rgba(0,0,0,0.25);',
-				width: 280,
+				width: 320,
 				layout: 'fit',
-				minWidth: 280,
+				minWidth: 320,
 				items: [{
 					xtype: 'application_flow',
-				}]
-			},{
-				xtype: 'container',
-				region: 'east',
-				cls: 'info-panel',
-				resizable: {
-					dynamic: true,
-					maxWidth: 320,
-				},
-				resizeHandles: 'w',
-				width: 0,
-				maxWidth: 320,
-				padding: '8 6',
-				scrollable: 'y',
-				layout: DSS.utils.layout('vbox', 'start', 'stretch'),
-				items: [
-					DSS.Inspector // Directly add the singleton instance...
-				],
-				listeners: {
-					afterrender: function(self) {
-						setTimeout(function() {
-							self.animate({
-								dynamic: true,
-								to: {
-									width: 220
-								},
-								callback: function() {
-									self.setMinWidth(220);
-									self.setWidth(220);
-									// ooof, the Ext resizer doesn't seem to realize when its resize target has a min/max width change
-									self.resizer.resizeTracker.minWidth = 220;
-								}
-							})
-						}, 2000);
+					listeners: {
+				//		afterrender: function(self) { me.DSS_App = {Flow: {Content: self}} }
 					}
+				}],
+				listeners: {
+				//	afterrender: function(self) { me.DSS_App = {Flow: {Container: self}} }
 				}
 			}]
 		});
@@ -117,6 +98,26 @@ Ext.define('DSS.view.AppViewport', {
 			floating: true, 
 			shadow: false,
 		}).showAt(-1,-1);
+		
+		Ext.create('Ext.Component', {
+			floating: true,
+			shadow: false,
+			cls: 'layer-menu',
+			tooltip: 'Access map layers',
+			html: '<i class="far fa-layer-group"></i>',//caret-square-down"></i>',
+			listeners: {
+				render: function(c) {
+					c.getEl().getFirstChild().el.on({
+						click: function(self) {
+							let rect = self.target.getBoundingClientRect();
+							Ext.create('DSS.map.LayerMenu').showAt(rect.left, rect.top);
+						}
+					});
+				}
+			}					
+		}).showAt(322,2);
+		
+		Ext.create('DSS.controls.ApplicationState', {id: 'crap-state'}).showAt(400,-4);
 	},
 	
 	doChartWorkPanel: function() {

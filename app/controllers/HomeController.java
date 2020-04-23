@@ -125,7 +125,7 @@ public class HomeController extends Controller {
 		Session session = request.session();
 		if (session != null) {
 			Optional<String> user = session.get("user");
-			if (user.isEmpty()) {
+			if (false) {//user. .isEmpty()) {
 				String userID = RandomString.get(12);
 				session = session.adding("user", userID);
 				mSessions.put(userID, new session.Session());
@@ -209,10 +209,20 @@ public class HomeController extends Controller {
 		return ok(res);
 	}
 
+	
+/*	
+ 	// Restriction options
+ 	restrict_by_value: 		{ compare: '<' || '>', 	value: # 			}
+	restrict_to_fields: 	{ aggregate: t/f 							}
+	restrict_to_landcover: 	{ row_crops: t/f,		grass_pasture: t/f	}
+
+*/
+	
 	public Result fetchImage(Http.Request request) {
 		
 		JsonNode node = request.body().asJson();
 		String mode = Json.safeGetOptionalString(node, "model", "bird-habitat");
+		JsonNode options = node.get("options");
 		
 		ModelComputation mc = null;
 		if (mode.equalsIgnoreCase("bird-habitat")) mc = new BirdModel();
@@ -220,7 +230,12 @@ public class HomeController extends Controller {
 		else if (mode.equalsIgnoreCase("p-loss")) mc = new PLossModel();
 		else if (mode.equalsIgnoreCase("p-loss-real")) mc = new AwePLossModel();
 		
-		else if (mode.equalsIgnoreCase("slope")) mc = new RasterInspection().dataLayer("slope");//.setTransform(new SlopePercentToAngle());
+		else if (mode.equalsIgnoreCase("slope")) {
+			mc = new RasterInspection().dataLayer("slope");//.setTransform(new SlopePercentToAngle());
+		}
+		else if (mode.equalsIgnoreCase("ssurgo-slope")) {
+			mc = new RasterInspection().dataLayer("ssurgo_slope");
+		}
 		else if (mode.equalsIgnoreCase("soil-depth")) mc = new RasterInspection().dataLayer("soil_depth");
 		else if (mode.equalsIgnoreCase("dem")) mc = new RasterInspection().dataLayer("dem");
 		else if (mode.equalsIgnoreCase("dist-water")) mc = new RasterInspection().dataLayer("distance_to_water");
@@ -234,7 +249,6 @@ public class HomeController extends Controller {
 		else if (mode.equalsIgnoreCase("cec")) mc = new RasterInspection().dataLayer("cec");
 		else if (mode.equalsIgnoreCase("ph")) mc = new RasterInspection().dataLayer("ph");
 		else if (mode.equalsIgnoreCase("slope-length")) mc = new RasterInspection().dataLayer("slope_length");
-		else if (mode.equalsIgnoreCase("ssurgo-slope")) mc = new RasterInspection().dataLayer("ssurgo_slope");//.setTransform(new SlopePercentToAngle());
 		else if (mode.equalsIgnoreCase("t")) mc = new RasterInspection().dataLayer("t");
 		else if (mode.equalsIgnoreCase("cdl")) {
 			return processCategorical(request);
@@ -273,9 +287,10 @@ public class HomeController extends Controller {
 	
 		JsonNode node = request.body().asJson();
 
+		JsonNode restrictions = node.get("restrictions");
 		JsonNode options = node.get("options");
-		if (options != null) {
-			logger.info("Has model options:" + options.toString());
+		if (restrictions != null) {
+			logger.info("Has model restrictions:" + restrictions.toString());
 		}
 		// Extent array node can be missing, in which case we get a clipper that extracts the entire area
 		Extents ext = new Extents().fromJson((ArrayNode)node.get("extent")).toRasterSpace();
@@ -291,19 +306,76 @@ public class HomeController extends Controller {
 			logger.error(e1.toString());
 		}
 		
-		Long farmId = utils.Json.safeGetOptionalLong(node, "farm_id");
-		int mapMode = utils.Json.safeGetOptionalInteger(node, "mode", 1);  // 0, 1, or 2
+		JsonNode valueRestriction = restrictions.get("restrict_by_value");
+		if (valueRestriction != null) {
+			Float value = utils.Json.safeGetOptionalFloat(valueRestriction, "value", 10.0f);
+			Boolean lessThan = utils.Json.safeGetOptionalString(valueRestriction, "compare", "less-than").equalsIgnoreCase("less-than");
+			Boolean clamped = utils.Json.safeGetOptionalBoolean(valueRestriction, "clamped", false);
+			if (clamped) {
+				for (int y = ext.y2(); y < ext.y1(); y++) {
+					for (int x = ext.x1(); x < ext.x2(); x++) {
+						if (lessThan && modelResults[y][x] >= value) {
+							modelResults[y][x] = value;
+						}
+						else if (!lessThan && modelResults[y][x] <= value) {
+							modelResults[y][x] = value;
+						}
+					}
+				}
+			}
+			else {
+				for (int y = ext.y2(); y < ext.y1(); y++) {
+					for (int x = ext.x1(); x < ext.x2(); x++) {
+						if (lessThan && modelResults[y][x] >= value) {
+							modelResults[y][x] = -9999.0f;
+						}
+						else if (!lessThan && modelResults[y][x] <= value) {
+							modelResults[y][x] = -9999.0f;
+						}
+					}
+				}
+			}
+		}
 
-		Boolean restrictToRowCrops = utils.Json.safeGetOptionalBoolean(node, "row_crops", false);
-		Boolean restrictToGrasses = utils.Json.safeGetOptionalBoolean(node, "grasses", false);
-		if (restrictToRowCrops || restrictToGrasses) {
-			modelResults = FloatFilters.restrictToAgriculture(modelResults, ext, 
-				restrictToRowCrops, restrictToGrasses);
+		JsonNode slopeRestriction = restrictions.get("restrict_by_slope");
+		if (slopeRestriction != null) {
+			Float value = utils.Json.safeGetOptionalFloat(slopeRestriction, "value", 10.0f);
+			Boolean lessThan = utils.Json.safeGetOptionalString(slopeRestriction, "compare", "less-than").equalsIgnoreCase("less-than");
+			float slope[][] = Layer_Base.getLayer("slope").getFloatData();
+			
+			for (int y = ext.y2(); y < ext.y1(); y++) {
+				for (int x = ext.x1(); x < ext.x2(); x++) {
+					if (lessThan && slope[y][x] >= value) {
+						modelResults[y][x] = -9999.0f;
+					}
+					else if (!lessThan && slope[y][x] <= value) {
+						modelResults[y][x] = -9999.0f;
+					}
+				}
+			}
+		}
+		
+		JsonNode landcoverRestriction = restrictions.get("restrict_to_landcover");
+		if (landcoverRestriction != null) {
+			Boolean restrictToRowCrops = utils.Json.safeGetOptionalBoolean(landcoverRestriction, "row_crops", false);
+			Boolean restrictToGrasses = utils.Json.safeGetOptionalBoolean(landcoverRestriction, "grass_pasture", false);
+			if (restrictToRowCrops || restrictToGrasses) {
+				modelResults = FloatFilters.restrictToAgriculture(modelResults, ext, 
+					restrictToRowCrops, restrictToGrasses);
+			}
+		}
+		
+		Long farmId = null;
+		JsonNode fieldRestriction = restrictions.get("restrict_to_fields");
+		if (fieldRestriction != null) {
+			farmId = utils.Json.safeGetOptionalLong(fieldRestriction, "farm_id"); 
 		}
 		
 		AreaStats fs = null;
 		ObjectNode fieldStats = null;
 		if (farmId != null) {
+			Boolean aggregate = utils.Json.safeGetOptionalBoolean(fieldRestriction, "aggregate", false);
+			
 			db.Farm f = db.Farm.find.byId(farmId);
 			if (f != null) {
 				List<JsonNode> features = new ArrayList<>();
@@ -381,7 +453,7 @@ public class HomeController extends Controller {
 					e.printStackTrace();
 					logger.error(e.toString());
 				}
-				if (mapMode == 2) {
+				if (aggregate) {
 					try {
 						for (int y = 0; y < rasterHeight; y++) {
 							for (int x = 0; x < rasterWidth; x++) {
@@ -483,6 +555,10 @@ public class HomeController extends Controller {
 		// options can contain a filter object. That filter object (if exists) can contain
 		//	compare: (greater-than, less-than) and value: #
 		public float[][] compute(Extents ext, JsonNode options) throws Exception  { 
+			
+			if (options != null && !utils.Json.safeGetOptionalBoolean(options, "slope_as_percent", true)) {
+				this.setTransform(new SlopePercentToAngle());
+			}
 			
 			Boolean filterEnabled = false;
 			Boolean lessThan = true; // if false, then is in greater-than mode
@@ -720,256 +796,82 @@ public class HomeController extends Controller {
 				applySnapPlusTransmission = Json.safeGetOptionalBoolean(options, "snap-plus-transmission", applySnapPlusTransmission);
 			}
 		
-			float intercept 	= 0;
-			float c_ManureApp 	= 0;
-			float c_SyntheticApp= 0;
-			float c_initialP 	= 0;
-			float c_Slope 		= 0;
-			float c_SlopeLength = 0;
-			float c_LS 			= 0;
-			float c_K 			= 0;
-			float c_sandtotal_r = 0;
-			float c_silttotal_r = 0;
-			float c_OM 			= 0;
 			Layer_Base s_layer = Layer_Base.getLayer("slope");
+			float distanceToWater[][] = Layer_Base.getLayer("distance_to_water").getFloatData();
 			
 			// Continuous Corn
-			//-------------------------------------------------------------
-			if (landcoverCode.equalsIgnoreCase("cc") || landcoverCode.equalsIgnoreCase("cg")) {
-				LinearModel lm = null;
+			String model = null;
+			switch(landcoverCode) {
+			case "cc":
+				model = "continuous_corn.csv";
+				break;
+			case "cg":
+				model = "cash_grain.csv";
+				break;
+			case "dr":
+				model = "dairy_rotation.csv";
+				break;
+			case "cso":
+				model = "corn_soy_oats.csv";
+				break;
+			case "pr":
+				model = "pasture_rot.csv";
+				coverCropCode = null; tillageCode = null;
+				break;
+			case "pl":
+				model = "pasture_low.csv";
+				coverCropCode = null; tillageCode = null;
+				break;
+			case "ph":
+				model = "pasture_high.csv";
+				coverCropCode = null; tillageCode = null;
+				break;
+			}
 				
-				try {
-					String model = landcoverCode.equalsIgnoreCase("cc") ? 
-							String.format("continuous_corn.csv") :
-							String.format("cash_grain.csv");
-					String modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/" + model;
-			        String definition = new String( Files.readAllBytes( Paths.get(modelPath) ));
-					lm = new LinearModel().init(definition);
+			LinearModel lm = null;
+				
+			try {
+				String modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/" + model;
+		        String definition = new String( Files.readAllBytes( Paths.get(modelPath) ));
+				lm = new LinearModel().init(definition);
 
 //					lm.debug();
 //					lm.measureResponse();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 				
-				lm.setConstant("manure_app", percManure);
-				lm.setConstant("synthetic_app", percSynth);
-				lm.setConstant("initial_p", initialP);
+			lm.setConstant("manure_app", percManure);
+			lm.setConstant("synthetic_app", percSynth);
+			lm.setConstant("initial_p", initialP);
+			if (coverCropCode != null && tillageCode !=null) {
 				lm.setIntercept(coverCropCode + "_" + tillageCode);
-				
-				float[][] ploss = new float[s_layer.getHeight()][s_layer.getWidth()];
-				
-				for (int y = ext.y2(); y < ext.y1(); y++) {
-					for (int x = ext.x1(); x < ext.x2(); x++) {
-						ploss[y][x] = lm.calculate(x, y).floatValue();
-					}
-				}
-				
-				return ploss; 
-			}				
-			// Dairy Rotation
-			//-------------------------------------------------------------
-			else if (landcoverCode.equalsIgnoreCase("dr")) {
-				if (coverCropCode.equalsIgnoreCase("cc")) {
-					switch(tillageCode) {
-					case "fc":
-						intercept = 0.302634741679f;
-						break;
-					case "sc":
-						intercept = 0.072659495219f;
-						break;
-					case "fm":
-						intercept = 0.337371095760f;
-						break;
-					case "sm":
-						intercept = 0.399588747324f;
-						break;
-					case "nt":
-						intercept = -0.992183005201f;
-						break;
-					default:
-						logger.error("Unhandled tillage code:" + tillageCode);
-					}
-				}
-				else if (coverCropCode.equalsIgnoreCase("nc")) {
-					switch(tillageCode) {
-					case "fc":
-						intercept = 0.605307890508f;
-						break;
-					case "sc":
-						intercept = 0.375332644048f;
-						break;
-					case "fm":
-						intercept = 0.640044244590f;
-						break;
-					case "sm":
-						intercept = 0.702261896153f;
-						break;
-					case "nt":
-						intercept = -0.689509856372f;
-						break;
-					default:
-						logger.error("Unhandled tillage code:" + tillageCode);
-					}
-				}
-				else {
-					logger.error("Unhandled cover crop code:" + coverCropCode);
-				}
-				
-				c_ManureApp 	= 0.002952260183f; 
-				c_SyntheticApp 	= 0.002324369178f; 
-				c_initialP 		= 0.003523159931f; 
-				c_Slope 		= 0.058817887648f;  
-				c_SlopeLength 	= -0.004091007642f; 
-				c_LS 			= -0.102274335208f; 
-				c_K 			= 2.303621117181f; 
-				c_sandtotal_r 	= -0.003640751209f; 
-				c_silttotal_r 	= 0.003903691381f; 
-				c_OM 			= 0.088916995709f; 	
-			}
-			// Corn Soy Oats
-			//-------------------------------------------------------------
-			else if (landcoverCode.equalsIgnoreCase("cso")) {
-				if (coverCropCode.equalsIgnoreCase("cc")) {
-					switch(tillageCode) {
-					case "fc":
-						intercept = 0.304055046729f;
-						break;
-					case "sc":
-						intercept = 0.186830609034f;
-						break;
-					case "fm":
-						intercept = 0.555635922028f;
-						break;
-					case "sm":
-						intercept = 0.590269197502f;
-						break;
-					case "nt":
-						intercept = -1.260135314598f;
-						break;
-					default:
-						logger.error("Unhandled tillage code:" + tillageCode);
-					}
-				}
-				else if (coverCropCode.equalsIgnoreCase("nc")) {
-					switch(tillageCode) {
-					case "fc":
-						intercept = 0.556564164589f;
-						break;
-					case "sc":
-						intercept = 0.439339726894f;
-						break;
-					case "fm":
-						intercept = 0.808145039888f;
-						break;
-					case "sm":
-						intercept = 0.842778315362f;
-						break;
-					case "nt":
-						intercept = -1.007626196738f;
-						break;
-					default:
-						logger.error("Unhandled tillage code:" + tillageCode);
-					}
-				}
-				else {
-					logger.error("Unhandled cover crop code:" + coverCropCode);
-				}
-				
-				c_ManureApp 	= 0.003055080991f;
-				c_SyntheticApp 	= 0.002707272611f;
-				c_initialP 		= 0.003382967272f;
-				c_Slope 		= 0.055077232960f;
-				c_SlopeLength 	= -0.004251675881f;
-				c_LS 			= -0.090935063767f;
-				c_K 			= 2.252541965754f;
-				c_sandtotal_r 	= 0.000942354835f;
-				c_silttotal_r 	= 0.008457536411f;
-				c_OM 			= 0.084705451215f;	
-			}
-			// Pasture
-			//-------------------------------------------------------------
-			else if (landcoverCode.startsWith("p")) {
-				switch(landcoverCode) {
-				case "pr": // pasture, rotational
-					intercept = -3.387384002923f;
-					break;
-				case "pl": // pasture, continuous, low density
-					intercept = -2.803379129937f;
-					break;
-				case "ph": // pasture, continuous, high density
-					intercept = -1.261009446664f;
-					break;
-				default:
-					logger.error("Unhandled tillage code:" + tillageCode);
-				}
-				
-				c_ManureApp 	= 0.002814638921f;
-				c_SyntheticApp 	= 0.001230465139f;
-				c_initialP 		= 0.007878286120f;
-				c_Slope 		= 0.041020426882f;
-				c_SlopeLength 	= -0.001120477836f;
-				c_LS 			= -0.088859139728f;
-				c_K 			= 2.065562020684f;
-				c_sandtotal_r 	= 0.000161475720f;
-				c_silttotal_r 	= 0.005943307442f;
-				c_OM 			= 0.110005660671f;
-			}
-			else {
-				logger.error("Unhandled landcover code:" + landcoverCode);
 			}
 			
-			float slope[][] = s_layer.getFloatData();
-			float silt[][] = Layer_Base.getLayer("silt_perc").getFloatData();
-			float sand[][] = Layer_Base.getLayer("sand_perc").getFloatData();
-			float om[][] = Layer_Base.getLayer("om").getFloatData();
-			float k[][] = Layer_Base.getLayer("k").getFloatData();
-			float ls[][] = Layer_Base.getLayer("ls").getFloatData();
-			float slp_len[][] = Layer_Base.getLayer("slope_length").getFloatData();
-			
-			float distanceToWater[][] = Layer_Base.getLayer("distance_to_water").getFloatData();
-			
-			float [][] ploss = new float[s_layer.getHeight()][s_layer.getWidth()];
+			float[][] ploss = new float[s_layer.getHeight()][s_layer.getWidth()];
 			
 			for (int y = ext.y2(); y < ext.y1(); y++) {
 				for (int x = ext.x1(); x < ext.x2(); x++) {
-					
-					float value = 0;
-					float _slope =slope[y][x];
-					if (_slope > 40 || sand[y][x] > 65) value = -9999.0f;
-					else {
-						value = intercept	+
-							percManure 	* c_ManureApp +
-							percSynth 	* c_SyntheticApp + 
-							initialP 	* c_initialP + 
-							_slope 		* c_Slope +
-							k[y][x] 	* c_K +
-							ls[y][x] 	* c_LS +
-							sand[y][x] 	* c_sandtotal_r +
-							silt[y][x] 	* c_silttotal_r +
-							om[y][x] 	* c_OM +
-							slp_len[y][x] * c_SlopeLength;
-						
-						value = (float)Math.exp(value);// * 0.024f; // convert to pounds per 100m2
-						
-						if (applySnapPlusTransmission) {
-							double fixedSlope = 1;
-							double distance = distanceToWater[y][x] * 3.281; // convert meters to feet
-							double factor = 0.9415f + 
-									0.02122 * fixedSlope + -0.001345 * fixedSlope * fixedSlope + 
-									-0.00003511 * distance + 0.0000000007114 * distance * distance;
+					float value = lm.calculate(x, y).floatValue();
 							
-							if (factor > 1) factor = 1.0;
-							else if (factor < 0.4f) factor = 0.4f;
-							
-							value *= factor;
-						}
+					if (applySnapPlusTransmission && !Layer_Float.isNoDataValue(value)) {
+						float fixedSlope = 1;
+						float distance = distanceToWater[y][x] * 3.281f; // convert meters to feet
+						float factor = 0.9415f + 
+								0.02122f * fixedSlope + -0.001345f * fixedSlope * fixedSlope + 
+								-0.00003511f * distance + 0.0000000007114f * distance * distance;
+						
+						if (factor > 1) factor = 1.0f;
+						else if (factor < 0.4f) factor = 0.4f;
+						
+						value *= factor;
 					}
+							
 					ploss[y][x] = value;
 				}
 			}
 			
-			return ploss;
+			return ploss; 
 		}
 	}
 	
@@ -984,7 +886,7 @@ public class HomeController extends Controller {
 			int cg = wl.stringToMask("Cash Grain");
 			int cc = wl.stringToMask("Continuous Corn");
 			int dr = wl.stringToMask("Dairy Rotation");
-			int ps = wl.stringToMask("Pasture","Cool-season Grass","Warm-season Grass");
+			int ps = wl.stringToMask("Hay", "Pasture","Cool-season Grass","Warm-season Grass", "Reed Canary Grass");
 			
 			int totalMask = cg | cc | dr | ps;
 			
@@ -992,156 +894,69 @@ public class HomeController extends Controller {
 			float percManure = 20.0f;
 			float percSynth = 70.0f;
 		
-			float intercept 	= 0;
-			float c_ManureApp 	= 0;
-			float c_SyntheticApp= 0;
-			float c_initialP 	= 0;
-			float c_Slope 		= 0;
-			float c_SlopeLength = 0;
-			float c_LS 			= 0;
-			float c_K 			= 0;
-			float c_sandtotal_r = 0;
-			float c_silttotal_r = 0;
-			float c_OM 			= 0;
-			
 			Layer_Base s_layer = Layer_Base.getLayer("slope");
-			
-			float slope[][] = Layer_Base.getLayer("slope").getFloatData();
-			float silt[][] = Layer_Base.getLayer("silt_perc").getFloatData();
-			float sand[][] = Layer_Base.getLayer("sand_perc").getFloatData();
-			float om[][] = Layer_Base.getLayer("om").getFloatData();
-			float k[][] = Layer_Base.getLayer("k").getFloatData();
-			float ls[][] = Layer_Base.getLayer("ls").getFloatData();
-			float slp_len[][] = Layer_Base.getLayer("slope_length").getFloatData();
 			float distanceToWater[][] = Layer_Base.getLayer("distance_to_water").getFloatData();
+
+			LinearModel contCorn = null, dairyRotation = null, cashGrain = null, pastureLow = null;
 			
-			float [][] ploss = new float[s_layer.getHeight()][s_layer.getWidth()];
+			try {
+				String modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/continuous_corn.csv";
+		        String definition = new String( Files.readAllBytes( Paths.get(modelPath) ));
+				contCorn = new LinearModel().init(definition);
+				contCorn.setConstant("manure_app", percManure);
+				contCorn.setConstant("synthetic_app", percSynth);
+				contCorn.setConstant("initial_p", initialP);
+				contCorn.setIntercept("cc_nt");
+
+				modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/dairy_rotation.csv";
+		        definition = new String( Files.readAllBytes( Paths.get(modelPath) ));
+		        dairyRotation = new LinearModel().init(definition);
+		        dairyRotation.setConstant("manure_app", percManure);
+		        dairyRotation.setConstant("synthetic_app", percSynth);
+		        dairyRotation.setConstant("initial_p", initialP);
+		        dairyRotation.setIntercept("cc_nt");
+
+				modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/cash_grain.csv";
+		        definition = new String( Files.readAllBytes( Paths.get(modelPath) ));
+		        cashGrain = new LinearModel().init(definition);
+		        cashGrain.setConstant("manure_app", percManure);
+		        cashGrain.setConstant("synthetic_app", percSynth);
+		        cashGrain.setConstant("initial_p", initialP);
+		        cashGrain.setIntercept("cc_nt");
+				
+				modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/pasture_rot.csv";
+		        definition = new String( Files.readAllBytes( Paths.get(modelPath) ));
+		        pastureLow = new LinearModel().init(definition);
+		        pastureLow.setConstant("manure_app", 0.0f);
+		        pastureLow.setConstant("synthetic_app", 80.0f);
+		        pastureLow.setConstant("initial_p", 5.0f);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			float[][] ploss = new float[s_layer.getHeight()][s_layer.getWidth()];
 			
 			for (int y = ext.y2(); y < ext.y1(); y++) {
 				for (int x = ext.x1(); x < ext.x2(); x++) {
-					
-					float value = 0;
-					float _slope =slope[y][x];
-					
-					if ((wl_data[y][x] & totalMask) <= 0) {
-						ploss[y][x] = -9999.0f;
-						continue;
+					float value = -9999.0f;
+					if ((wl_data[y][x] & cg) > 0) {
+						value = cashGrain.calculate(x, y).floatValue();
 					}
-					else if (_slope > 40 || sand[y][x] > 65) {
-						ploss[y][x] = -9999.0f;
-						continue;
+					else if ((wl_data[y][x] & cc) > 0) {
+						value = contCorn.calculate(x, y).floatValue();
 					}
-					
-					//-------------------------------------------------------------
-					if ((wl_data[y][x] & cc) > 0) {
-						intercept 		= -0.633812975746179f;// -1.78349735992302f;
-						c_ManureApp 	= 0.00359206803416f;
-						c_SyntheticApp 	= 0.00252837564114f;
-						c_initialP 		= 0.00337386285029f;
-						c_Slope 		= 0.06857203548177f;
-						c_SlopeLength 	= -0.0034862913967f;
-						c_LS 			= -0.1297218451209f;
-						c_K 			= 2.25186015396712f;
-						c_sandtotal_r 	= 0.00388356367312f;
-						c_silttotal_r 	= 0.01238149285957f;
-						c_OM 			= 0.07928443256857f;	
-					}
-					//-------------------------------------------------------------
-					else if ((wl_data[y][x] & cg) > 0) {
-						intercept 		= -0.031632721834f;//-1.600321633430f;
-						c_ManureApp 	= 0.00277537745450f;
-						c_SyntheticApp 	= 0.00210478873069f;
-						c_initialP 		= 0.00328978161121f;
-						c_Slope 		= 0.07268108586729f; 
-						c_SlopeLength 	= -0.00374287052429f;
-						c_LS 			= -0.14212765910246f;
-						c_K 			= 2.43583905849407f;
-						c_sandtotal_r 	= 0.00588279213064f;
-						c_silttotal_r 	= 0.01441431827988f;
-						c_OM 			= 0.08113536990160f;	
-					}
-					// Dairy Rotation
-					//-------------------------------------------------------------
 					else if ((wl_data[y][x] & dr) > 0) {
-						intercept 		= 0.375332644048f;// -0.992183005201f;
-						c_ManureApp 	= 0.002952260183f; 
-						c_SyntheticApp 	= 0.002324369178f; 
-						c_initialP 		= 0.003523159931f; 
-						c_Slope 		= 0.058817887648f;  
-						c_SlopeLength 	= -0.004091007642f; 
-						c_LS 			= -0.102274335208f; 
-						c_K 			= 2.303621117181f; 
-						c_sandtotal_r 	= -0.003640751209f; 
-						c_silttotal_r 	= 0.003903691381f; 
-						c_OM 			= 0.088916995709f; 	
+						value = dairyRotation.calculate(x, y).floatValue();
 					}
-					// Pasture
-					//-------------------------------------------------------------
 					else if ((wl_data[y][x] & ps) > 0) {
-						intercept 		= -1.261009446664f;//-2.803379129937f;
-						c_ManureApp 	= 0.002814638921f;
-						c_SyntheticApp 	= 0.001230465139f;
-						c_initialP 		= 0.007878286120f;
-						c_Slope 		= 0.041020426882f;
-						c_SlopeLength 	= -0.001120477836f;
-						c_LS 			= -0.088859139728f;
-						c_K 			= 2.065562020684f;
-						c_sandtotal_r 	= 0.000161475720f;
-						c_silttotal_r 	= 0.005943307442f;
-						c_OM 			= 0.110005660671f;
+						value = pastureLow.calculate(x, y).floatValue();
 					}
-					
-					value = intercept	+
-						percManure 	* c_ManureApp +
-						percSynth 	* c_SyntheticApp + 
-						initialP 	* c_initialP + 
-						_slope 		* c_Slope +
-						k[y][x] 	* c_K +
-						ls[y][x] 	* c_LS +
-						sand[y][x] 	* c_sandtotal_r +
-						silt[y][x] 	* c_silttotal_r +
-						om[y][x] 	* c_OM +
-						slp_len[y][x] * c_SlopeLength;
-					
-					value = (float)Math.exp(value) * 0.024f; // convert to pounds per 100m2
-					
-					double fixedSlope = 1;
-					double distance = distanceToWater[y][x] * 3.281; // convert meters to feet
-					double factor = 0.9415f + 
-							0.02122 * fixedSlope + -0.001345 * fixedSlope * fixedSlope + 
-							-0.00003511 * distance + 0.0000000007114 * distance * distance;
-					
-					if (factor > 1) factor = 1.0;
-					else if (factor < 0) factor = 0.0;
-					
-					value *= factor;
-					if (value < 0.05f) value = -9999.0f;
-					else if (value > 2) value = 2.0f;
-					ploss[y][x] = value;  
+							
+					ploss[y][x] = value;
 				}
 			}
-			// slope:
-			//	< 1: factor = 0.2
-			//	1-3: factor = 0.3
-			//	3-4: factor = 0.4
-			// else (>4): factor = 0.5
 			
-			// LS = (((slope/((10000+(slope^2))^0.5))*4.56)+(slope/(10000+(slope^2))^0.5)^2*(65.41)+0.065)*(slopelength(in meters)/72.6)^(factor)
-			
-			// a = slope / ((10000 + slope * slope)^0.5) * 4.56
-			// b = slope / (10000 + slope * slope)^0.5
-			//		b = b * b * 65.41 + 0.065
-			//		b = b * Math.pow(slopelength/72.6, factor);
-			// LS = a + b;
-			
-			/*double slp = 3.0;
-			double factor = 0.5;
-			double slpLen = 76;
-			double a = Math.pow(10000.0 + slp * slp, 0.5);
-			double b = Math.pow(Math.pow(slp/(10000.0 + slp * slp), 0.5), 2.0);
-			double lls = ((slp / a * 4.56) + b * 65.41+0.065) * Math.pow(slpLen / 72.6, 0.5);
-			*/
-			return ploss;
+			return ploss; 
 		}
 	}
 

@@ -1,4 +1,7 @@
 
+DSS.utils.addStyle('.button-margin { margin: 0.3rem 3.75rem 1.1rem;}')
+DSS.utils.addStyle('.button-text-pad { padding: 0.5rem;}')
+
 //------------------------------------------------------------------------------
 Ext.define('DSS.controls.FieldShapeManager', {
 //------------------------------------------------------------------------------

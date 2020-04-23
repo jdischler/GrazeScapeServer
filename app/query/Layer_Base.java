@@ -488,7 +488,7 @@ public abstract class Layer_Base
 		mLayerSynonyms.put("clay", "clay_perc");
 		mLayerSynonyms.put("silt", "silt_perc");
 		mLayerSynonyms.put("slopelen", "slope_length");
-//		mLayerSynonyms.put("ls", "ls_2");
+		mLayerSynonyms.put("ls", "ls_2");
 //		mLayerSynonyms.put("slope", "ssurgo_slope");
 		
 		logger.info("┌───────────────────────────────────────────────────────┼");
