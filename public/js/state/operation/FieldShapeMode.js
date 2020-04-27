@@ -10,9 +10,9 @@ Ext.define('DSS.state.operation.FieldShapeMode', {
 //	padding: '0 6 6 6',
 	floating: true,
 	shadow: false,
-	hidden: true,
+	hidden: false,
 	
-	style: 'border-radius: 2px; box-shadow: 0 4px 8px rgba(0,0,0,0.5)',
+	style: 'border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.5); background-color: rgba(0,0,0,0.5)',
 	layout: DSS.utils.layout('hbox', 'start'),
 	
 	//--------------------------------------------------------------------------
@@ -26,6 +26,7 @@ Ext.define('DSS.state.operation.FieldShapeMode', {
 				padding: '4 0 0 0',
 				height: 30,
 				allowDepress: false,
+				frame: false
 			},
 			items: [{
 				text: 'Draw',
@@ -37,7 +38,6 @@ Ext.define('DSS.state.operation.FieldShapeMode', {
 						DSS.mouseMoveFunction = undefined;
 						DSS.mapClickFunction = undefined;
 						DSS.drawEndEvent = function(evt, feature) {
-							console.log('Draw Field Shapes', DSS.activeFarm)
 							me.addField(feature, DSS.activeFarm);
 						}
 						
@@ -47,6 +47,8 @@ Ext.define('DSS.state.operation.FieldShapeMode', {
 							console.log("field Shaped modify", evt)
 							me.modifyField(segments);
 						} 
+						
+						DSS.FieldShapes.addModeControl();
 					}
 					else {
 						DSS.MapState.disableFieldDraw();
@@ -56,8 +58,12 @@ Ext.define('DSS.state.operation.FieldShapeMode', {
 					}
 				}
 			},{
-				text: 'Edit',
-				tooltip: 'Edit field shapes',
+				text: 'Split',
+				tooltip: 'Split field shapes',
+				width: 64
+			},{
+				text: 'Join',
+				tooltip: 'Merge adjacent field shapes',
 				width: 64
 			},{
 				text: 'Delete',
@@ -67,7 +73,12 @@ Ext.define('DSS.state.operation.FieldShapeMode', {
 				html: '<i class="fas fa-search"></i>',
 				tooltip: 'Activate Inspector <i class="fas fa-search accent-text"></i> mode',
 				width: 48,
-				pressed: true
+				pressed: true,
+				toggleHandler: function(self, pressed) {
+					if (pressed) {
+						DSS.Inspector.addModeControl()
+					}
+				}
 			}]
 		});
 		

@@ -33,7 +33,7 @@ Ext.define('DSS.map.BoxModel', {
 		DSS.layer.ModelResult = new ol.layer.Image({
 			updateWhileAnimating: true,
 			updateWhileInteracting: true,
-			opacity: 1,
+			opacity: 0.7,
 			visible: false,
 			source: new ol.source.ImageStatic({
 				projection: 'EPSG:3071'

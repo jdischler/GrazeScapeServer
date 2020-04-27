@@ -125,7 +125,7 @@ public class HomeController extends Controller {
 		Session session = request.session();
 		if (session != null) {
 			Optional<String> user = session.get("user");
-			if (false) {//user. .isEmpty()) {
+			if (!user.isPresent()) {//user. .isEmpty()) {
 				String userID = RandomString.get(12);
 				session = session.adding("user", userID);
 				mSessions.put(userID, new session.Session());

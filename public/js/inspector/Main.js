@@ -19,6 +19,7 @@ Ext.define('DSS.inspector.Main', {
 	alias: 'widget.inspector',
     alternateClassName: 'DSS.Inspector',
     singleton: true,	
+    autoDestroy: false,
 	
     requires: [
     	'DSS.inspector.DataBounds',
@@ -39,6 +40,7 @@ Ext.define('DSS.inspector.Main', {
 			items: [{
 				cls: 'section-title light-text text-drp-20',
 				html: 'Inspector <i class="fas fa-search font-10 accent-text text-drp-50"></i>',
+				height: 35				
 			},{
 				xtype: 'inspector_data_bounds',
 			},{
@@ -58,6 +60,19 @@ Ext.define('DSS.inspector.Main', {
 			me.computeResults(extents,DSS.layer.ModelResult);
 		})
 		
+	},
+	
+	//--------------------------------------------------------------------------
+	addModeControl: function() {
+		let me = this;
+		let c = DSS_viewport.down('#DSS-mode-controls');
+		
+		if (!c.items.has(me)) {
+			Ext.suspendLayouts();
+				c.removeAll(false);
+				c.add(me);
+			Ext.resumeLayouts(true);
+		}
 	},
 	
 	//-------------------------------------------------------------------------------------------------
@@ -111,24 +126,14 @@ Ext.define('DSS.inspector.Main', {
 			"options": options,
 			"restrictions": restrictions,
 		};
-		console.log(data);
-	/*	console.log(data);
-		if (Ext.getCmp('DSS_cheatRestrictFarm').getValue() && DSS.activeFarm) {
-			data["farm_id"] = DSS.activeFarm;
-			data["mode"] = Ext.getCmp('DSS_cheatFieldAggregate').getValue() ? 2 : 1;
-		}
-		if (Ext.getCmp('DSS_maskByCDL').getValue()) {
-			data['row_crops'] = Ext.getCmp('DSS_cheatRowCropMask').getValue() ? true : false;
-			data['grasses'] = Ext.getCmp('DSS_cheatGrassMask').getValue() ? true : false;
-		}
-	*/	
+	//	console.log(data);
+		
 		var obj = Ext.Ajax.request({
 			url: location.href + 'fetch_image',
 			jsonData: data,
 			timeout: 10000,
 			success: function(response, opts) {
 				var obj = JSON.parse(response.responseText);
-				console.log("Image request",obj);
 				me.DSS_isWorking = false;
 
 				modelResultsLayer.setSource(new ol.source.ImageStatic({
@@ -136,7 +141,6 @@ Ext.define('DSS.inspector.Main', {
 					imageExtent: obj.extent,
 					projection: 'EPSG:3071'
 				}))
-				modelResultsLayer.setOpacity(0.7);
 				modelResultsLayer.setVisible(true);	
 				
 				if (obj.key) {

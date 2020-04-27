@@ -213,6 +213,7 @@ Ext.define('DSS.map.Main', {
 		//--------------------------------------------------------------		
 		DSS.layer.watershed = new ol.layer.Vector({
 			visible: DSS.layer['watershed:visible'],
+			opacity: 0.6,
 			updateWhileAnimating: true,
 			updateWhileInteracting: true,
 			source: new ol.source.Vector({
@@ -221,8 +222,8 @@ Ext.define('DSS.map.Main', {
 			}),
 			style: new ol.style.Style({
 				stroke: new ol.style.Stroke({
-					color: 'rgba(128,255,32,0.6)',
-					width: 8
+					color: '#7fff1f',
+					width: 4
 				})
 			})
 		});

@@ -51,7 +51,7 @@ Ext.define('DSS.state.operation.Main', {
 					xtype: 'button',
 					cls: 'button-text-pad',
 					componentCls: 'button-margin',
-					text: 'Field Boundaries',
+					text: 'Field Shapes',
 					toggleGroup: 'manage-operation',
 					toggleHandler: function(self, pressed) {
 						if (pressed) {

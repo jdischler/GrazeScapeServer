@@ -16,6 +16,36 @@ Ext.define('DSS.map.LayerMenu', {
 	initComponent: function() {
 		let me = this;
 		
+		let makeOpacityMenu = function(openLayersLayer) {
+			return {
+                width: 130,
+                plain: true,
+            	listeners: {
+            		show: function(menu) {
+            			menu.down('#dss-slider').setValue(openLayersLayer.getOpacity() * 100, false)
+            		},
+            	},                    
+                items: [{
+    				xtype: 'menuitem',
+    				text: 'Opacity', disabled: true,
+    				style: 'border-bottom: 1px solid rgba(0,0,0,0.2);padding-top: 4px'
+                },{
+                	xtype: 'slider',
+                	itemId: 'dss-slider',
+                	hideEmptyLabel: true,
+                	increment: 10,
+                	value: 60,
+                	minValue: 20, 
+                	maxValue: 100,
+                	listeners: {
+                		change: function(slider, newValue, thumb, eOpts) {
+                			openLayersLayer.setOpacity(newValue / 100.0)
+                		}	                		
+                	}
+                }]
+            }			
+		};
+
 		Ext.applyIf(me, {
 			defaults: {
 				xtype: 'menucheckitem',
@@ -73,13 +103,14 @@ Ext.define('DSS.map.LayerMenu', {
 	                	if (checked) Ext.util.Cookies.set("baselayer:visible", "3");	                	
 	                }
 				}]
-			},{
+			},{ //-------------------------------------------
 				xtype: 'menuitem',
 				text: 'Overlays', disabled: true,
 				style: 'border-bottom: 1px solid rgba(0,0,0,0.2);padding-top: 4px'
-			},{
+			},{ //-------------------------------------------
 				text: 'Watershed',
                 checked: true,
+                menu: makeOpacityMenu(DSS.layer.watershed),
                 listeners: {
                 	afterrender: function(self) {
                 		self.setChecked(DSS.layer.watershed.getVisible());
@@ -89,7 +120,7 @@ Ext.define('DSS.map.LayerMenu', {
                 	Ext.util.Cookies.set("watershed:visible", self.checked ? "1" : "0");                	
                 	DSS.layer.watershed.setVisible(self.checked);                    	
                 }
-			},{
+			},{ //-------------------------------------------
 				text: 'Contour',
 				disabled: true,
 				listeners: {
@@ -98,11 +129,13 @@ Ext.define('DSS.map.LayerMenu', {
                 	}
                 },
                 handler: function(self) {
+                	Ext.util.Cookies.set("contour:visible", self.checked ? "1" : "0");                	
                 	DSS.layer.contour.setVisible(self.checked);                    	
                 }
-			},{
+			},{ //-------------------------------------------
 				text: 'Hillshade',					
                 checked: true,
+                menu: makeOpacityMenu(DSS.layer.hillshade),
                 listeners: {
                 	afterrender: function(self) {
                 		self.setChecked(DSS.layer.hillshade.getVisible());
@@ -112,6 +145,10 @@ Ext.define('DSS.map.LayerMenu', {
                 	Ext.util.Cookies.set("hillshade:visible", self.checked ? "1" : "0");                	
                 	DSS.layer.hillshade.setVisible(self.checked);                    	
                 }
+			},{ //-------------------------------------------
+				xtype: 'menuitem',
+				text: 'Inspector <i class="fas fa-search accent-text text-drp-50"></i>',
+                menu: makeOpacityMenu(DSS.layer.ModelResult),
 			}]
 		});
 		

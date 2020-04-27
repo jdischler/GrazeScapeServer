@@ -12,7 +12,7 @@ Ext.define('DSS.state.operation.CropNutrientMode', {
 	shadow: false,
 	hidden: true,
 	
-	style: 'border-radius: 2px; box-shadow: 0 4px 8px rgba(0,0,0,0.5)',
+	style: 'border-radius: 2px; box-shadow: 0 4px 8px rgba(0,0,0,0.5);',
 	layout: DSS.utils.layout('hbox', 'start'),
 	
 	//--------------------------------------------------------------------------
@@ -26,6 +26,7 @@ Ext.define('DSS.state.operation.CropNutrientMode', {
 				padding: '4 0 0 0',
 				height: 30,
 				allowDepress: false,
+				frame: false
 			},
 			items: [{
 				text: 'Crops',

@@ -17,9 +17,10 @@ Ext.define('DSS.view.AppViewport', {
 		'DSS.map.Main',
 		'DSS.controls.ApplicationFlow',
 		'DSS.inspector.Main',
+		'DSS.field_shapes.Main'		
 	],
 
-	minWidth: 800,
+	minWidth: 900,
 	minHeight: 480,
 	style: 'background-color: #000',
 
@@ -79,6 +80,7 @@ Ext.define('DSS.view.AppViewport', {
 				},
 				resizeHandles: 'w',
 				width: 0,
+				itemId: 'DSS-mode-controls',
 				maxWidth: 320,
 				padding: '8 6',
 				scrollable: 'y',
