@@ -11,8 +11,7 @@ Ext.define('DSS.field_shapes.apply.Tillage', {
 	
 	layout: DSS.utils.layout('vbox', 'start', 'center'),
 	
-	DSS_parent: false, // should set
-	DSS_sectionHeight: 31,
+	DSS_sectionHeight: 94,
 	
 	//--------------------------------------------------------------------------
 	initComponent: function() {
@@ -31,48 +30,31 @@ Ext.define('DSS.field_shapes.apply.Tillage', {
 					cls: 'information accent-text bold',
 					html: "Set Tillage",
 				},
-					getToggle(me)
+					getToggle(me, 'tillage.is_active')
 				]
 			},{
-				xtype: 'container',
+				xtype: 'radiogroup',
 				itemId: 'contents',
-				DSS_height: me.DSS_sectionHeight,
-				layout: DSS.utils.layout('hbox', 'center'),//, 'stretch'),
-				padding: '0 0 6 0',
-				height: (me.DSS_active ? me.DSS_sectionHeight : 0),
-				items: [{
-					xtype: 'numberfield',
-					itemId: 'dss-soil-p',
-					fieldLabel: 'Soil test value',
-					labelWidth: 90,
-					labelAlign: 'right',
-					value: 32,
-					minValue: 1,
-					maxValue: 200,
-					width: 150,
-					step: 5
+				hideEmptyLabel: true,
+				columns: 1, 
+				vertical: true,
+				bind: { value: { tillage: '{tillage.value}' }},
+				defaults: {
+					name: 'tillage'
+				},
+				items: [{ 
+					boxLabel: 'No-till', 			inputValue: 'nt',
+				},{
+					boxLabel: 'Spring-cultivation',	inputValue: 'spcu',
+				},{
+					boxLabel: 'Chisel + disk',		inputValue: 'chdsk',
+				},{
+					boxLabel: 'Moldboard plow', 	inputValue: 'mp'
 				}]
 			}]
 		});
 		
 		me.callParent(arguments);
 	},
-	
-	//------------------------------------------------------------
-	getOptions: function() {
-		let me = this;
-		
-		if (me.DSS_active && !me.isHidden()) {
-			return {
-				restrict_to_fields: {
-					// FIXME:
-					farm_id: DSS.activeFarm,
-					aggregate: me.down('#aggregate').getValue()
-				}
-			}
-		};
-		
-//		return {};
-	}
 	
 });

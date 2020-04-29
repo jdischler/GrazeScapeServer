@@ -1,27 +1,34 @@
 
 // TODO: move to a better place...
-let getToggle = function(owner, activatedHandler, deactivatedHandler) {
+let getToggle = function(owner, stateRef, activatedHandler, deactivatedHandler) {
 	
 	return {
 		xtype: 'component',
 		itemId: 'dss-toggle-active',
 		style: 'right: 1px; top: 1px',
-		cls: 'accent-text fa-hover ' + (owner.DSS_active ? 'to-close' : 'to-add'),
+		cls: 'accent-text fa-hover',//
 		html: '<i class="far fa-plus-circle"></i>',
 		listeners: {
 			render: function(c) {
+				let vm = owner.lookupViewModel();
+				let active = vm.get(stateRef) ;
+				c.addCls(active ? 'to-close' : 'to-add')
+				
+				let ct = owner.down('#contents');
+				let ht = owner.DSS_sectionHeight;
+				ct.setHeight(active ? ht : 0);
+				
 				c.getEl().getFirstChild().el.on({
 					click: function(self) {
 						if (c.hasCls('to-add')) {
 							c.removeCls('to-add')
 							c.addCls('to-close');
-							owner.DSS_active = true;
-							let ct = owner.down('#contents');
+							vm.set(stateRef, true);
 							ct.animate({
 								duration: 300,
 								dynamic: true,
 								to: {
-									height: ct.DSS_height
+									height: ht
 								}
 							});
 							if (typeof activatedHandler === 'function') {
@@ -31,10 +38,9 @@ let getToggle = function(owner, activatedHandler, deactivatedHandler) {
 						else {
 							c.addCls('to-add')
 							c.removeCls('to-close');
-							owner.DSS_active = false;
-							let ct = owner.down('#contents');
+							vm.set(stateRef, false);
 							ct.animate({
-								duration: 250,
+								duration: 300,
 								dynamic: true,
 								to: {
 									height: 0
@@ -62,8 +68,7 @@ Ext.define('DSS.field_shapes.apply.SpreadManure', {
 	
 	layout: DSS.utils.layout('vbox', 'start', 'center'),
 	
-	DSS_parent: false, // should set
-	DSS_sectionHeight: 31,
+	DSS_sectionHeight: 28,
 	
 	//--------------------------------------------------------------------------
 	initComponent: function() {
@@ -82,25 +87,23 @@ Ext.define('DSS.field_shapes.apply.SpreadManure', {
 					cls: 'information accent-text bold',
 					html: "Spread Manure",
 				},
-					getToggle(me)
+					getToggle(me, 'manure.is_active')
 				]
 			},{
 				xtype: 'container',
 				itemId: 'contents',
-				DSS_height: me.DSS_sectionHeight,
-				layout: DSS.utils.layout('hbox', 'center'),//, 'stretch'),
+				layout: 'center',
 				padding: '0 0 6 0',
-				height: (me.DSS_active ? me.DSS_sectionHeight : 0),
 				items: [{
 					xtype: 'numberfield',
 					itemId: 'dss-soil-p',
-					fieldLabel: 'Soil test value',
+					fieldLabel: 'Tons / acre',
 					labelWidth: 90,
 					labelAlign: 'right',
-					value: 32,
+					bind: { value: '{manure.value}' },
 					minValue: 1,
 					maxValue: 200,
-					width: 150,
+					width: 160,
 					step: 5
 				}]
 			}]
@@ -108,22 +111,5 @@ Ext.define('DSS.field_shapes.apply.SpreadManure', {
 		
 		me.callParent(arguments);
 	},
-	
-	//------------------------------------------------------------
-	getOptions: function() {
-		let me = this;
-		
-		if (me.DSS_active && !me.isHidden()) {
-			return {
-				restrict_to_fields: {
-					// FIXME:
-					farm_id: DSS.activeFarm,
-					aggregate: me.down('#aggregate').getValue()
-				}
-			}
-		};
-		
-//		return {};
-	}
 	
 });

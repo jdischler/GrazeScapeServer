@@ -19,6 +19,34 @@ Ext.define('DSS.field_shapes.DrawAndApply', {
 	initComponent: function() {
 		let me = this;
 
+		me.setViewModel(
+			new Ext.app.ViewModel({
+				data: {
+					soil_p: {
+						is_active: true,
+						value: 32,
+					},
+					crop: {
+						is_active: false,
+						value: 'oga',
+					},
+					tillage: {
+						is_active: false,
+						value: 'spcu'
+					},
+					manure: {
+						is_active: false,
+						value: 10
+					},
+					fertilizer: {
+						is_active: false,
+						n: 100,
+						p: 30
+					}
+				}
+			})
+		);
+		
 		Ext.applyIf(me, {
 			items: [{
 				xtype: 'container',

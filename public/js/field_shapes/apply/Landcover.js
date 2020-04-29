@@ -11,9 +11,7 @@ Ext.define('DSS.field_shapes.apply.Landcover', {
 	
 	layout: DSS.utils.layout('vbox', 'start', 'center'),
 	
-	DSS_parent: false, // should set
-	DSS_active: false,
-	DSS_sectionHeight: 64,
+	DSS_sectionHeight: 190,
 	
 	//--------------------------------------------------------------------------
 	initComponent: function() {
@@ -32,7 +30,7 @@ Ext.define('DSS.field_shapes.apply.Landcover', {
 					cls: 'information accent-text bold',
 					html: "Set Crop / Landcover",
 				},
-					getToggle(me)
+					getToggle(me, 'crop.is_active')
 				]
 			},{
 				xtype: 'radiogroup',
@@ -40,42 +38,31 @@ Ext.define('DSS.field_shapes.apply.Landcover', {
 				hideEmptyLabel: true,
 				columns: 1, 
 				vertical: true,
-				DSS_height: me.DSS_sectionHeight,
-				//layout: DSS.utils.layout('hbox', 'center'),//, 'stretch'),
-				//padding: '0 0 6 0',
-				height: (me.DSS_active ? me.DSS_sectionHeight : 0),
+				bind: { value: { crop: '{crop.value}' }},
+				defaults: {
+					name: 'crop'
+				},
 				items: [{ 
-					boxLabel: 'Bluegrass-wc', name: 'rb', inputValue: '1',
-					tooltip: 'Bluegrass with white clover',
-					checked: true,
+					boxLabel: 'Bluegrass-wc', 	inputValue: 'bgwc',
 				},{
-					boxLabel: 'Orchardgrass-al', name: 'rb', inputValue: '2',
-					tooltip: 'Orchardgrass-alsike',
+					boxLabel: 'Orchardgrass-al',inputValue: 'oga',
 				},{
-					boxLabel: 'Orchardgrass-rc', name: 'rb', inputValue: '3',
-					tooltip: 'Orchardgrass with red clover',
+					boxLabel: 'Orchardgrass-rc',inputValue: 'ogrc',
+				},{
+					boxLabel: 'Timothy-alsike', inputValue: 'ta'
+				},{
+					boxLabel: 'Continuous Corn',inputValue: 'cc',
+				},{
+					boxLabel: 'Cash Grain',		inputValue: 'cg',
+				},{
+					boxLabel: 'Dairy Rotation 1',inputValue: 'dr',
+				},{
+					boxLabel: 'Dairy Rotation 2', inputValue: 'cso'
 				}]
 			}]
 		});
 		
 		me.callParent(arguments);
 	},
-	
-	//------------------------------------------------------------
-	getOptions: function() {
-		let me = this;
-		
-		if (me.DSS_active && !me.isHidden()) {
-			return {
-				restrict_to_fields: {
-					// FIXME:
-					farm_id: DSS.activeFarm,
-					aggregate: me.down('#aggregate').getValue()
-				}
-			}
-		};
-		
-//		return {};
-	}
 	
 });

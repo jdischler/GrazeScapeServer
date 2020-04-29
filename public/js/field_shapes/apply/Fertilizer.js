@@ -11,9 +11,7 @@ Ext.define('DSS.field_shapes.apply.Fertilizer', {
 	
 	layout: DSS.utils.layout('vbox', 'start', 'center'),
 	
-	DSS_parent: false, // should set
-	DSS_active: false,
-	DSS_sectionHeight: 31,
+	DSS_sectionHeight: 60,
 	
 	//--------------------------------------------------------------------------
 	initComponent: function() {
@@ -32,45 +30,40 @@ Ext.define('DSS.field_shapes.apply.Fertilizer', {
 					cls: 'information accent-text bold',
 					html: "Apply Fertilizer",
 				},
-					getToggle(me)
+					getToggle(me, 'fertilizer.is_active')
 				]
 			},{
 				xtype: 'container',
 				itemId: 'contents',
-				DSS_height: me.DSS_sectionHeight,
-				layout: DSS.utils.layout('hbox', 'center'),//, 'stretch'),
+				layout: DSS.utils.layout('vbox', 'start'),//, 'stretch'),
 				padding: '0 0 6 0',
-				height: (me.DSS_active ? me.DSS_sectionHeight : 0),
 				items: [{
-					xtype: 'checkbox',
-					itemId: 'aggregate',
-					boxLabel: 'aggregate fields',
-					checked: true,
-					handler: function() {
-						DSS_RefilterDelayed(50);
-					}
+					xtype: 'numberfield',
+					itemId: 'dss-fert-n',
+					fieldLabel: 'lbs N / acre',
+					labelWidth: 90,
+					labelAlign: 'right',
+					bind: { value: '{fertilizer.n}' },
+					minValue: 0,
+					maxValue: 200,
+					width: 160,
+					step: 5
+				},{
+					xtype: 'numberfield',
+					itemId: 'dss-fert-p',
+					fieldLabel: 'lbs P / acre',
+					labelWidth: 90,
+					labelAlign: 'right', 
+					bind: { value: '{fertilizer.p}' },
+					minValue: 0,
+					maxValue: 200,
+					width: 160,
+					step: 5
 				}]
 			}]
 		});
 		
 		me.callParent(arguments);
 	},
-	
-	//------------------------------------------------------------
-	getOptions: function() {
-		let me = this;
-		
-		if (me.DSS_active && !me.isHidden()) {
-			return {
-				restrict_to_fields: {
-					// FIXME:
-					farm_id: DSS.activeFarm,
-					aggregate: me.down('#aggregate').getValue()
-				}
-			}
-		};
-		
-//		return {};
-	}
 	
 });

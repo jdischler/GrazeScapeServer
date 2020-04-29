@@ -11,9 +11,7 @@ Ext.define('DSS.field_shapes.apply.SoilP', {
 	
 	layout: DSS.utils.layout('vbox', 'start', 'center'),
 	
-	DSS_parent: false, // should set
-	DSS_active: true,
-	DSS_sectionHeight: 31,
+	DSS_sectionHeight: 28,
 	
 	//--------------------------------------------------------------------------
 	initComponent: function() {
@@ -32,25 +30,23 @@ Ext.define('DSS.field_shapes.apply.SoilP', {
 					cls: 'information accent-text bold',
 					html: "Set Soil P",
 				},
-					getToggle(me)
+					getToggle(me, 'soil_p.is_active')
 				]
 			},{
 				xtype: 'container',
 				itemId: 'contents',
-				DSS_height: me.DSS_sectionHeight,
-				layout: DSS.utils.layout('hbox', 'center'),//, 'stretch'),
+				layout: 'center',
 				padding: '0 0 6 0',
-				height: (me.DSS_active ? me.DSS_sectionHeight : 0),
 				items: [{
 					xtype: 'numberfield',
 					itemId: 'dss-soil-p',
 					fieldLabel: 'Soil test value',
 					labelWidth: 90,
 					labelAlign: 'right',
-					value: 32,
+					bind: { value: '{soil_p.value}' },
 					minValue: 1,
 					maxValue: 200,
-					width: 150,
+					width: 160,
 					step: 5
 				}]
 			}]
@@ -58,22 +54,5 @@ Ext.define('DSS.field_shapes.apply.SoilP', {
 		
 		me.callParent(arguments);
 	},
-	
-	//------------------------------------------------------------
-	getOptions: function() {
-		let me = this;
-		
-		if (me.DSS_active && !me.isHidden()) {
-			return {
-				restrict_to_fields: {
-					// FIXME:
-					farm_id: DSS.activeFarm,
-					aggregate: me.down('#aggregate').getValue()
-				}
-			}
-		};
-		
-//		return {};
-	}
 	
 });
