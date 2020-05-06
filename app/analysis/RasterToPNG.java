@@ -180,7 +180,7 @@ public class RasterToPNG {
 	//--------------------------------------------------------------------------
 	public static JsonNode save(float [][]data, int width, int height, File file) {
 		
-		final int numColorEntries = 5;
+		final int numColorEntries = 7;
 		
 		MinMax minMax = getMinMax(data, width, height);
 		
@@ -195,7 +195,7 @@ public class RasterToPNG {
 			logger.error(e.toString());
 		}
 
-		palette = makeCoarseBlueToRed(palette);
+		palette = makeBlueToRed(palette);
 		
 		int[] alpha = new int[numColorEntries + 1];
 		

@@ -136,6 +136,8 @@ Ext.define('DSS.inspector.Main', {
 				var obj = JSON.parse(response.responseText);
 				me.DSS_isWorking = false;
 
+				console.log("-----------------");
+				console.log(obj);
 				modelResultsLayer.setSource(new ol.source.ImageStatic({
 					url: obj.url,
 					imageExtent: obj.extent,
@@ -159,7 +161,22 @@ Ext.define('DSS.inspector.Main', {
 				me.DSS_isWorking = false;
 			}
 		});
-
+	},
+	
+	extractData: function(data, crop, toDat) {
+		
+		let d = data['model-results'];
+		if (!d) return;
+		d = d.crops;
+		d = d[crop].totals.histogram;
+		
+		let v = "";
+		let dv = d.values, ah = d['area-ha'];
+		for (let i = 0; i < dv.length; i++) {
+			
+			v += "{'datax_" + toDat + "':" + dv[i] + ", 'datay_"+ toDat + "':" + ah[i] + "},";
+		}
+		console.log(v);
 	}
 
 });

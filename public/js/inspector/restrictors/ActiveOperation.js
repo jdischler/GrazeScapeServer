@@ -3,7 +3,7 @@ DSS.utils.addStyle('.fa-hover {opacity: 0.3; right: 1rem}');
 DSS.utils.addStyle('.fa-hover:hover {opacity: 1; cursor: pointer}');
 DSS.utils.addStyle('.to-close {width: 1rem; height: 1rem; font-size: 1rem; color: red; transform: translate(0px,0px) rotate(-45deg); transition: color .3s, transform 0.3s }')
 DSS.utils.addStyle('.to-add {width: 1rem; height: 1rem; font-size: 1rem; color: #48b; transform: translate(0px,0px) rotate(0deg); transition: color .3s, transform 0.3s }')
-DSS.utils.addStyle('.restriction-widget { background: #fff; border-radius: 0.6rem; border-top-left-radius: 1px}');
+DSS.utils.addStyle('.restriction-widget { background: #fff; border-radius: 0.6rem; border-top-left-radius: 2px}');
 
 //------------------------------------------------------------------------------
 Ext.define('DSS.inspector.restrictors.ActiveOperation', {

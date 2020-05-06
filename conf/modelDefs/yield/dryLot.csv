@@ -1,4 +1,4 @@
-; SSURGO Grass yield
+; Fake model that scales Generic grass down to make a Dry Lot result...
 ;
 ; Model Input Details
 ;	- Slopes: slopes above 45 (which corresponds to ~24 degrees) are not computed (result in NoData)
@@ -18,4 +18,4 @@ soil_depth,		0.008
 cec,			0.038
 
 ; Final result transform
-(result-transform), multiply=1.05, clamp=0 / 10
+(result-transform), multiply=0.2, clamp=0 / 10

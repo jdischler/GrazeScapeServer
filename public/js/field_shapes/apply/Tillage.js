@@ -11,7 +11,7 @@ Ext.define('DSS.field_shapes.apply.Tillage', {
 	
 	layout: DSS.utils.layout('vbox', 'start', 'center'),
 	
-	DSS_sectionHeight: 94,
+	DSS_sectionHeight: 98,
 	
 	//--------------------------------------------------------------------------
 	initComponent: function() {
@@ -35,10 +35,11 @@ Ext.define('DSS.field_shapes.apply.Tillage', {
 			},{
 				xtype: 'radiogroup',
 				itemId: 'contents',
+				style: 'padding: 0px; margin: 0px', // fixme: eh...
 				hideEmptyLabel: true,
 				columns: 1, 
 				vertical: true,
-				bind: { value: { tillage: '{tillage.value}' }},
+				bind: { value: '{tillageValue}' },
 				defaults: {
 					name: 'tillage'
 				},

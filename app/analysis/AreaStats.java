@@ -4,6 +4,8 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import raster.Extents;
+
 //------------------------------------------------------------------------------
 public class AreaStats
 {
@@ -39,19 +41,29 @@ public class AreaStats
     }
     
     //----------------------------------------------------------------
+    public AreaStats forExtents(Extents ext) {
+    	mAtX = ext.x1();
+    	mAtY = ext.y2();
+    	mWidth = ext.width();
+    	mHeight = ext.height();	
+    	return this;
+    }
+    
+    //----------------------------------------------------------------
     public AreaStats compute() {
 
-		if (mFieldIDs == null) {
-			Stats s = new Stats(true);
-			mFieldStats.put(0L, s);
-			
-	    	for (int y = 0; y < mHeight; y++) {
-	        	for (int x = 0; x < mWidth; x++) {
-	    			s.record(mData[y+mAtY][x+mAtX]);
-	        	}
-	    	}
-		}
-		else {
+    	// Always compute total stats, which can be accessed via get AreaStats
+		Stats as = new Stats(true);
+		mFieldStats.put(0L, as);
+		
+    	for (int y = 0; y < mHeight; y++) {
+        	for (int x = 0; x < mWidth; x++) {
+    			as.record(mData[y+mAtY][x+mAtX]);
+        	}
+    	}
+    	
+    	// Additionally get field stats when configured to do so...
+		if (mFieldIDs != null) {
 	    	for (int y = 0; y < mHeight; y++) {
 	        	for (int x = 0; x < mWidth; x++) {
 	        		
@@ -72,6 +84,11 @@ public class AreaStats
     }
     
     //----------------------------------------------------------------
+    public Set<Long> getFieldKeys() {
+    	return mFieldStats.keySet();
+    }
+    
+    //----------------------------------------------------------------
     public Stats getFieldStats(Long fs_idx) throws Exception {
 		
 		if (mFieldIDs == null) throw new Exception("AreaStats: was not configured for field level compution");
@@ -80,7 +97,7 @@ public class AreaStats
     
     //----------------------------------------------------------------
     public Stats getAreaStats() throws Exception {
-		if (mFieldIDs != null) throw new Exception("AreaStats: was configured for field level compution so total area stats are not available");
+	//	if (mFieldIDs != null) throw new Exception("AreaStats: was configured for field level compution so total area stats are not available");
 		return mFieldStats.get(0L);
     }
     

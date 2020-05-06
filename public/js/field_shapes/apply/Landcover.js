@@ -11,12 +11,14 @@ Ext.define('DSS.field_shapes.apply.Landcover', {
 	
 	layout: DSS.utils.layout('vbox', 'start', 'center'),
 	
-	DSS_sectionHeight: 190,
+	DSS_sectionHeight: 148,
 	
 	//--------------------------------------------------------------------------
 	initComponent: function() {
 		let me = this;
-
+		
+		let rbName = "crop";
+		
 		Ext.applyIf(me, {
 			items: [{
 				xtype: 'container',
@@ -35,29 +37,41 @@ Ext.define('DSS.field_shapes.apply.Landcover', {
 			},{
 				xtype: 'radiogroup',
 				itemId: 'contents',
+				style: 'padding: 0px; margin: 0px', // fixme: eh...
 				hideEmptyLabel: true,
 				columns: 1, 
 				vertical: true,
-				bind: { value: { crop: '{crop.value}' }},
+				viewModel: {
+					formulas: {
+						cropValue: {
+							bind: '{crop.value}', // inherited from parent
+							get: function(val) {
+								let obj = {};
+								obj[rbName] = val;
+								return obj;
+							},
+							set: function(val) {
+								this.set('crop.value', val[rbName]);
+							}
+						}
+					}
+				},
+				bind: '{cropValue}', // formula from viewModel above
 				defaults: {
-					name: 'crop'
+					name: rbName
 				},
 				items: [{ 
-					boxLabel: 'Bluegrass-wc', 	inputValue: 'bgwc',
+					boxLabel: 'Dry Lot', 			inputValue: 'dl',
 				},{
-					boxLabel: 'Orchardgrass-al',inputValue: 'oga',
+					boxLabel: 'Pasture', 			inputValue: 'ps',
 				},{
-					boxLabel: 'Orchardgrass-rc',inputValue: 'ogrc',
+					boxLabel: 'Continuous Corn',	inputValue: 'cc',
 				},{
-					boxLabel: 'Timothy-alsike', inputValue: 'ta'
+					boxLabel: 'Cash Grain',			inputValue: 'cg',
 				},{
-					boxLabel: 'Continuous Corn',inputValue: 'cc',
+					boxLabel: 'Dairy Rotation 1',	inputValue: 'd1',
 				},{
-					boxLabel: 'Cash Grain',		inputValue: 'cg',
-				},{
-					boxLabel: 'Dairy Rotation 1',inputValue: 'dr',
-				},{
-					boxLabel: 'Dairy Rotation 2', inputValue: 'cso'
+					boxLabel: 'Dairy Rotation 2', 	inputValue: 'd2'
 				}]
 			}]
 		});

@@ -15,9 +15,16 @@ Ext.define('DSS.view.AppViewport', {
 	
 	requires: [
 		'DSS.map.Main',
-		'DSS.controls.ApplicationFlow',
+		'DSS.state.ApplicationFlow',
+		
 		'DSS.inspector.Main',
-		'DSS.field_shapes.Main'		
+		
+		'DSS.field_shapes.DrawAndApply',
+		'DSS.field_shapes.Split',
+		'DSS.field_shapes.Join',
+		'DSS.field_shapes.Delete',
+		
+		'DSS.results.ResultsMain'		
 	],
 
 	minWidth: 900,
@@ -76,12 +83,12 @@ Ext.define('DSS.view.AppViewport', {
 				cls: 'info-panel',
 				resizable: {
 					dynamic: true,
-					maxWidth: 320,
+					maxWidth: 420,
 				},
 				resizeHandles: 'w',
 				width: 0,
 				itemId: 'DSS-mode-controls',
-				maxWidth: 320,
+				maxWidth: 420,
 				padding: '8 6',
 				scrollable: 'y',
 				layout: DSS.utils.layout('vbox', 'start', 'stretch'),
@@ -90,17 +97,18 @@ Ext.define('DSS.view.AppViewport', {
 				],
 				listeners: {
 					afterrender: function(self) {
+						let targetSize = 280;
 						setTimeout(function() {
 							self.animate({
 								dynamic: true,
 								to: {
-									width: 220
+									width: targetSize
 								},
 								callback: function() {
-									self.setMinWidth(220);
-									self.setWidth(220);
+									self.setMinWidth(targetSize);
+									self.setWidth(targetSize);
 									// ooof, the Ext resizer doesn't seem to realize when its resize target has a min/max width change
-									self.resizer.resizeTracker.minWidth = 220;
+									self.resizer.resizeTracker.minWidth = targetSize;
 								}
 							})
 						}, 2000);

@@ -48,7 +48,7 @@ Ext.define('DSS.state.operation.FieldShapeMode', {
 							me.modifyField(segments);
 						} 
 						
-						DSS.FieldShapes.addModeControl();
+						DSS.DrawFieldShapes.addModeControl();
 					}
 					else {
 						DSS.MapState.disableFieldDraw();
@@ -60,15 +60,30 @@ Ext.define('DSS.state.operation.FieldShapeMode', {
 			},{
 				text: 'Split',
 				tooltip: 'Split field shapes',
-				width: 64
+				width: 64,
+				toggleHandler: function(self, pressed) {
+					if (pressed) {
+						DSS.SplitFieldShapes.addModeControl();
+					}
+				}
 			},{
 				text: 'Join',
 				tooltip: 'Merge adjacent field shapes',
-				width: 64
+				width: 64,
+				toggleHandler: function(self, pressed) {
+					if (pressed) {
+						DSS.JoinFieldShapes.addModeControl();
+					}
+				}
 			},{
 				text: 'Delete',
 				tooltip: 'Delete field shapes',
-				width: 78
+				width: 78,
+				toggleHandler: function(self, pressed) {
+					if (pressed) {
+						DSS.DeleteFieldShapes.addModeControl()
+					}
+				}
 			},{
 				html: '<i class="fas fa-search"></i>',
 				tooltip: 'Activate Inspector <i class="fas fa-search accent-text"></i> mode',
@@ -126,13 +141,15 @@ Ext.define('DSS.state.operation.FieldShapeMode', {
 			url: location.href + 'add_field',
 			jsonData: {
 				farm_id: farm_id,
-				wkt: wkt.writeFeature(feature,{decimals:1}) 
+				wkt: wkt.writeFeature(feature,{decimals:1}),
+				field_settings: DSS.viewModel.drawAndApply.getData()
 			},
 			timeout: 30 * 1000, // 30 seconds
 			
 			success: function(response, opts) {
 				
 				var obj= JSON.parse(response.responseText);
+				console.log(obj);
 				feature.setProperties({'f_id': obj.f_id});
 				DSS_RefilterDelayed(25);
 			},

@@ -35,7 +35,12 @@ import data_types.Farm;
 import db.FieldGeometry;
 import io.ebean.Ebean;
 import io.ebean.SqlRow;
+import models.BirdHabitat;
+import models.DryMatter;
 import models.LinearModel;
+import models.RasterInspector;
+import models.RasterModel;
+import models.RasterModel.RasterResult;
 import models.Yield;
 import models.transform.*;
 import utils.Json;
@@ -208,8 +213,6 @@ public class HomeController extends Controller {
 		JsonNode res = db.FieldGeometry.modifyFields(request);
 		return ok(res);
 	}
-
-	
 /*	
  	// Restriction options
  	restrict_by_value: 		{ compare: '<' || '>', 	value: # 			}
@@ -224,32 +227,33 @@ public class HomeController extends Controller {
 		String mode = Json.safeGetOptionalString(node, "model", "bird-habitat");
 		JsonNode options = node.get("options");
 		
-		ModelComputation mc = null;
-		if (mode.equalsIgnoreCase("bird-habitat")) mc = new BirdModel();
-		else if (mode.equalsIgnoreCase("crop-yield")) mc = new YieldModel();
+		RasterModel mc = null;
+		if (mode.equalsIgnoreCase("bird-habitat")) mc = new BirdHabitat();
+		else if (mode.equalsIgnoreCase("crop-yield")) mc = new Yield();
+		else if (mode.equalsIgnoreCase("dry-matter")) mc = new DryMatter();
 		else if (mode.equalsIgnoreCase("p-loss")) mc = new PLossModel();
 		else if (mode.equalsIgnoreCase("p-loss-real")) mc = new AwePLossModel();
 		
 		else if (mode.equalsIgnoreCase("slope")) {
-			mc = new RasterInspection().dataLayer("slope");//.setTransform(new SlopePercentToAngle());
+			mc = new RasterInspector().dataLayer("slope");//.setTransform(new SlopePercentToAngle());
 		}
 		else if (mode.equalsIgnoreCase("ssurgo-slope")) {
-			mc = new RasterInspection().dataLayer("ssurgo_slope");
+			mc = new RasterInspector().dataLayer("ssurgo_slope");
 		}
-		else if (mode.equalsIgnoreCase("soil-depth")) mc = new RasterInspection().dataLayer("soil_depth");
-		else if (mode.equalsIgnoreCase("dem")) mc = new RasterInspection().dataLayer("dem");
-		else if (mode.equalsIgnoreCase("dist-water")) mc = new RasterInspection().dataLayer("distance_to_water");
-		else if (mode.equalsIgnoreCase("perc-sand")) mc = new RasterInspection().dataLayer("sand_perc");
-		else if (mode.equalsIgnoreCase("perc-silt")) mc = new RasterInspection().dataLayer("silt_perc");
-		else if (mode.equalsIgnoreCase("perc-clay")) mc = new RasterInspection().dataLayer("clay_perc");
-		else if (mode.equalsIgnoreCase("om")) mc = new RasterInspection().dataLayer("om");
-		else if (mode.equalsIgnoreCase("k")) mc = new RasterInspection().dataLayer("k");
-		else if (mode.equalsIgnoreCase("ls")) mc = new RasterInspection().dataLayer("ls");
-		else if (mode.equalsIgnoreCase("ksat")) mc = new RasterInspection().dataLayer("ksat");
-		else if (mode.equalsIgnoreCase("cec")) mc = new RasterInspection().dataLayer("cec");
-		else if (mode.equalsIgnoreCase("ph")) mc = new RasterInspection().dataLayer("ph");
-		else if (mode.equalsIgnoreCase("slope-length")) mc = new RasterInspection().dataLayer("slope_length");
-		else if (mode.equalsIgnoreCase("t")) mc = new RasterInspection().dataLayer("t");
+		else if (mode.equalsIgnoreCase("soil-depth")) mc = new RasterInspector().dataLayer("soil_depth");
+		else if (mode.equalsIgnoreCase("dem")) mc = new RasterInspector().dataLayer("dem");
+		else if (mode.equalsIgnoreCase("dist-water")) mc = new RasterInspector().dataLayer("distance_to_water");
+		else if (mode.equalsIgnoreCase("perc-sand")) mc = new RasterInspector().dataLayer("sand_perc");
+		else if (mode.equalsIgnoreCase("perc-silt")) mc = new RasterInspector().dataLayer("silt_perc");
+		else if (mode.equalsIgnoreCase("perc-clay")) mc = new RasterInspector().dataLayer("clay_perc");
+		else if (mode.equalsIgnoreCase("om")) mc = new RasterInspector().dataLayer("om");
+		else if (mode.equalsIgnoreCase("k")) mc = new RasterInspector().dataLayer("k");
+		else if (mode.equalsIgnoreCase("ls")) mc = new RasterInspector().dataLayer("ls");
+		else if (mode.equalsIgnoreCase("ksat")) mc = new RasterInspector().dataLayer("ksat");
+		else if (mode.equalsIgnoreCase("cec")) mc = new RasterInspector().dataLayer("cec");
+		else if (mode.equalsIgnoreCase("ph")) mc = new RasterInspector().dataLayer("ph");
+		else if (mode.equalsIgnoreCase("slope-length")) mc = new RasterInspector().dataLayer("slope_length");
+		else if (mode.equalsIgnoreCase("t")) mc = new RasterInspector().dataLayer("t");
 		else if (mode.equalsIgnoreCase("cdl")) {
 			return processCategorical(request);
 		}
@@ -276,14 +280,7 @@ public class HomeController extends Controller {
 	}
 	
 	//-------------------------------------------------------
-	// Model interface
-	//-------------------------------------------------------
-	private interface ModelComputation {
-		public abstract float[][] compute(Extents computationArea, JsonNode options) throws Exception; 
-	};
-
-	//-------------------------------------------------------
-	public Result computeModel(Http.Request request, ModelComputation modelFunction) {
+	public Result computeModel(Http.Request request, RasterModel modelFunction) {
 	
 		JsonNode node = request.body().asJson();
 
@@ -299,8 +296,10 @@ public class HomeController extends Controller {
 		ObjectNode result = null;
 		
 		float[][] modelResults = null;
+		RasterResult rr = null;
 		try {
-			modelResults = modelFunction.compute(ext, options);
+			rr = modelFunction.compute(ext, options); 
+			modelResults = rr.rasterOut;
 		} catch (Exception e1) {
 			e1.printStackTrace();
 			logger.error(e1.toString());
@@ -391,7 +390,8 @@ public class HomeController extends Controller {
 							"properties", Json.pack("f_id", fd.id)));
 				}
 				
-				int layer[][] = RasterizeFeature.testToInt(features);
+				// for each feature...render the Integer value "f_id" inside of feature.property
+				int layer[][] = RasterizeFeatures.withIntProperty(features, "f_id");
 			
 				for (int y = 0; y < rasterHeight; y++) {
 					for (int x = 0; x < rasterWidth; x++) {
@@ -478,7 +478,7 @@ public class HomeController extends Controller {
 		}
 		else { // no farm 
 			
-			fs = new AreaStats(modelResults).forExtents(ext.x1(), ext.y2(), ext.width(), ext.height());
+			fs = new AreaStats(modelResults).forExtents(ext);
 			fs.compute();
 			Stats stats;
 			try {
@@ -530,252 +530,18 @@ public class HomeController extends Controller {
 		if (fieldStats != null) {
 			Json.addToPack(result, "fields", fieldStats);
 		}
+	//	if (rr.clientData != null) {
+			Json.addToPack(result, "model-results", rr.clientData);
+	//	}
 		
 		pngCounter++;
 		return ok(result);
 	}
-	
-	// Simple fake model - just copy a layer into a returnable dataset
-	//-------------------------------------------------------------------------------------
-	public class RasterInspection implements ModelComputation {
 
-		private Layer_Base mLayer;
-		private Transform mDataTransform = new PassThrough();
-		
-		public RasterInspection dataLayer(String dataLayer) {
-			mLayer = Layer_Base.getLayer(dataLayer);
-			return this;
-		}
-		public RasterInspection setTransform(Transform dataTransform) {
-			mDataTransform = dataTransform;
-			return this;
-		}
-		
-		// ext is the computation extent
-		// options can contain a filter object. That filter object (if exists) can contain
-		//	compare: (greater-than, less-than) and value: #
-		public float[][] compute(Extents ext, JsonNode options) throws Exception  { 
-			
-			if (options != null && !utils.Json.safeGetOptionalBoolean(options, "slope_as_percent", true)) {
-				this.setTransform(new SlopePercentToAngle());
-			}
-			
-			Boolean filterEnabled = false;
-			Boolean lessThan = true; // if false, then is in greater-than mode
-			Float filterValue = 0.0f;
-			if (options != null) {
-				JsonNode filter = options.get("filter");
-				if (filter != null) {
-					filterEnabled = true;
-					lessThan = Json.safeGetOptionalString(filter, "compare", "less-than").equalsIgnoreCase("less-than");
-					filterValue = (float)Json.safeGetOptionalInteger(filter, "value", 0);
-				}
-			}
-			
-			if (mLayer == null) throw new Exception("Did not configure a data layer");
-			float [][] dataIn = mLayer.getFloatData();
-			float [][] dataOut = new float[mLayer.getHeight()][mLayer.getWidth()];
-
-			if (filterEnabled) {
-				logger.info("Using filtered view...");
-				for (int y = ext.y2(); y < ext.y1(); y++) {
-					for (int x = ext.x1(); x < ext.x2(); x++) {
-						Float data = mDataTransform.apply(dataIn[y][x]);
-						if (lessThan && data < filterValue) {
-							dataOut[y][x] = data;
-						}
-						else if (!lessThan && data > filterValue) { // in greater than mode
-							dataOut[y][x] = data;
-						}
-						else { // filter it out
-							dataOut[y][x] = -9999.0f;
-						}
-					}
-				}
-			}
-			else { // straight copy
-				for (int y = ext.y2(); y < ext.y1(); y++) {
-					for (int x = ext.x1(); x < ext.x2(); x++) {
-						float data = mDataTransform.apply(dataIn[y][x]);
-						dataOut[y][x] = data;
-					}
-				}
-			}
-			
-			return dataOut;
-		}
-	}
-	
-	public enum Crop {
-		ECornGrain,
-		ECornSilage,
-		ESoybeans,
-		ESoylage,
-		EAlfalfa
-	};
-	
 	//-------------------------------------------------------------------------------------
-	public class YieldModel implements ModelComputation {
+	public class PLossModel implements RasterModel {
 		
-		public float[][] compute(Extents ext, JsonNode options) throws Exception { 
-			
-			logger.error(options.toString());
-			String cropModel = Json.safeGetOptionalString(options, "crop", "corn");
-			Yield test = new Yield();
-			return test.compute(cropModel);
-			
-/*			Boolean filterEnabled = false;
-			Boolean lessThan = true; // if false, then is in greater-than mode
-			Float filterValue = 0.0f;
-			
-			Crop cropCode = Crop.ECornGrain;
-			
-			if (options != null) {
-				JsonNode filter = options.get("filter");
-				if (filter != null) {
-					filterEnabled = true;
-					lessThan = Json.safeGetOptionalString(filter, "compare", "less-than").equalsIgnoreCase("less-than");
-					filterValue = (float)Json.safeGetOptionalInteger(filter, "value", 0);
-				}
-				// Extract crop....
-				String crop = Json.safeGetOptionalString(options, "crop", "corn-grain");
-				if (crop.equalsIgnoreCase("corn-grain")) cropCode = Crop.ECornGrain;
-				else if (crop.equalsIgnoreCase("corn-silage")) cropCode = Crop.ECornSilage;
-				else if (crop.equalsIgnoreCase("soybeans")) cropCode = Crop.ESoybeans;
-				else if (crop.equalsIgnoreCase("soylage")) cropCode = Crop.ESoylage;
-				else if (crop.equalsIgnoreCase("alfalfa")) cropCode = Crop.EAlfalfa;
-				
-				// Oats + grasses incoming
-			}
-			
-			
-			Layer_Base slope = Layer_Base.getLayer("slope");
-			float slopeData[][] = slope.getFloatData();
-			float silt[][] = Layer_Base.getLayer("silt_perc").getFloatData();
-			float depth[][] = Layer_Base.getLayer("soil_depth").getFloatData();
-			float cec[][] = Layer_Base.getLayer("cec").getFloatData();
-			float [][] yield = new float[slope.getHeight()][slope.getWidth()];
-			
-			final float soyCoefficient = 1.2f		// Correct for techno advances
-					* 0.0585f;						// conversion to Mg per Ha
-			
-			final float maxCropSlope = (float)(Math.tan(15 * Math.PI / 180.0f) * 100.0f);
-			
-			for (int y = ext.mY1; y < ext.mY2; y++) {
-				for (int x = ext.mX1; x < ext.mX2; x++) {
-					
-					float value = 0;
-					float _slope = slopeData[y][x], _depth = depth[y][x], _silt = silt[y][x], _cec = cec[y][x];
-
-					// Corn
-					//----------------------------------------------------------
-					if (cropCode == Crop.ECornGrain || cropCode == Crop.ECornSilage) {
-						
-						if (_slope > maxCropSlope) {
-							value = -9999.0f;
-						}
-						else {
-							// Corn roots don't exceed much below 150cm
-							if (_depth > 150) _depth = 150;
-							
-							// Yield
-	//						value =  22.0f - 1.05f * _slope + 0.19f * _depth + (0.817f / 100.0f) * _silt + 1.32f * _cec
-							value =  3.08f - 0.11f * _slope + 0.012f * _depth + 0.07f * _silt + 0.03f * _cec; 
-							value *= 1.3f; // techno advances
-	//								* cornCoefficient;
-							
-							if (value < 1.5f) value = 1.5f;
-							else if (value > 20) value = 20;
-							
-							// contribution of stover doubles yield
-							if (cropCode == Crop.ECornSilage) value *= 2.0f;
-						}
-					}
-					//----------------------------------------------------------
-					else if (cropCode == Crop.ESoybeans || cropCode == Crop.ESoylage) {
-						
-						// soy roots don't exceed much below 150cm
-						if (_depth > 150) _depth = 150;
-						
-						// Yield
-						value = 6.37f - 0.34f * _slope + 0.065f * _depth + (0.278f / 100.0f) * _silt + 0.437f * _cec 
-								* soyCoefficient;
-					
-						// TODO: sensible clamps?
-						if (value < 0.5) value = 0.5f;
-						else if (value > 18) value = 18;
-						
-						// soy plant residue contributes 2.5x biomass
-						if (cropCode == Crop.ESoylage) value *= 2.5f;
-					}
-					
-					if (filterEnabled) {
-						if ((lessThan && value >= filterValue) ||
-								(!lessThan && value <= filterValue)) {
-							value = -9999.0f;
-						}
-					}
-					yield[y][x] = value;
-				}
-			}
-			
-			return yield;*/
-		}
-	}
-	
-	// Moving window example
-	//-------------------------------------------------------------------------------------
-	public class BirdModel implements ModelComputation {
-		
-		public float[][] compute(Extents ext, JsonNode options) throws Exception { 
-			
-			Layer_Integer wl = Layer_CDL.get();
-			float [][] habitatData = new float[wl.getHeight()][wl.getWidth()];
-			
-			Moving_CDL_Window win = (Moving_CDL_Window)new Moving_CDL_Window_Z(400/10).
-					restrict(ext.x1(), ext.y2(),
-					ext.x2(), ext.y1()).initialize();
-			
-			Moving_Window.WindowPoint point = win.getPoint();
-			
-			try {
-				boolean moreCells = true;
-				while (moreCells) {
-					point = win.getPoint();
-					
-					if (win.canGetProportions()) {
-						float proportionAg = win.getProportionAg();
-						float proportionGrass = win.getProportionGrass();
-						
-						// Habitat Index
-						float lambda = -4.47f + (2.95f * proportionAg) + (5.17f * proportionGrass); 
-						float habitatIndex = (float)((1.0f / (1.0f / Math.exp(lambda) + 1.0f )) / 0.67f);
-		
-						if (habitatIndex < 0.1f) {
-							habitatIndex = -9999.0f;
-						}
-				
-						habitatData[point.mY][point.mX] = habitatIndex;
-					}
-					else {
-						habitatData[point.mY][point.mX] = -9999.0f; // NO DATA
-					}
-					
-					moreCells = win.advance();
-				}	
-			}
-			catch(Exception e) {
-				logger.error(e.toString());
-				logger.error(" mx: " + ((Integer)point.mX) + "   my: " + ((Integer)point.mY) );
-			}
-			return habitatData;
-		}
-	}
-	
-	//-------------------------------------------------------------------------------------
-	public class PLossModel implements ModelComputation {
-		
-		public float[][] compute(Extents ext, JsonNode options) throws Exception { 
+		public RasterResult compute(Extents ext, JsonNode options) throws Exception { 
 			
 			String landcoverCode = "cc";
 			String coverCropCode = "cc";
@@ -832,8 +598,7 @@ public class HomeController extends Controller {
 				
 			try {
 				String modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/" + model;
-		        String definition = new String( Files.readAllBytes( Paths.get(modelPath) ));
-				lm = new LinearModel().init(definition);
+				lm = new LinearModel().init(modelPath);
 
 //					lm.debug();
 //					lm.measureResponse();
@@ -871,14 +636,14 @@ public class HomeController extends Controller {
 				}
 			}
 			
-			return ploss; 
+			return new RasterResult(ploss); 
 		}
 	}
 	
 	//-------------------------------------------------------------------------------------
-	public class AwePLossModel implements ModelComputation {
+	public class AwePLossModel implements RasterModel {
 		
-		public float[][] compute(Extents ext, JsonNode options) throws Exception { 
+		public RasterResult compute(Extents ext, JsonNode options) throws Exception { 
 			
 			Layer_Integer wl = Layer_CDL.get();
 			int [][] wl_data = wl.getIntData();
@@ -901,32 +666,28 @@ public class HomeController extends Controller {
 			
 			try {
 				String modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/continuous_corn.csv";
-		        String definition = new String( Files.readAllBytes( Paths.get(modelPath) ));
-				contCorn = new LinearModel().init(definition);
+				contCorn = new LinearModel().init(modelPath);
 				contCorn.setConstant("manure_app", percManure);
 				contCorn.setConstant("synthetic_app", percSynth);
 				contCorn.setConstant("initial_p", initialP);
 				contCorn.setIntercept("cc_nt");
 
 				modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/dairy_rotation.csv";
-		        definition = new String( Files.readAllBytes( Paths.get(modelPath) ));
-		        dairyRotation = new LinearModel().init(definition);
+		        dairyRotation = new LinearModel().init(modelPath);
 		        dairyRotation.setConstant("manure_app", percManure);
 		        dairyRotation.setConstant("synthetic_app", percSynth);
 		        dairyRotation.setConstant("initial_p", initialP);
 		        dairyRotation.setIntercept("cc_nt");
 
 				modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/cash_grain.csv";
-		        definition = new String( Files.readAllBytes( Paths.get(modelPath) ));
-		        cashGrain = new LinearModel().init(definition);
+		        cashGrain = new LinearModel().init(modelPath);
 		        cashGrain.setConstant("manure_app", percManure);
 		        cashGrain.setConstant("synthetic_app", percSynth);
 		        cashGrain.setConstant("initial_p", initialP);
 		        cashGrain.setIntercept("cc_nt");
 				
 				modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/pasture_rot.csv";
-		        definition = new String( Files.readAllBytes( Paths.get(modelPath) ));
-		        pastureLow = new LinearModel().init(definition);
+		        pastureLow = new LinearModel().init(modelPath);
 		        pastureLow.setConstant("manure_app", 0.0f);
 		        pastureLow.setConstant("synthetic_app", 80.0f);
 		        pastureLow.setConstant("initial_p", 5.0f);
@@ -956,7 +717,7 @@ public class HomeController extends Controller {
 				}
 			}
 			
-			return ploss; 
+			return new RasterResult(ploss); 
 		}
 	}
 

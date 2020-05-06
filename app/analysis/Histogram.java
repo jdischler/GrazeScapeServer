@@ -2,6 +2,14 @@ package analysis;
 
 import java.util.*;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import models.transform.UnitConvert;
+import utils.Json;
+
 //---------------------------------------------
 public class Histogram {
 //---------------------------------------------
@@ -20,6 +28,7 @@ public class Histogram {
 	}
 	
 	int mBins;
+	float mMin, mMax;
 	List<Entry> mHistogram = new ArrayList<>();
 	
 	//---------------------------------------------
@@ -30,6 +39,7 @@ public class Histogram {
 	//---------------------------------------------
 	public Histogram compute(List<Float> forValues, float min, float max) {
 		
+		mMin = min; mMax = max;
 		float range = max - min;
 		float binWidth = range / mBins;
 		
@@ -45,6 +55,29 @@ public class Histogram {
 			mHistogram.get(bin).increment();
 		}
 		return this;
+	}
+	
+	//---------------------------------------------
+	public JsonNode toJson() {
+
+		ObjectNode results = Json.newPack();
+
+		UnitConvert msq2ha = new UnitConvert("meters-squared-to-hectares");
+
+		ArrayNode binMid = JsonNodeFactory.instance.arrayNode();
+		ArrayNode binHa = JsonNodeFactory.instance.arrayNode();
+		
+		for (Entry e: mHistogram) {
+			binMid.add((e.mMax + e.mMin) * 0.5f);
+			binHa.add(msq2ha.apply(e.mCount * 100.0f));
+		}
+		
+		Json.addToPack(results, 
+				"min", mMin,
+				"max", mMax,
+				"values", binMid,
+				"area-ha", binHa);
+		return results;
 	}
 	
 	//---------------------------------------------

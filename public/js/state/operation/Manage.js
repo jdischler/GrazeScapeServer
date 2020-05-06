@@ -1,16 +1,17 @@
 
 
 //------------------------------------------------------------------------------
-Ext.define('DSS.state.operation.Main', {
+Ext.define('DSS.state.operation.Manage', {
 //------------------------------------------------------------------------------
 	extend: 'Ext.Container',
-    alternateClassName: 'DSS.OperationMain',
-	alias: 'widget.operation_main',
+    alternateClassName: 'DSS.OperationManage',
+	alias: 'widget.operation_manage',
 
 	requires: [
 		'DSS.state.operation.CropNutrientMode',
 		'DSS.state.operation.FieldShapeMode',
-		'DSS.state.operation.AnimalGrazingMode'
+		'DSS.state.operation.AnimalGrazingMode',
+		'DSS.state.operation.ComputeMode',
 	],
 	
 	layout: DSS.utils.layout('vbox', 'center', 'stretch'),
@@ -19,7 +20,7 @@ Ext.define('DSS.state.operation.Main', {
 	statics: {
 		get: function() {
 			let def = {
-					xtype: 'operation_main'
+					xtype: 'operation_manage'
 			};
 			
 			return def;
@@ -99,6 +100,24 @@ Ext.define('DSS.state.operation.Main', {
 							AppEvents.triggerEvent('hide_animal_grazing_mode')
 						}
 					//	DSS.ApplicationFlow.instance.showNewOperationPage();
+					}
+				},{
+					xtype: 'component',
+					cls: 'information med-text',
+					html: 'Run simulations'
+				},{
+					xtype: 'button',
+					cls: 'button-text-pad',
+					componentCls: 'button-margin',
+					text: 'Compute',
+					toggleGroup: 'manage-operation',
+					toggleHandler: function(self, pressed) {
+						if (pressed) {
+							AppEvents.triggerEvent('show_compute_mode')
+						}
+						else {
+							AppEvents.triggerEvent('hide_compute_mode')
+						}
 					}
 				}]
 			}]

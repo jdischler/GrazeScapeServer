@@ -87,6 +87,7 @@ Ext.define('DSS.inspector.DataSource', {
 								makeInspectionMode('P-Loss', 		'p-loss', 		false, 'inspector_ploss'),
 								makeInspectionMode('P-Loss-Real', 	'p-loss-real', 	false),//, 'inspector_p_loss'),
 								makeInspectionMode('Crop Yield', 	'crop-yield', 	false, 'inspector_yield'),
+								makeInspectionMode('Dry Matter', 	'dry-matter', 	false),
 								makeInspectionMode('Bird Habitat', 	'bird-habitat'),
 							{
 								text: 'Land Properties', disabled: true,

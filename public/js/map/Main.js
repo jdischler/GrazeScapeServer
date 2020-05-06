@@ -240,6 +240,7 @@ Ext.define('DSS.map.Main', {
 			})
 		})
 		
+		let rotationStyles = { };
 		//---------------------------------------
 		let defaultFieldStyle = new ol.style.Style({
 			stroke: new ol.style.Stroke({
@@ -248,10 +249,19 @@ Ext.define('DSS.map.Main', {
 			}),
 			fill: new ol.style.Fill({
 				color: 'rgba(0,0,0,0.1)',
-//				color: 'rgba(255,128,32,0.2)',
 			}),
 			zIndex: 0
 		});
+		
+		DSS.fieldStyleFunction = function(feature, resolution, defaultStyle) {
+			if (feature && feature.getProperties()) {
+				let rot = feature.getProperties()['rotation']; 
+				if (rot && rotationStyles[rot]) {
+					return rotationStyles[rot];
+				}
+			}
+			return defaultStyle;
+		}
 		
 		DSS.layer.fields = new ol.layer.Vector({
 			visible: false,
@@ -263,7 +273,7 @@ Ext.define('DSS.map.Main', {
 			style: function(feature, resolution) {
 				
 				if (DSS.fieldStyleFunction) {
-					return DSS.fieldStyleFunction(feature, resolution);
+					return DSS.fieldStyleFunction(feature, resolution, defaultFieldStyle);
 				}
 				else return defaultFieldStyle;
 			},
@@ -383,6 +393,130 @@ Ext.define('DSS.map.Main', {
 		me.addWorkAreaMask(me.map);
 		me.addSelectionTools(me.map);
 		me.map.addLayer(DSS.layer.fields);
+		
+		// Convenience 
+		DSS.layer.MouseOver = new ol.layer.Vector({
+			visible: false,
+			updateWhileAnimating: true,
+			updateWhileInteracting: true,
+			useSpatialIndex: false,
+			source: new ol.source.Vector({
+				//features: new ol.Collection()
+			}),
+			style: new ol.style.Style({
+				stroke: new ol.style.Stroke({
+					color: '#a00',
+					width: 4
+				})
+			})
+		});
+		me.map.addLayer(DSS.layer.MouseOver);
+		me.makeRotationStyles(rotationStyles);
+	},
+	
+	//---------------------------------------------------------------
+	makeRotationStyles: function(styleObject) {
+		let me = this;
+		
+		let canvas = document.createElement('canvas');
+		let context = canvas.getContext('2d');
+		
+		let dr1 = new Image(); dr1.onload = function() {
+			let pattern = context.createPattern(dr1, 'repeat');
+			styleObject['D1'] = new ol.style.Style({
+				stroke: new ol.style.Stroke({
+					color: '#a19',
+					width: 2
+				}),
+				fill: new ol.style.Fill({
+					color: pattern
+				}),
+				zIndex: 0
+			});
+		}
+		dr1.src = '/assets/images/dairy_rotation_1.png';
+
+		let dr2 = new Image(); dr2.onload = function() {
+			let pattern = context.createPattern(dr2, 'repeat');
+			styleObject['D2'] = new ol.style.Style({
+				stroke: new ol.style.Stroke({
+					color: '#319',
+					width: 2
+				}),
+				fill: new ol.style.Fill({
+					color: pattern
+				}),
+				zIndex: 0
+			});
+		}
+		dr2.src = '/assets/images/dairy_rotation_2.png';
+
+		let ps = new Image(); ps.onload = function() {
+			let pattern = context.createPattern(ps, 'repeat');
+			styleObject['PS'] = new ol.style.Style({
+				stroke: new ol.style.Stroke({
+					color: '#5a1',
+					width: 2
+				}),
+				fill: new ol.style.Fill({
+					color: pattern
+				}),
+				zIndex: 0
+			});
+		}
+		ps.src = '/assets/images/pasture.png';
+
+		let dl = new Image(); dl.onload = function() {
+			let pattern = context.createPattern(dl, 'repeat');
+			styleObject['DL'] = new ol.style.Style({
+				stroke: new ol.style.Stroke({
+					color: '#a11',
+					width: 2
+				}),
+				fill: new ol.style.Fill({
+					color: pattern
+				}),
+				zIndex: 0
+			});
+		}
+		dl.src = '/assets/images/dry_lot.png';
+
+		let cc = new Image(); cc.onload = function() {
+			let pattern = context.createPattern(cc, 'repeat');
+			styleObject['CC'] = new ol.style.Style({
+				stroke: new ol.style.Stroke({
+					color: '#cb0',
+					width: 2
+				}),
+				fill: new ol.style.Fill({
+					color: pattern
+				}),
+				zIndex: 0
+			});
+		}
+		cc.src = '/assets/images/continuous_corn.png';
+
+		let cg = new Image(); cg.onload = function() {
+			let pattern = context.createPattern(cg, 'repeat');
+			styleObject['CG'] = new ol.style.Style({
+				stroke: new ol.style.Stroke({
+					color: '#08a',
+					width: 2
+				}),
+				fill: new ol.style.Fill({
+					color: pattern
+				}),
+				zIndex: 0
+			});
+		}
+		cg.src = '/assets/images/cash_grain.png';
+		
+		DSS.map.getView().on('change:resolution', function(evt) {
+			let newResolution = this.get('resolution');
+			if (evt.oldValue != newResolution) {
+				// TODO: PROBABLY just remove me...
+			}
+		})
 	},
 	
 	//---------------------------------------------------------------

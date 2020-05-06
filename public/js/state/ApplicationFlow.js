@@ -27,23 +27,23 @@ DSS.utils.addStyle('.button-text-pad { padding: 0.33rem;}')
 
 DSS.utils.addStyle('.information { padding: 0.5rem 0 0.25rem 0; font-size: 0.9rem; text-align: center}')
 DSS.utils.addStyle('.section-title { padding: 0.5rem; font-size: 1.2rem; text-align: center; font-weight: bold}');
-DSS.utils.addStyle('.section { margin: 0.5rem; padding: 0.75rem; background-color: #fff; border: 1px solid #bbb; border-radius: 0.3rem; box-shadow: 0px 4px 8px rgba(0,0,0,0.25) }')
+DSS.utils.addStyle('.section { margin: 0.5rem; margin-bottom: 1rem; padding: 0.75rem; background-color: #fff; border: 1px solid #bbb; border-radius: 0.3rem; box-shadow: 0px 4px 8px rgba(0,0,0,0.25) }')
 
 // Section that roughly corresponds to the left portion of the application. This area will contain logos, titles, controls, etc
 //	and generally be the starting point/container for controlling the entire application flow...whereas the remainder of the
 //	application space will contain (primarily) the map display but will be switched out as needed for charts/reports/other.
 
 //------------------------------------------------------------------------------
-Ext.define('DSS.controls.ApplicationFlow', {
+Ext.define('DSS.state.ApplicationFlow', {
 //------------------------------------------------------------------------------
 	extend: 'Ext.Container',
 	alias: 'widget.application_flow',
 
 	requires: [
-		'DSS.app.MapStateTools',
-		'DSS.controls.FieldShapeManager',
-		'DSS.state.operation.BrowseOrCreate',
-		'DSS.state.operation.Main'		
+		'DSS.state.MapStateTools',
+		'DSS.state.BrowseOrCreate',
+		'DSS.state.CreateNew',
+		'DSS.state.operation.Manage',
 	],
 	
 	layout: DSS.utils.layout('vbox', 'start', 'stretch'),
@@ -61,6 +61,28 @@ Ext.define('DSS.controls.ApplicationFlow', {
 		DSS['ApplicationFlow'] = {instance: me};
 		me.DSS_App = {};
 		
+		if (!DSS['viewModel']) DSS['viewModel'] = {}
+		
+		DSS.viewModel.master = new Ext.app.ViewModel({
+			formulas: {
+				browse_or_create: {
+					bind: '{farm_count}',
+					get: function(ct) {
+						if (ct < 1) {
+							return 'Start by creating a new operation'
+						}
+						return 'Select <i class="accent-text fas fa-hand-pointer"></i>' + 
+						' an operation on the map... or create a new one'
+					}
+				}
+			},
+			data: {
+				farm_count: 0
+			}
+		});
+		
+		me.setViewModel(DSS.viewModel.master);
+
 		Ext.applyIf(me, {
 			items: [{
 				xtype: 'container',
@@ -83,19 +105,11 @@ Ext.define('DSS.controls.ApplicationFlow', {
 						}
 					}					
 				},{
-					xtype: 'container',
+					xtype: 'component',
 					flex: 1,
-					layout: 'fit',
-					minHeight: me.DSS_minTitleHeight,
-					listeners: {
-						afterrender: function(self) { me.DSS_App = {TitleContainer: self} }
-					},
-					items: {
-						xtype: 'component',
-						height: 110, margin: '8 8 0 0',
-						style: 'background-image: url("assets/images/graze_logo.png"); background-size: contain; background-repeat: no-repeat',
+					height: 114, margin: '8 8 0 -12',
+					style: 'background-image: url("assets/images/graze_logo.png"); background-size: contain; background-repeat: no-repeat',
 						
-					}
 /*				},{
 					xtype: 'component',
 					padding: '4 8',
@@ -130,14 +144,6 @@ Ext.define('DSS.controls.ApplicationFlow', {
 		}		
 	},
 	
-	// ExtDef can be a component, an array of components, an objectDef, or an array of objectDefs
-	//----------------------------------------------------------------------------------
-	setTitleBlock: function(extDef) {
-		let me = this;
-		me.DSS_App.TitleContainer.removeAll();
-		me.DSS_App.TitleContainer.add(extDef);
-	},
-	
 	//----------------------------------------------------------------------------------
 	setControlBlock: function(extDef) {
 		let me = this;
@@ -153,19 +159,7 @@ Ext.define('DSS.controls.ApplicationFlow', {
 
 		
 		Ext.suspendLayouts();
-/*			me.setTitleBlock({
-				xtype: 'component',
-				height: 110, margin: '8 0 0 0',
-				style: 'background-image: url("assets/images/graze_logo.png"); background-size: contain; background-repeat: no-repeat',
-			});*/
-			me.setControlBlock([
-				DSS.BrowseOrCreate.get(),
-//				DSS.controls.OperationsBase.get(),
-//				DSS.controls.CompareOperationsBase.get(),
-//				DSS.controls.GrazingToolsBase.get()
-			]);
-//			if (DSS.mainViewport)
-//				DSS.mainViewport.doMapWorkPanel();			
+			me.setControlBlock({xtype:'operation_browse_create'});
 		Ext.resumeLayouts(true);
 		
 		DSS.mouseMoveFunction = DSS.MapState.mouseoverFarmHandler();
@@ -177,8 +171,6 @@ Ext.define('DSS.controls.ApplicationFlow', {
 		DSS.layer.farms.setVisible(true);
 		DSS.layer.farms.setOpacity(1);
 		DSS.layer.markers.setVisible(false);
-		
-//		DSS.layer.ModelResult.setVisible(false);
 	},
 	
 	//----------------------------------------------------------------------------------
@@ -186,12 +178,9 @@ Ext.define('DSS.controls.ApplicationFlow', {
 		let me = this;
 		
 		Ext.suspendLayouts();
-			me.setTitleBlock({xtype: 'title_base'}); // DSS_primaryTitle, DSS_secondaryTitle
-			me.setControlBlock([
-				DSS.controls.OperationInfo.get(),
-			]);
-/*			if (DSS.mainViewport)
-				DSS.mainViewport.doMapWorkPanel();*/			
+			me.setControlBlock({xtype:'operation_create'});
+			DSS.mouseMoveFunction = DSS.MapState.mouseoverFarmHandler();
+			DSS.layer.farms.setOpacity(0.5);
 		Ext.resumeLayouts(true);
 	},
 	
@@ -202,16 +191,9 @@ Ext.define('DSS.controls.ApplicationFlow', {
 		operationName = operationName || "Grazing Acres";
 		
 		Ext.suspendLayouts();
-/*			me.setTitleBlock({
-				xtype: 'active_operation', 
-				DSS_operationName:operationName
-			});
-*/
 			me.setControlBlock([	
-				DSS.OperationMain.get()
+				DSS.OperationManage.get()
 			]);
-/*			if (DSS.mainViewport)
-				DSS.mainViewport.doMapWorkPanel();*/			
 		Ext.resumeLayouts(true);
 		
 		DSS.mouseMoveFunction = undefined;
@@ -227,12 +209,9 @@ Ext.define('DSS.controls.ApplicationFlow', {
 		let me = this;
 		
 		Ext.suspendLayouts();
-			me.setTitleBlock({xtype: 'active_operation'});
 			me.setControlBlock([
 				{xtype: 'field_shape_mgr'}
 			]);
-			if (DSS.mainViewport)
-				DSS.mainViewport.doMapWorkPanel();			
 		Ext.resumeLayouts(true);
 	}
 	

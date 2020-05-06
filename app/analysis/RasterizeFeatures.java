@@ -26,7 +26,7 @@ import ar.com.hjg.pngj.chunks.*;
 import io.jsonwebtoken.lang.Collections;
 
 //------------------------------------------------------------------------------
-public class RasterizeFeature {
+public class RasterizeFeatures {
 	
     private static final Logger logger = LoggerFactory.getLogger("application");
 
@@ -145,17 +145,17 @@ public class RasterizeFeature {
     }
     
     //-----------------------------------------------------------------------------
-    public static int[][] testToInt(List<JsonNode> geoJsonFeatures) {
+    public static int[][] withIntProperty(List<JsonNode> geoJsonFeatures, String key) {
 
 		int rasterWidth = 1500, rasterHeight = 2600;
-		BufferedImage bi = new BufferedImage(rasterWidth, rasterHeight, BufferedImage.TYPE_INT_RGB); 
+		BufferedImage bi = new BufferedImage(rasterWidth, rasterHeight, BufferedImage.TYPE_INT_RGB);//BufferedImage.TYPE_INT_RGB); 
 		Graphics g = bi.getGraphics();
     	
 		for (JsonNode f: geoJsonFeatures) {
-			int f_id = 0;
+			int value = 0;
 			JsonNode props = f.get("properties");
 			if (props != null) {
-				f_id = props.get("f_id").asInt();
+				value = props.get(key).asInt();
 			}
 			
 			JsonNode geo = f.get("geometry");
@@ -176,7 +176,7 @@ public class RasterizeFeature {
 	    	int xs3[] = lx.stream().mapToInt(i->i).toArray();
 	    	int ys3[] = ly.stream().mapToInt(i->i).toArray();
 	    	
-	    	g.setColor(new Color(f_id));
+	    	g.setColor(new Color(value));
 	    	g.fillPolygon(xs3, ys3, xs3.length);
 		}
     	

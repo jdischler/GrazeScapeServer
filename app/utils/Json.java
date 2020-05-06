@@ -23,6 +23,12 @@ import com.fasterxml.jackson.databind.node.*;
 //------------------------------------------------------------------------------
 public class Json
 {
+	//--------------------------------------------------------------------------	
+	public static ObjectNode newPack(){
+		
+		return JsonNodeFactory.instance.objectNode();
+	}
+	
 	// Arguments must be a multiple of two. always a key-value pair. 
 	//	Key must be a String
 	//	Value should be some kind of Object (Boolean, Long, Double, String, JsonNode...)
@@ -389,6 +395,22 @@ public class Json
 			ar.get(2).asInt(),
 			ar.get(3).asInt()
 		);
+	}
+
+	// Given someObject = {
+	//		someKey: {
+	//			is_active: true,
+	//			someData: ...
+	//		}
+	//	}
+	// Usage: if (Json.isActive(someObject, "someKey") ) then...
+	//--------------------------------------------------------------------------
+	public static final Boolean isActive(JsonNode objectNode, String key) {
+		if (objectNode != null && objectNode.get(key) != null) {
+			JsonNode subNode = objectNode.get(key);
+			return safeGetOptionalBoolean(subNode, "is_active", false);
+		}
+		return false;
 	}
 	
 	//--------------------------------------------------------------------------

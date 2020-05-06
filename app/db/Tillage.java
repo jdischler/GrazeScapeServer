@@ -4,6 +4,7 @@ import io.ebean.annotation.DbEnumValue;
 
 public enum Tillage {
 	ENoTill("NT"),
+	ECultivation("CU"),
 	EChiselDisked("CD"),
 	EMoldboardPlow("MP");
 	

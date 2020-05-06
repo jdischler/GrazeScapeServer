@@ -4,9 +4,13 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import analysis.Histogram;
 import models.transform.UnitConvert;
 import query.Layer_Float;
+import utils.Json;
 
 //---------------------------------------------
 public class Stats {
@@ -118,6 +122,7 @@ public class Stats {
 	public void debug() {
 		debug(null);
 	}
+	
 	//---------------------------------------------
 	public void debug(Boolean includeArea) {
 		Boolean computeArea = includeArea == null ? true : includeArea;
@@ -171,4 +176,40 @@ public class Stats {
 			logger.warn(" Stats: no statistics available");
 		}
 	}
+	
+	//---------------------------------------------
+	public JsonNode toJson(Boolean includeArea) {
+		Boolean computeArea = includeArea == null ? true : includeArea;
+
+		ObjectNode stats = Json.newPack();
+		
+		if (hasStatistics()) {
+			try {
+				Histogram hs = getHistogram(20, getMin(), getMax()); 
+				Json.addToPack(stats, 
+						"no-data-ct", getNoDataCount(), 
+						"no-data-perc", getFractionNoData(),
+						"min", getMin(),
+						"max", getMax(),
+						"sum", getSum(),
+						"mean", getMean(),
+						"median", getMedian(),
+						"histogram", hs.toJson());
+			
+				if (computeArea) {
+					UnitConvert msq2ha = new UnitConvert("meters-squared-to-hectares");
+					Float area = getCounted() * 100.0f; // turn into meters sqr
+					Json.addToPack(stats, "area", msq2ha.apply(area));
+				}
+			}
+			catch(Exception e) {
+				logger.error("Stats:toJson exception");
+				logger.error(e.toString());
+			}
+		}
+		else {
+			logger.warn(" Stats: no statistics available");
+		}
+		return stats;
+	}	
 }

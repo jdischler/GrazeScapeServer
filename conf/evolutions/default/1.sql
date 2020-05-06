@@ -3,6 +3,18 @@
 
 # --- !Ups
 
+create table crop_year (
+  id                            bigserial not null,
+  field_id                      bigint,
+  dominant_crop                 varchar(2),
+  dominant_ratio                float,
+  secondary_crop                varchar(2),
+  secondary_ratio               float,
+  constraint ck_crop_year_dominant_crop check ( dominant_crop in ('DL','CG','CS','SB','OT','WH','AL','GG','BG','OG','TA','LG','SG','WR')),
+  constraint ck_crop_year_secondary_crop check ( secondary_crop in ('DL','CG','CS','SB','OT','WH','AL','GG','BG','OG','TA','LG','SG','WR')),
+  constraint pk_crop_year primary key (id)
+);
+
 create table farm (
   id                            bigserial not null,
   farm_name                     varchar(255),
@@ -16,11 +28,13 @@ create table field (
   id                            bigserial not null,
   scenario_id                   bigint,
   geometry_id                   bigint,
-  p_override                    float,
-  om_override                   float,
+  soil_p                        float not null,
+  om                            float,
+  rotation                      varchar(2),
   tillage                       varchar(2),
   tillage_season                varchar(2),
-  constraint ck_field_tillage check ( tillage in ('NT','CD','MP')),
+  constraint ck_field_rotation check ( rotation in ('CC','CG','D1','D2','DL','PS','PE')),
+  constraint ck_field_tillage check ( tillage in ('NT','CU','CD','MP')),
   constraint ck_field_tillage_season check ( tillage_season in ('SP','FL')),
   constraint pk_field primary key (id)
 );
@@ -29,16 +43,7 @@ create table field_geometry (
   id                            bigserial not null,
   farm_id                       bigint,
   geom                          TEXT,
-  field_p                       float not null,
-  field_om                      float,
   constraint pk_field_geometry primary key (id)
-);
-
-create table rotation (
-  id                            bigserial not null,
-  name                          varchar(255),
-  definition                    varchar[],
-  constraint pk_rotation primary key (id)
 );
 
 create table scenario (
@@ -48,6 +53,9 @@ create table scenario (
   scenario_name                 varchar(255),
   constraint pk_scenario primary key (id)
 );
+
+create index ix_crop_year_field_id on crop_year (field_id);
+alter table crop_year add constraint fk_crop_year_field_id foreign key (field_id) references field (id) on delete restrict on update restrict;
 
 create index ix_field_scenario_id on field (scenario_id);
 alter table field add constraint fk_field_scenario_id foreign key (scenario_id) references scenario (id) on delete restrict on update restrict;
@@ -64,6 +72,9 @@ alter table scenario add constraint fk_scenario_farm_id foreign key (farm_id) re
 
 # --- !Downs
 
+alter table if exists crop_year drop constraint if exists fk_crop_year_field_id;
+drop index if exists ix_crop_year_field_id;
+
 alter table if exists field drop constraint if exists fk_field_scenario_id;
 drop index if exists ix_field_scenario_id;
 
@@ -76,13 +87,13 @@ drop index if exists ix_field_geometry_farm_id;
 alter table if exists scenario drop constraint if exists fk_scenario_farm_id;
 drop index if exists ix_scenario_farm_id;
 
+drop table if exists crop_year cascade;
+
 drop table if exists farm cascade;
 
 drop table if exists field cascade;
 
 drop table if exists field_geometry cascade;
-
-drop table if exists rotation cascade;
 
 drop table if exists scenario cascade;
 

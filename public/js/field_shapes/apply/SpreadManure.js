@@ -4,12 +4,11 @@ let getToggle = function(owner, stateRef, activatedHandler, deactivatedHandler) 
 	
 	return {
 		xtype: 'component',
-		itemId: 'dss-toggle-active',
-		style: 'right: 1px; top: 1px',
-		cls: 'accent-text fa-hover',//
+		style: 'right: 1px; top: 2px',
+		cls: 'accent-text fa-hover',
 		html: '<i class="far fa-plus-circle"></i>',
 		listeners: {
-			render: function(c) {
+			afterrender: function(c) {
 				let vm = owner.lookupViewModel();
 				let active = vm.get(stateRef) ;
 				c.addCls(active ? 'to-close' : 'to-add')

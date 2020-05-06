@@ -1,5 +1,7 @@
 package models;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +16,7 @@ import models.transform.TransformFactory;
 import models.transform.ValidRange;
 import query.Layer_Base;
 import query.Layer_Float;
+import utils.ServerStartup;
 
 //------------------------------------------------------------
 public class LinearModel {
@@ -180,7 +183,9 @@ public class LinearModel {
 		mIntercept = intercept;
 	}
 	//------------------------------------------------------------
-	public final LinearModel init(String csv) throws Exception {
+	public final LinearModel init(String modelPath) throws Exception {
+		
+        String csv = new String( Files.readAllBytes( Paths.get(modelPath) ));
 		
 		Map<String,InputData> dataMap = new HashMap<>();
 		
@@ -216,7 +221,7 @@ public class LinearModel {
 				// Example: "(result-transform), power=2, clamp=?/150"
 				for (int extras = 1; extras < el.length; extras++) {
 					String extra = el[extras].trim().toLowerCase();
-					logger.info("Trying for: " + extra);
+				//	logger.info("Trying for: " + extra);
 					mResultTransforms.add(TransformFactory.create(extra));
 				}
 				continue;

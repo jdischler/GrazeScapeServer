@@ -1,9 +1,11 @@
 package db;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
@@ -18,9 +20,7 @@ import io.ebean.Model;
 import io.ebean.SqlRow;
 import play.mvc.Http.Request;
 
-// Generally just the field Geometry, but it can also contain simple default values for P, OM, etc
-//	which are typically populated at creation time. These become field default values that can be overridden when 
-//	desired on an instance of the field as applied to a given scenario.
+// Just the field Geometry
 @Entity
 public class FieldGeometry extends Model {
 
@@ -29,17 +29,14 @@ public class FieldGeometry extends Model {
 	
     @ManyToOne
     public Farm farm;
+    
+//    @OneToMany(cascade=CascadeType.ALL)
+//   public Field field;
 
     // WKT format, blah
     @Column(columnDefinition = "TEXT")
 	public String geom;
     
-    @NotNull
-    public Float fieldP = 32.0f; // county average is 32, can't be null;
-    
-    // can be NULL in which case SSURGO soil lookup is used. If populated, provides a default which can be overridden
-    public Float fieldOm = null;
-
 	public FieldGeometry fromGeoJSON(String geoJson) {
 
 		SqlRow sw = Ebean.createSqlQuery("SELECT ST_AsText(ST_GeomFromGeoJSON( ? )) as wkt")
