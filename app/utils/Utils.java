@@ -24,10 +24,7 @@ public final class Utils
 	}
 	
 	public void testEmail() {
-	       final String username = "fishwerks-no-reply_wid@wisc.edu";
-	        final String passwd = "+G5bh@a7";
 	        Properties props = new Properties();
-	        props.put("mail.smtp.host", "smtp.office365.com");
 	        props.put("mail.smtp.auth", "true");
 	        props.put("mail.smtp.port", "587");
 	        props.put("mail.smtp.starttls.enable", "true");
