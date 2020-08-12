@@ -37,16 +37,24 @@ public class Field extends Model {
     
     // When null, uses SSURGO raster OM data
     public Float om = null;
-    
+   
+    // Rotation and Tillage informs the PLoss model
     public Rotation rotation;
+    public Tillage tillage;
+    public Season tillageSeason;
+    public Season fertSeason;
     
+    // The yield model needs actual crop years and specific crops, particularly in the case of Pasture.
+    //	Crop year can default to whatever specific grass species/mix but then be overridden in the 
+    //	more detailed pasture setup
     @OneToMany(cascade=CascadeType.ALL)
     public Set<CropYear> cropYears = new HashSet<>();
     
-    public Tillage tillage;
-    public Season tillageSeason;
+    // Additionally, pastures need to have a density setting, which again default to whatever but is refined/updated
+    //	based on the animal density specified for each pasture.
+    public Float rotationalDensity;
     
-    
+       
     private static final Logger logger = LoggerFactory.getLogger("app");
 
     public static final Finder<Long, Field> find = new Finder<>(Field.class);

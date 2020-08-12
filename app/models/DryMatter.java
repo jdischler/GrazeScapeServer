@@ -130,6 +130,9 @@ public class DryMatter implements RasterModel {
 		}
 		
 		for (CropData cd: cropMap.values()) {
+			if (cd == null || cd.modelInstance == null) {
+				continue;
+			}
 			float[][] dmWork = new float[height][width];
 			
 			for (int y = ext.y2(); y < ext.y1(); y++) {
@@ -138,6 +141,8 @@ public class DryMatter implements RasterModel {
 					if (fieldIdKey[y][x] > 0 && (cropBitKey[y][x] & cd.crop.bitEncoding) > 0) {
 						Long key = Long.valueOf(fieldIdKey[y][x]);
 						Float ratio = cd.perFieldRatio.get(key);
+						// TODO: FIXME: why is ratio null?
+						if (ratio == null) ratio =  1.0f;
 						value = cd.modelInstance.calculate(x, y) * ratio;
 					}
 					dmWork[y][x] = value;

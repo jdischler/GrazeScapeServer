@@ -1,7 +1,9 @@
 ; Fit of SSURGO representative CORN yields from the greater Dane county area
+;	Root Depth Reference:
+; 	https://www.sciencedirect.com/science/article/pii/S0378429016300399
 ;
 ; Model Input Details
-; 	- Soil Depth: Row crop roots can't exploit soil depths greater than 150cm so the max depth is  
+; 	- Soil Depth: corn roots care typically in the 90-100cm range so the max depth is  
 ;		clamped/limited to that value
 ;
 ; Model Output Details
@@ -16,7 +18,7 @@
 ; Raster Data Layer	// Coeff	// Special Input Data Constraints
 slope,				-1.05
 silt,				0.817
-soil_depth,			0.19, 		clamp=? / 150
+soil_depth,			0.19, 		clamp=? / 95
 cec,				1.32
 
 ; Final result transform

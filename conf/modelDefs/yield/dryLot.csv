@@ -1,12 +1,14 @@
 ; Fake model that scales Generic grass down to make a Dry Lot result...
 ;
 ; Model Input Details
-;	- Slopes: slopes above 45 (which corresponds to ~24 degrees) are not computed (result in NoData)
+;	- soil_depth: fake but assuming compacted soils and overgrazing prevents root development that
+;		can exploit deep soils. Clamping soil depth is meant to simulate this root development limitation
+;		I chose 60cm or 2 feet
 ;
 ; Model Output Details
 ; 	Results are short tons per acres, however the results are transformed in the (result-transform) step:
-;		- adjust for modern yields (1.05x)
-;		- and clamp to a sane output (0.1 to 10) MG/ha
+;		- adjust for fake (terrible yields) 0.05x
+;		- and clamp to a sane output (0.1 to 0.5) MG/ha
 ; 
 ; ------------------------------------------------------------
 (intercept),	0.77
@@ -14,8 +16,8 @@
 ; Raster Data Layer	// Coeff	// Special Input Data Constraints 
 slope,			-0.031
 silt_perc,		0.029
-soil_depth,		0.008
+soil_depth,		0.008, clamp=? / 60
 cec,			0.038
 
 ; Final result transform
-(result-transform), multiply=0.2, clamp=0 / 10
+(result-transform), multiply=0.05, clamp=0 / 0.5

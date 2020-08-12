@@ -3,6 +3,7 @@ package models.transform;
 import query.Layer_Float;
 
 // example: "valid-range=?/56"
+// ValidRange is quasi-similar to Transform classes but different enough that I left it unrelated
 //------------------------------------------------------------
 public class ValidRange {
 	

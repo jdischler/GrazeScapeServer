@@ -28,12 +28,12 @@ public enum Landcover {
 	
 	EOats(		
 		"OT", "Oats",
-		"/conf/modelDefs/yield/soy.csv", 	// FIXME
+		"/conf/modelDefs/yield/oats.csv",
 		0x0010),
 	
 	EWheat(
 		"WH", "Wheat",
-		"/conf/modelDefs/yield/soy.csv",	// FIXME
+		"/conf/modelDefs/yield/wheat.csv",
 		0x0020),
 	
 	EAlfalfa(		

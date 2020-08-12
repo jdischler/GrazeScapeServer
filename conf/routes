@@ -4,7 +4,6 @@
 GET     /                        	controllers.HomeController.app(request: Request)
 GET     /app                        controllers.HomeController.app(request: Request)
 GET		/get_farms					controllers.HomeController.getFarms()
-POST	/test_fetch					controllers.HomeController.testFetch(request: Request)
 POST	/fetch_image				controllers.HomeController.fetchImage(request: Request)
 GET		/get_fields					controllers.HomeController.getFields(farm: Long)
 POST	/create_operation			controllers.HomeController.createOperation(request: Request)

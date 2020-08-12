@@ -1,4 +1,10 @@
 ; Fit of SSURGO representative ALFALFA yields from the greater Dane county area
+;	Root Depth Reference:
+; 	https://www.sciencedirect.com/science/article/pii/S0378429016300399
+;
+; Model Input Details
+; 	- Soil Depth: Soy roots typically extend from 135-175cm  so the max depth is  
+;		clamped/limited to that value
 ;
 ; Model Output Details
 ; 	Results are short tons per acres, however the results are transformed in the (result-transform) step:
@@ -12,7 +18,7 @@
 ; Raster Data Layer	// Coeff	// Special Input Data Constraints 
 slope,			-0.045
 silt_perc,		0.027
-soil_depth,		0.007
+soil_depth,		0.007, clamp=? / 155
 cec,			0.041
 
 ; Final result transform

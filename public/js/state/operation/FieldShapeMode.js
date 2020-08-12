@@ -152,6 +152,8 @@ Ext.define('DSS.state.operation.FieldShapeMode', {
 				console.log(obj);
 				feature.setProperties({'f_id': obj.f_id});
 				DSS_RefilterDelayed(25);
+				DSS.layerSource.fields.refresh();
+//				DSS.layer.cropOverlay.changed(); //needs to be "poked" after add??
 			},
 			
 			failure: function(respose, opts) {

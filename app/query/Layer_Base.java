@@ -362,6 +362,11 @@ public abstract class Layer_Base
 
 	//--------------------------------------------------------------------------
 	public static String resolveName(String name) {
+
+		return resolveName(name, true);
+	}
+	//--------------------------------------------------------------------------
+	public static String resolveName(String name, Boolean forceMatch) {
 		
 		name = name.toLowerCase();
 		if (mLayerSynonyms.containsKey(name)) {
@@ -371,8 +376,16 @@ public abstract class Layer_Base
 			return name;
 		}
 		
-		logger.error("LayerBase: layer name could not be resolved for: <" + name + ">");
-		return null;
+		if (forceMatch) {
+			logger.error("LayerBase: layer name could not be resolved for: <" + name + ">");
+			return null;
+		}
+		else {
+			// In the case of dynamic layers and linearModels mapping via '@', not resolving
+			//	to a static data layer is not a fail-case. In those cases, pass the name through
+			// 	for them to resolve
+			return name;
+		}
 	}
 	// Use carefully...e.g., only if you are temporarily loading data for a process that rarely runs...
 	//--------------------------------------------------------------------------

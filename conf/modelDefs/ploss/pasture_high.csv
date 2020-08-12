@@ -12,7 +12,7 @@
 ; raster lookup variables
 ;------------------------------------------------------
 slope,			-7.11E-05, clamp=?/60
-slope_length,	-0.101033723, unit_transform=meters-to-feet
+slope_length,	-0.101033723, unit-convert=meters-to-feet
 ls,				-0.033830519
 k,				-38.58682283
 sand,			0.076442241

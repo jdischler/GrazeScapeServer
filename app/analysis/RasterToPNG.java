@@ -163,13 +163,13 @@ public class RasterToPNG {
 	private static PngChunkPLTE makeBlueToRed(PngChunkPLTE pal) {
 		
 		pal.setEntry(0, 62,  117, 178);	// blue
-		pal.setEntry(1, 148, 188, 232);
-		pal.setEntry(2, 216, 242, 250);
+		pal.setEntry(1, 144, 185, 228);
+		pal.setEntry(2, 210, 240, 250);
 		
-		pal.setEntry(3, 252, 255, 220); // yellow
+		pal.setEntry(3, 252, 255, 216); // yellow
 		
 		pal.setEntry(4, 255, 218, 160);
-		pal.setEntry(5, 240, 140,  89);
+		pal.setEntry(5, 235, 145,  89);
 		pal.setEntry(6, 210,  92,  52); // red
 		
 		pal.setEntry(7, 255, 0, 0);// red, but transparent

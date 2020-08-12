@@ -9,10 +9,10 @@ public enum Rotation {
 	
 	// Many of these will be specified by a fixed underlying cropYear definition
 	//	Grass-based systems default the cropYear/Landcover but it can change
-	EContinuousCorn(		"CC", "Continuous Corn",	true, true),
-	ECashGrain(				"CG", "Cash Grain",			true, true),
-	EDairyRotation1(		"D1", "Dairy Rotation 1",	true, true), // CG, CS, AE, A1-2
-	EDairyRotation2(		"D2", "Dairy Rotation 2",	true, true), // CG, SB, OT
+	EContinuousCorn(		"CC", "Continuous Corn",	true, true), // CG
+	ECashGrain(				"CG", "Cash Grain",			true, true), // CG, SB
+	EDairyRotation1(		"D1", "Dairy Rotation 1 (Corn Grain/Silage & Alfalfa)",	true, true), // CG, CS, AE, A1-2
+	EDairyRotation2(		"D2", "Dairy Rotation 2 (Corn Silage, Soybeans, & Oats)",	true, true), // CS, SB, OT
 	
 	EDryLot(				"DL", "Dry Lot",			false, false),
 	EPasture(				"PS", "Pasture",			false, false),
@@ -67,15 +67,15 @@ public enum Rotation {
 		Set<CropYear> scy = new HashSet<>();
 		
 		switch(rot) {
-			// Pasture exists to establish a generic grass type. This value will normally be 
-			//	overridden in the grazing/management specification to choose a dominant grass
 			case EPasture:
 			default:
+				// Defaults to generic grass but the grazing setup will override with a specific grass composition
 				scy.add(new CropYear(Landcover.EGenericGrass, 1.0f));
 				break;
 
 			case EEstablishPasture:
-				scy.add(new CropYear(Landcover.EGenericGrass, 1.0f));
+				// TODO: should this be zero or a small value like 0.25???				
+				scy.add(new CropYear(Landcover.EGenericGrass, 1.0f)); 
 				break;
 				
 			case EDryLot:

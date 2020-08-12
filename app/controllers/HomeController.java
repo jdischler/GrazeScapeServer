@@ -3,19 +3,14 @@ package controllers;
 import javax.inject.Inject;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import play.mvc.*;
 import play.mvc.Http.Session;
 import play.twirl.api.Content;
-import play.api.cache.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +23,8 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import analysis.*;
-import analysis.windowing.*;
 import query.*;
 import raster.Extents;
-import data_types.Farm;
 import db.FieldGeometry;
 import io.ebean.Ebean;
 import io.ebean.SqlRow;
@@ -42,7 +35,6 @@ import models.RasterInspector;
 import models.RasterModel;
 import models.RasterModel.RasterResult;
 import models.Yield;
-import models.transform.*;
 import utils.Json;
 import utils.RandomString;
 import utils.ServerStartup;
@@ -69,7 +61,7 @@ import utils.ServerStartup;
 
 //	• general design changes: store things like job keys, scenario keys, and similar in cookies?
 
-/*SmartScape 2.0 Design Considerations
+/*GrazeScape 2.0 Design Considerations
 
 Performance / Resource Management:
 	•	Unbounded access to CPU and MEM can't be allowed in the future
@@ -121,7 +113,7 @@ public class HomeController extends Controller {
 	//------------------------------------------------------------------
 	@Inject
 	public HomeController(ServerStartup startup) {
-		mSessions = Caffeine.newBuilder().expireAfterAccess(8, TimeUnit.DAYS) .build();
+		mSessions = Caffeine.newBuilder().expireAfterAccess(8, TimeUnit.DAYS).build();
 	}
 	
 	//------------------------------------------------------------------
@@ -143,31 +135,14 @@ public class HomeController extends Controller {
 	}
 
 	//------------------------------------------------------------------
+	public Result getFarms() {
+		return ok(db.Farm.getAllAsGeoJson());
+	}
+	
+	//------------------------------------------------------------------
 	public Result createOperation(Http.Request request) {
 		
-		JsonNode dat = request.body().asJson();
-		logger.error(dat.toString());
-		String operation = Json.safeGetString(dat, "operation");
-		String owner = Json.safeGetString(dat, "owner");
-		String address = Json.safeGetOptionalString(dat, "address", "");
-		Float x = Float.parseFloat(Json.safeGetString(dat, "location_x"));
-		Float y = Float.parseFloat(Json.safeGetString(dat, "location_y"));
-		
-		/*Map<String,String[]> parms = request.body().asFormUrlEncoded();
-		
-		String location_x[] = parms.get("location_x");
-		String location_y[] = parms.get("location_y");*/
-
-		db.Farm f = new db.Farm().
-				name(operation).
-				owner(owner).
-				address(address).
-				location(x, y);
-		
-		f.save();
-		
-		// Must return "success": true for extjs form submission framework...
-		return ok(Json.pack("success",true, "farm", Json.pack("id", f.id)));
+		return ok(db.Farm.createFarm(request));
 	}
 	
 /*	//------------------------------------------------------------------
@@ -185,42 +160,31 @@ public class HomeController extends Controller {
 	      return badRequest().flashing("error", "Missing file");
 	    }	}
 */	
-	public Result getFarms() {
-		return ok(db.Farm.getAllAsGeoJson());
-	}
-	
+	//------------------------------------------------------------------
 	public Result getFields(Long farmId) {
 		
-//		logger.info("Got a request for farm: " + farmId);
 		db.Farm f = db.Farm.find.byId(farmId);
 		if (f != null) {
-//			logger.info(String.format("And that farm was found...<%s> <%s> <%s>", f.farmName, f.farmOwner, f.farmAddress));
 			return ok(f.getFieldShapesAsGeoJson());
 		}
 		return ok("Farm did not exist");
 	}
 	
-	public Result testFetch(Http.Request request) {
-		return ok();
-	}
-
+	//------------------------------------------------------------------
 	public Result addField(Http.Request request) {
-		JsonNode res = db.Farm.addField(request);
-		return ok(res);
+		return ok(db.Farm.addField(request));
 	}
 
+	//------------------------------------------------------------------
 	public Result modifyFields(Http.Request request) {
-		JsonNode res = db.FieldGeometry.modifyFields(request);
-		return ok(res);
+		return ok(db.FieldGeometry.modifyFields(request));
 	}
 /*	
  	// Restriction options
  	restrict_by_value: 		{ compare: '<' || '>', 	value: # 			}
 	restrict_to_fields: 	{ aggregate: t/f 							}
 	restrict_to_landcover: 	{ row_crops: t/f,		grass_pasture: t/f	}
-
 */
-	
 	public Result fetchImage(Http.Request request) {
 		
 		JsonNode node = request.body().asJson();
@@ -606,9 +570,9 @@ public class HomeController extends Controller {
 				e.printStackTrace();
 			}
 				
-			lm.setConstant("manure_app", percManure);
-			lm.setConstant("synthetic_app", percSynth);
-			lm.setConstant("initial_p", initialP);
+			lm.setConstant("@manure_app", percManure);
+			lm.setConstant("@synthetic_app", percSynth);
+			lm.setConstant("@initial_p", initialP);
 			if (coverCropCode != null && tillageCode !=null) {
 				lm.setIntercept(coverCropCode + "_" + tillageCode);
 			}
@@ -667,30 +631,30 @@ public class HomeController extends Controller {
 			try {
 				String modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/continuous_corn.csv";
 				contCorn = new LinearModel().init(modelPath);
-				contCorn.setConstant("manure_app", percManure);
-				contCorn.setConstant("synthetic_app", percSynth);
-				contCorn.setConstant("initial_p", initialP);
+				contCorn.setConstant("@manure_app", percManure);
+				contCorn.setConstant("@synthetic_app", percSynth);
+				contCorn.setConstant("@initial_p", initialP);
 				contCorn.setIntercept("cc_nt");
 
 				modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/dairy_rotation.csv";
 		        dairyRotation = new LinearModel().init(modelPath);
-		        dairyRotation.setConstant("manure_app", percManure);
-		        dairyRotation.setConstant("synthetic_app", percSynth);
-		        dairyRotation.setConstant("initial_p", initialP);
+		        dairyRotation.setConstant("@manure_app", percManure);
+		        dairyRotation.setConstant("@synthetic_app", percSynth);
+		        dairyRotation.setConstant("@initial_p", initialP);
 		        dairyRotation.setIntercept("cc_nt");
 
 				modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/cash_grain.csv";
 		        cashGrain = new LinearModel().init(modelPath);
-		        cashGrain.setConstant("manure_app", percManure);
-		        cashGrain.setConstant("synthetic_app", percSynth);
-		        cashGrain.setConstant("initial_p", initialP);
+		        cashGrain.setConstant("@manure_app", percManure);
+		        cashGrain.setConstant("@synthetic_app", percSynth);
+		        cashGrain.setConstant("@initial_p", initialP);
 		        cashGrain.setIntercept("cc_nt");
 				
 				modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/pasture_rot.csv";
 		        pastureLow = new LinearModel().init(modelPath);
-		        pastureLow.setConstant("manure_app", 0.0f);
-		        pastureLow.setConstant("synthetic_app", 80.0f);
-		        pastureLow.setConstant("initial_p", 5.0f);
+		        pastureLow.setConstant("@manure_app", 0.0f);
+		        pastureLow.setConstant("@synthetic_app", 80.0f);
+		        pastureLow.setConstant("@initial_p", 5.0f);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

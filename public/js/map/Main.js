@@ -55,6 +55,7 @@ Ext.define('DSS.map.Main', {
 		'DSS.map.DrawAndModify',
 		'DSS.map.BoxModel',
 		'DSS.map.LayerMenu',
+		'DSS.map.RotationLayer'
 	],
 	
 	layout: 'border',
@@ -143,6 +144,42 @@ Ext.define('DSS.map.Main', {
 		});
 	},
 	
+	// DefaultVisibility is a boolean...(but stored as a "0" or a "1"
+	// DefaultOpacity is a decimal, e.g. 0.1 (but stored as "0.1")
+	//-------------------------------------------------------------------------
+	_cookieInternalHelper: function(key, defaultVisibility, defaultOpacity) {
+		const layerVisKey = key + ":visible",
+				layerOpacKey = key + ":opacity";
+		
+		if (Ext.util.Cookies.get(layerVisKey) == null) {
+			Ext.util.Cookies.set(layerVisKey, defaultVisibility ? "1" : "0");
+		}
+		DSS.layer[layerVisKey] = Ext.util.Cookies.get(layerVisKey) == "1" ? true : false;
+		
+		if (Ext.util.Cookies.get(layerOpacKey) == null) {
+			// must be a string...
+			Ext.util.Cookies.set(layerOpacKey, "" + defaultOpacity);
+		}
+		DSS.layer[layerOpacKey] = parseFloat(Ext.util.Cookies.get(layerOpacKey)); 
+	},
+	
+	//-------------------------------------------------------------------------
+	manageMapLayerCookies: function() {
+	
+		let me = this;
+		
+		me._cookieInternalHelper("crop", "1", 0.8);
+		me._cookieInternalHelper("inspector", "1", 0.8);
+		me._cookieInternalHelper("watershed", "1", 0.6);
+		me._cookieInternalHelper("hillshade", "0", 0.5);
+		
+		// Visible code is the # of the base layer that is visible...
+		if (Ext.util.Cookies.get("baselayer:visible") == null) {
+			Ext.util.Cookies.set("baselayer:visible", "1");
+		}
+		DSS.layer['baselayer:visible'] = Ext.util.Cookies.get('baselayer:visible'); 
+	},
+	
 	//-------------------------------------------------------------------------
 	instantiateMap: function() {
 		let me = this;
@@ -167,18 +204,8 @@ Ext.define('DSS.map.Main', {
 		
 		DSS.layer = {};
 		
-		if (Ext.util.Cookies.get("watershed:visible") == null) {
-			Ext.util.Cookies.set("watershed:visible", "1");
-		}
-		if (Ext.util.Cookies.get("hillshade:visible") == null) {
-			Ext.util.Cookies.set("hillshade:visible", "0");
-		}
-		if (Ext.util.Cookies.get("baselayer:visible") == null) {
-			Ext.util.Cookies.set("baselayer:visible", "1");
-		}
-		DSS.layer['watershed:visible'] = Ext.util.Cookies.get("watershed:visible") == "1" ? true : false; 
-		DSS.layer['hillshade:visible'] = Ext.util.Cookies.get("hillshade:visible") == "1" ? true : false; 
-		DSS.layer['baselayer:visible'] = Ext.util.Cookies.get("baselayer:visible"); 
+		// Cookie-based settings persistence, when available
+		me.manageMapLayerCookies();
 		
 		//---------------------------------------------------------
 		DSS.layer.bingAerial = new ol.layer.Tile({
@@ -213,7 +240,7 @@ Ext.define('DSS.map.Main', {
 		//--------------------------------------------------------------		
 		DSS.layer.watershed = new ol.layer.Vector({
 			visible: DSS.layer['watershed:visible'],
-			opacity: 0.6,
+			opacity: DSS.layer['watershed:opacity'],
 			updateWhileAnimating: true,
 			updateWhileInteracting: true,
 			source: new ol.source.Vector({
@@ -233,14 +260,13 @@ Ext.define('DSS.map.Main', {
 			visible: DSS.layer['hillshade:visible'],
 			updateWhileAnimating: true,
 			updateWhileInteracting: true,
-			opacity: 0.5,
+			opacity: DSS.layer['hillshade:opacity'],
 			source: new ol.source.ImageStatic({
 				url: '/assets/images/hillshade_high.png',
 				imageExtent: extent
 			})
 		})
 		
-		let rotationStyles = { };
 		//---------------------------------------
 		let defaultFieldStyle = new ol.style.Style({
 			stroke: new ol.style.Stroke({
@@ -252,8 +278,8 @@ Ext.define('DSS.map.Main', {
 			}),
 			zIndex: 0
 		});
-		
-		DSS.fieldStyleFunction = function(feature, resolution, defaultStyle) {
+//		let rotationStyles = { };
+/*		DSS.fieldStyleFunction = function(feature, resolution, defaultStyle) {
 			if (feature && feature.getProperties()) {
 				let rot = feature.getProperties()['rotation']; 
 				if (rot && rotationStyles[rot]) {
@@ -262,18 +288,21 @@ Ext.define('DSS.map.Main', {
 			}
 			return defaultStyle;
 		}
-		
+*/		
+
+		DSS['layerSource'] = {};
+		DSS.layerSource['fields'] = new ol.source.Vector({
+			format: new ol.format.GeoJSON()
+		}); 
 		DSS.layer.fields = new ol.layer.Vector({
-			visible: false,
+			visible: true,
 			updateWhileAnimating: true,
 			updateWhileInteracting: true,
-			source: new ol.source.Vector({
-				format: new ol.format.GeoJSON()
-			}),
+			source: DSS.layerSource.fields,
 			style: function(feature, resolution) {
 				
 				if (DSS.fieldStyleFunction) {
-					return DSS.fieldStyleFunction(feature, resolution, defaultFieldStyle);
+					return DSS.fieldStyleFunction(feature, resolution);
 				}
 				else return defaultFieldStyle;
 			},
@@ -394,7 +423,9 @@ Ext.define('DSS.map.Main', {
 		me.addSelectionTools(me.map);
 		me.map.addLayer(DSS.layer.fields);
 		
-		// Convenience 
+		me.cropRotationOverlay = Ext.create('DSS.map.RotationLayer').instantiate(me.map);
+		
+	/*	// Convenience: TODO: re-evalutate need 
 		DSS.layer.MouseOver = new ol.layer.Vector({
 			visible: false,
 			updateWhileAnimating: true,
@@ -410,114 +441,9 @@ Ext.define('DSS.map.Main', {
 				})
 			})
 		});
-		me.map.addLayer(DSS.layer.MouseOver);
-		me.makeRotationStyles(rotationStyles);
+		me.map.addLayer(DSS.layer.MouseOver);*/
 	},
 	
-	//---------------------------------------------------------------
-	makeRotationStyles: function(styleObject) {
-		let me = this;
-		
-		let canvas = document.createElement('canvas');
-		let context = canvas.getContext('2d');
-		
-		let dr1 = new Image(); dr1.onload = function() {
-			let pattern = context.createPattern(dr1, 'repeat');
-			styleObject['D1'] = new ol.style.Style({
-				stroke: new ol.style.Stroke({
-					color: '#a19',
-					width: 2
-				}),
-				fill: new ol.style.Fill({
-					color: pattern
-				}),
-				zIndex: 0
-			});
-		}
-		dr1.src = '/assets/images/dairy_rotation_1.png';
-
-		let dr2 = new Image(); dr2.onload = function() {
-			let pattern = context.createPattern(dr2, 'repeat');
-			styleObject['D2'] = new ol.style.Style({
-				stroke: new ol.style.Stroke({
-					color: '#319',
-					width: 2
-				}),
-				fill: new ol.style.Fill({
-					color: pattern
-				}),
-				zIndex: 0
-			});
-		}
-		dr2.src = '/assets/images/dairy_rotation_2.png';
-
-		let ps = new Image(); ps.onload = function() {
-			let pattern = context.createPattern(ps, 'repeat');
-			styleObject['PS'] = new ol.style.Style({
-				stroke: new ol.style.Stroke({
-					color: '#5a1',
-					width: 2
-				}),
-				fill: new ol.style.Fill({
-					color: pattern
-				}),
-				zIndex: 0
-			});
-		}
-		ps.src = '/assets/images/pasture.png';
-
-		let dl = new Image(); dl.onload = function() {
-			let pattern = context.createPattern(dl, 'repeat');
-			styleObject['DL'] = new ol.style.Style({
-				stroke: new ol.style.Stroke({
-					color: '#a11',
-					width: 2
-				}),
-				fill: new ol.style.Fill({
-					color: pattern
-				}),
-				zIndex: 0
-			});
-		}
-		dl.src = '/assets/images/dry_lot.png';
-
-		let cc = new Image(); cc.onload = function() {
-			let pattern = context.createPattern(cc, 'repeat');
-			styleObject['CC'] = new ol.style.Style({
-				stroke: new ol.style.Stroke({
-					color: '#cb0',
-					width: 2
-				}),
-				fill: new ol.style.Fill({
-					color: pattern
-				}),
-				zIndex: 0
-			});
-		}
-		cc.src = '/assets/images/continuous_corn.png';
-
-		let cg = new Image(); cg.onload = function() {
-			let pattern = context.createPattern(cg, 'repeat');
-			styleObject['CG'] = new ol.style.Style({
-				stroke: new ol.style.Stroke({
-					color: '#08a',
-					width: 2
-				}),
-				fill: new ol.style.Fill({
-					color: pattern
-				}),
-				zIndex: 0
-			});
-		}
-		cg.src = '/assets/images/cash_grain.png';
-		
-		DSS.map.getView().on('change:resolution', function(evt) {
-			let newResolution = this.get('resolution');
-			if (evt.oldValue != newResolution) {
-				// TODO: PROBABLY just remove me...
-			}
-		})
-	},
 	
 	//---------------------------------------------------------------
 	addWorkAreaMask: function(map) {

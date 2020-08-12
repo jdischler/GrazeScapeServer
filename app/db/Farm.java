@@ -25,6 +25,7 @@ import io.ebean.Ebean;
 import io.ebean.Finder;
 import io.ebean.Model;
 import io.ebean.SqlRow;
+import play.mvc.Http;
 import play.mvc.Http.Request;
 
 @Entity
@@ -71,6 +72,33 @@ public class Farm extends Model {
 		
 		this.location = sw.getString("wkt_pt");
 		return this;
+    }
+    
+    //------------------------------------------------------
+    public static JsonNode createFarm(Http.Request request) {
+		JsonNode dat = request.body().asJson();
+		logger.error(dat.toString());
+		String operation = Json.safeGetString(dat, "operation");
+		String owner = Json.safeGetString(dat, "owner");
+		String address = Json.safeGetOptionalString(dat, "address", "");
+		Float x = Float.parseFloat(Json.safeGetString(dat, "location_x"));
+		Float y = Float.parseFloat(Json.safeGetString(dat, "location_y"));
+		
+		/*Map<String,String[]> parms = request.body().asFormUrlEncoded();
+		
+		String location_x[] = parms.get("location_x");
+		String location_y[] = parms.get("location_y");*/
+
+		db.Farm f = new db.Farm().
+				name(operation).
+				owner(owner).
+				address(address).
+				location(x, y);
+		
+		f.save();
+		
+		// Must return "success": true for extjs form submission framework...
+		return Json.pack("success",true, "farm", Json.pack("id", f.id));
     }
     
     //------------------------------------------------------
@@ -141,8 +169,8 @@ public class Farm extends Model {
 	    		if (!isFirst) sb.append(",");
 	
 	    		SqlRow sw;
-//	    		sw = Ebean.createSqlQuery("SELECT ST_AsGeoJSON(ST_GeomFromText( ? )) as gjson")
-	    		sw = Ebean.createSqlQuery("SELECT ST_AsGeoJSON(ST_Buffer(ST_GeomFromText( ? ), -0.5)) as gjson")
+	    		sw = Ebean.createSqlQuery("SELECT ST_AsGeoJSON(ST_GeomFromText( ? )) as gjson")
+//	    		sw = Ebean.createSqlQuery("SELECT ST_AsGeoJSON(ST_Buffer(ST_GeomFromText( ? ), -0.5)) as gjson")
 	    				.setParameter(1, f.geometry.geom)
 	    				.findOne();
 	    		

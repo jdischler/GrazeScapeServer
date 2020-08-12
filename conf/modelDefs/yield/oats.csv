@@ -1,0 +1,25 @@
+; Estimated oat yield as a fraction of corn Yield
+;
+; Model Input Details
+; 	- Soil Depth: Oat roots are in the 80-100cm range so the max depth is  
+;		clamped/limited to that value
+;
+; Model Output Details
+; 	Results are bushels per acres, however the results are transformed in the (result-transform) step:
+;		- convert from Corn Yields to Oat yields (0.42)
+;		- adjust for modern yields (1.5x)
+;		- convert to MG/ha (0.053)
+	
+;		- and clamp to a sane output (0.1 to 10) MG/ha
+; 
+; ------------------------------------------------------------
+(intercept),	22.0
+
+; Raster Data Layer	// Coeff	// Special Input Data Constraints
+slope,				-1.05
+silt,				0.817
+soil_depth,			0.19, 		clamp=? / 90
+cec,				1.32
+
+; Final result transform
+(result-transform), multiply=0.42, multiply=1.5, multiply=0.053, clamp=0.1 / 10
