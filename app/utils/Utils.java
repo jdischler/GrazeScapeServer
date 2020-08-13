@@ -28,13 +28,14 @@ public final class Utils
 	        props.put("mail.smtp.auth", "true");
 	        props.put("mail.smtp.port", "587");
 	        props.put("mail.smtp.starttls.enable", "true");
+	        String username = "jose", password = "yes";
 
 
 	        javax.mail.Session session = javax.mail.Session.getInstance(props, new Authenticator() {
 	            @Override
 	            protected PasswordAuthentication getPasswordAuthentication() {
 	            	logger.error("Authenticating....");
-	                return new PasswordAuthentication(username, passwd);
+	                return new PasswordAuthentication(username, password);
 	            }
 	        });
 

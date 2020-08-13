@@ -34,6 +34,7 @@ create table field (
   tillage                       varchar(2),
   tillage_season                varchar(2),
   fert_season                   varchar(2),
+  rotational_density            float,
   constraint ck_field_rotation check ( rotation in ('CC','CG','D1','D2','DL','PS','PE')),
   constraint ck_field_tillage check ( tillage in ('NT','CU','CD','MP')),
   constraint ck_field_tillage_season check ( tillage_season in ('SP','FL')),

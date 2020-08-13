@@ -24,6 +24,10 @@ public class CropYear extends Model {
     public Float		secondaryRatio;	// specific to crop, but example for legumes -> represents % legumes, e.g. 0.3 = 30%
     
     public CropYear() {}
+    public CropYear(Landcover _dominantCrop) {	// Assumes 100% ratio
+    	dominantCrop = _dominantCrop;
+    	dominantRatio = 1.0f;
+    }
     public CropYear(Landcover _dominantCrop, Float _ratio) {
     	dominantCrop = _dominantCrop;
     	dominantRatio = _ratio;

@@ -69,21 +69,21 @@ public enum Rotation {
 		switch(rot) {
 			case EPasture:
 			default:
-				// Defaults to generic grass but the grazing setup will override with a specific grass composition
-				scy.add(new CropYear(Landcover.EGenericGrass, 1.0f));
+				// Defaults to bluegrass
+				scy.add(new CropYear(Landcover.EBluegrass));
 				break;
 
 			case EEstablishPasture:
-				// TODO: should this be zero or a small value like 0.25???				
-				scy.add(new CropYear(Landcover.EGenericGrass, 1.0f)); 
+				// TODO: should this yield ratio be zero or a small value like 0.25???				
+				scy.add(new CropYear(Landcover.EBluegrass, 1.0f).addSecondaryCrop(Landcover.ELegume, 0.35f)); 
 				break;
 				
 			case EDryLot:
-				scy.add(new CropYear(Landcover.EDryLot, 1.0f));
+				scy.add(new CropYear(Landcover.EDryLot));
 				break;
 				
 			case EContinuousCorn:
-				scy.add(new CropYear(Landcover.ECornGrain, 1.0f));
+				scy.add(new CropYear(Landcover.ECornGrain));
 				break;
 				
 			case ECashGrain:

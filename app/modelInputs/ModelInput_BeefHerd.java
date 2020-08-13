@@ -13,10 +13,11 @@ public class ModelInput_BeefHerd extends Model {
 	
 	public BeefBreed	mBreed;
 	
-	public Boolean mbIsCowCalfOperation;
+	/*public Boolean mbIsCowCalfOperation;
 	public Boolean mbIsStockerOperation;
 	public Boolean mbIsFinishingOperation;
-	
+	*/
+	// TODO: can just use non-zero values to check vs. booleans?
 	public Integer 		mNumCowCalf;
 	public Integer		mNumStocker;
 	public Integer		mNumFinishing;

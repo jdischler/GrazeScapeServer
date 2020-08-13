@@ -51,10 +51,6 @@ public class FieldGeometry extends Model {
 		this.geom = wkt; 
 	}
 	
-    private static final Logger logger = LoggerFactory.getLogger("app");
-
-    public static final Finder<Long, FieldGeometry> find = new Finder<>(FieldGeometry.class);
-
 	public static JsonNode modifyFields(Request request) {
 			
 		ArrayNode ar = (ArrayNode)request.body().asJson();
@@ -74,8 +70,11 @@ public class FieldGeometry extends Model {
 		
 		return utils.Json.pack("result", "ok");
 	}
-	
+
+    private static final Logger logger = LoggerFactory.getLogger("app");
+    public static final Finder<Long, FieldGeometry> find = new Finder<>(FieldGeometry.class);
 }
+
 /*
 CREATE [ CONSTRAINT ] TRIGGER name { BEFORE | AFTER | INSTEAD OF } { event [ OR ... ] }
 ON table

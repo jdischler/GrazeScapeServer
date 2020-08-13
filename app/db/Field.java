@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.ebean.Ebean;
 import io.ebean.Finder;
 import io.ebean.Model;
 import io.ebean.annotation.DbArray;
@@ -55,27 +56,32 @@ public class Field extends Model {
     public Float rotationalDensity;
     
        
-    private static final Logger logger = LoggerFactory.getLogger("app");
-
-    public static final Finder<Long, Field> find = new Finder<>(Field.class);
-
     // Assign settings to a field from the client
     //-----------------------------------------------------------------------
 	public Field withSettings(JsonNode settings) {
 	
-		if (Json.isActive(settings, "soil_p")) {
-			soilP = Json.safeGetOptionalFloat(settings.get("soil_p"), "value", 32.0f);
-		}
-		if (Json.isActive(settings, "crop")) {
-			String rotationCode = Json.safeGetOptionalString(settings.get("crop"), "value", "PS");
-			this.rotation = Rotation.byCode(rotationCode);
-			try {
-				cropYears = Rotation.toCropYears(rotationCode);
-			} catch (Exception e) {
-				logger.error(e.toString());
+		Ebean.beginTransaction();
+		try {
+			if (Json.isActive(settings, "soil_p")) {
+				soilP = Json.safeGetOptionalFloat(settings.get("soil_p"), "value", 32.0f);
+			}
+			if (Json.isActive(settings, "crop")) {
+				String rotationCode = Json.safeGetOptionalString(settings.get("crop"), "value", "PS");
+				this.rotation = Rotation.byCode(rotationCode);
+				try {
+					// TODO: is this necessary? VERIFY whether Ebean truly cleans these up automatically 
+					if (!cropYears.isEmpty()) {
+						cropYears.clear();
+					}
+					cropYears = Rotation.toCropYears(rotationCode);
+				} catch (Exception e) {
+					logger.error(e.toString());
+				}
 			}
 		}
-			
+		finally {
+			Ebean.endTransaction();
+		}
 /*		"soil_p":{"is_active":true,"value":32},
 		"crop":{"is_active":false,"value":"ps"},
 		"tillage":{"is_active":false,"value":"spcu"},
@@ -85,4 +91,8 @@ public class Field extends Model {
 		"tillageValue":{"tillage":"spcu"}}*/		
 		return this;
 	}
+
+    private static final Logger logger = LoggerFactory.getLogger("app");
+    public static final Finder<Long, Field> find = new Finder<>(Field.class);
+	
 }

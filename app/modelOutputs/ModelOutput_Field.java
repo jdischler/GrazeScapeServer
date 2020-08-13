@@ -8,7 +8,7 @@ public class ModelOutput_Field {
 	// Most likely:
 	//	public Float mPotentialHayYield;	// tons/ha
 	//	public Float mEstimated hayYield;	// tons/ha
-	public List<CropYield> cropYields;
+//	public List<CropYield> cropYields;
 	
 	public Float mErosion; 			// tons/ha
 	public Float mSoilT;			// "acceptable" soil loss, tons/ha
