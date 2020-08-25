@@ -59,56 +59,82 @@ Feed supply [kg-DM/year] = (Corn grain yield DM)+(Alfalfa yield DM)+
 		((Milk yield)*0.616+46.2)*(Number of lactating cows)*365.25 % [kg/year]
 (Lactating cow manure P) =
 		((Milk yield)*0.781+50.4)*(Number of lactating cows)*365.25/1000 % [kg/year]
+(Lactating cow manure N) =
+		((Milk yield)*2.82+346)*(Number of lactating cows)*365.25/1000 % [kg/year]
 (Days confined for lactating cows) = 
 		(Confined time for lactating cows)*30.4 % [days/year]
 (Lactating cow manure confined) =
 		(Lactating cow manure)*(Days confined for lactating cows)/365.25 % [kg/year]
 (Lactating cow manure P confined) =
 		(Lactating cow manure P)*(Days confined for lactating cows)/365.25 % [kg/year]
+(Lactating cow manure N confined) =
+		(Lactating cow manure N)*(Days confined for lactating cows)/365.25 % [kg/year]
 (Grazed manure production lactating) =
 		(Lactating cow manure)-(Lactating cow manure confined)
 (Grazed manure P production lactating) =
 		(Lactating cow manure P)-(Lactating cow manure P confined)
+(Grazed manure N production lactating) =
+		(Lactating cow manure N)-(Lactating cow manure N confined)
 		
 % DAIRY - calves, heifers, dry cows (based on WiDATCP)
+% Note: assuming that manure N is incorporated by 3rd day and three or more consecutive
+% years of application
 (Dairy calf manure) = 17*0.453592*(Number of youngstock)*365.25 % [kg/year]
 (Dairy calf manure P) = (Dairy calf manure)*(4/2000)*0.4364 % [kg/year] (4 lb/ton P2O5)
+(Dairy calf manure N) = (Dairy calf manure)*(6/2000) % [kg/year] (6 lb/ton N)
 (Dairy heifer manure) = 65*0.453592*(Number of heifers)*365.25 % [kg/year]
 (Dairy heifer manure P) = (Dairy heifer manure)*(4/2000)*0.4364 % [kg/year]
+(Dairy heifer manure N) = (Dairy heifer manure)*(6/2000) % [kg/year]
 (Dry cow manure) = 98.5*0.453592*(Number of dry cows)*365.25 % [kg/year]
 (Dry cow manure P) = (Dry cow manure)*(4/2000)*0.4364 % [kg/year]
+(Dry cow manure N) = (Dry cow manure)*(6/2000) % [kg/year]
 
 (NonLact cow manure) =
 		(Dairy calf manure)+(Dairy heifer manure)+(Dry cow manure) % [kg/year]
 (NonLact cow manure P) =
 		(Dairy calf manure P)+(Dairy heifer manure P)+(Dry cow manure P) % [kg/year]
+(NonLact cow manure N) =
+		(Dairy calf manure N)+(Dairy heifer manure N)+(Dry cow manure N) % [kg/year]
 
 (NonLact cow manure confined) =
 		(NonLact cow manure)*(Days confined for nonLact cows)/365.25 % [kg/year]
 (NonLact cow manure P confined) =
 		(NonLact cow manure P)*(Days confined for nonLact cows)/365.25 % [kg/year]
+(NonLact cow manure N confined) =
+		(NonLact cow manure N)*(Days confined for nonLact cows)/365.25 % [kg/year]
 (Grazed manure production nonLact) =
 		(NonLact cow manure)-(NonLact cow manure confined)
 (Grazed manure P production nonLact) =
 		(NonLact cow manure P)-(NonLact cow manure P confined)
+(Grazed manure N production nonLact) =
+		(NonLact cow manure N)-(NonLact cow manure N confined)
 		
 % BEEF
 (Cow-calf manure) = 63*0.453592*(Beef cow herd size)*365.25 % [kg/year]
 (Cow-calf manure P) = (Cow-calf manure)*(6/2000)*0.4364 % [kg/year]
+(Cow-calf manure N) = (Cow-calf manure)*(7/2000) % [kg/year]
 (Stocker manure) = 58*0.453592*(Stocker herd size)*365.25 % [kg/year]
 (Stocker manure P) = (Stocker manure)*(6/2000)*0.4364 % [kg/year]
+(Stocker manure N) = (Stocker manure)*(7/2000) % [kg/year]
 (Finishing manure) = 86*0.453592*(Stocker herd size)*365.25 % [kg/year]
 (Finishing manure P) = (Finishing manure)*(6/2000)*0.4364 % [kg/year]
+(Finishing manure N) = (Finishing manure)*(7/2000) % [kg/year]
 (Beef manure) =
 		(Cow-calf manure)+(Stocker manure)+(Finishing manure) % [kg/year]
 (Beef manure P) =
 		(Cow-calf manure P)+(Stocker manure P)+(Finishing manure P) % [kg/year]
+(Beef manure N) =
+		(Cow-calf manure N)+(Stocker manure N)+(Finishing manure N) % [kg/year]
 
 (Beef manure confined) =
 		(Beef Manure)*(Days confined for beef cattle)/365.25 % [kg/year]
 (Beef manure P confined) =
 		(Beef Manure P)*(Days confined for beef cattle)/365.25 % [kg/year]
+(Beef manure N confined) =
+		(Beef Manure N)*(Days confined for beef cattle)/365.25 % [kg/year]
 (Grazed manure production beef) =
 		(Beef manure)-(Beef manure confined)
 (Grazed manure P production beef) =
 		(Beef manure P)-(Beef manure P confined)
+(Grazed manure N production beef) =
+		(Beef manure N)-(Beef manure N confined)
