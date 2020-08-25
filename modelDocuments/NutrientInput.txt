@@ -11,13 +11,19 @@
 % First, we need to determine how much grazed manure will be applied to a given paddock
 (Grazed manure P rate lactating) =
 		(Grazed manure P production lactating)/(Pasture area lactating)
+(Grazed manure N rate lactating) =
+		(Grazed manure N production lactating)/(Pasture area lactating)
 (Grazed manure rate lactating) =
 		(Grazed manure production lactating)/(Pasture area lactating)
 (Grazed manure P rate nonLact) =
 		(Grazed manure P production lactating)/(Pasture area nonLact)
+(Grazed manure N rate nonLact) =
+		(Grazed manure N production lactating)/(Pasture area nonLact)
 (Grazed manure rate nonLact) =
 		(Grazed manure production lactating)/(Pasture area nonLact)
 (Grazed manure P rate beef) =
+		(Grazed manure P production beef)/(Pasture area beef)
+(Grazed manure N rate beef) =
 		(Grazed manure P production beef)/(Pasture area beef)
 (Grazed manure rate beef) =
 		(Grazed manure production beef)/(Pasture area beef)
@@ -47,7 +53,22 @@
 
 
 % Third, sum up all available manure from confined animals
-(Avail confined manure P) = (Confined manure P production) - (Confined manure P exported)
+(Confined manure production) =
+		(Lactating cow manure confined)+(NonLact cow manure confined)+(Beef manure confined)
+(Confined manure P production) =
+		(Lactating cow manure P confined)+(NonLact cow manure P confined)+(Beef manure P confined)
+(Confined manure N production) =
+		(Lactating cow manure P confined)+(NonLact cow manure P confined)+(Beef manure P confined)
+
+% find manure P and manure N concentrations
+(Confined manure P conc) = (Confined manure P production)/(Confined manure production)
+(Confined manure N conc) = (Confined manure P production)/(Confined manure production)
+
+% determine manure exports
+(Confined manure P exported) = (Confined manure exported)*(Confined manure P conc)
+(Confined manure N exported) = (Confined manure exported)*(Confined manure N conc)
+
+(Avail confined manure) = (Confined manure production) - (Confined manure exported)
 
 
 % Fourth, calculate crop-specific manure application rates given available manure and
@@ -60,31 +81,46 @@
 % (hayP_ratio2corn) = 55/60
 % (pastureP_ratio2corn) = 35/60
 
-(Manure P rate cornG) = 
-		(Avail confined manure P)/((CornG area)+80/60*(CornS area)+40/60*(Soy area)+25/60*(Alf1 area)+40/60*(Alf2 area)+35/60*(Oat area)+55/60*(Hay area)+35/60*(Pasture area))
-(Manure P rate cornS) = 80/60*(Manure P rate cornG)
-(Manure P rate soy) = 40/60*(Manure P rate cornG)
-(Manure P rate alf1) = 25/60*(Manure P rate cornG)
-(Manure P rate alf2) = 40/60*(Manure P rate cornG)
-(Manure P rate oats) = 35/60*(Manure P rate cornG)
-(Manure P rate hay) = 55/60*(Manure P rate cornG)
-(Manure P rate pasture) = 35/60*(Manure P rate cornG)
+(Manure rate cornG) = 
+		(Avail confined manure)/((CornG area)+80/60*(CornS area)+40/60*(Soy area)+25/60*(Alf1 area)+40/60*(Alf2 area)+35/60*(Oat area)+55/60*(Hay area)+35/60*(Pasture area))
+(Manure rate cornS) = 80/60*(Manure rate cornG)
+(Manure rate soy) = 40/60*(Manure rate cornG)
+(Manure rate alf1) = 25/60*(Manure rate cornG)
+(Manure rate alf2) = 40/60*(Manure rate cornG)
+(Manure rate oats) = 35/60*(Manure rate cornG)
+(Manure rate hay) = 55/60*(Manure rate cornG)
+(Manure rate pasture) = 35/60*(Manure rate cornG)
 
 % Calculate annualized manure P rate for each rotation
-(Manure P rate CC) = (Manure P rate cornG)
-(Manure P rate CG) = 1/2*(Manure P rate cornG)+1/2*(Manure P rate soy)
-(Manure P rate CSO) = 1/3*(Manure P rate cornS)+1/3*(Manure P rate soy)+1/3*(Manure P rate oats)
-(Manure P rate DR) = 1/5*(Manure P rate cornS)+1/5*(Manure P rate cornG)+1/5*(Manure P rate alf1)+2/5*(Manure P rate alf2)
+(Manure rate CC) = (Manure rate cornG)
+(Manure P rate CC) = (Manure rate CC)*(Confined manure P conc)
+(Manure N rate CC) = (Manure rate CC)*(Confined manure N conc)
+(Manure rate CG) = 1/2*(Manure rate cornG)+1/2*(Manure rate soy)
+(Manure P rate CG) = (Manure rate CG)*(Confined manure P conc)
+(Manure N rate CG) = (Manure rate CG)*(Confined manure N conc)
+(Manure rate CSO) = 1/3*(Manure rate cornS)+1/3*(Manure rate soy)+1/3*(Manure rate oats)
+(Manure P rate CSO) = (Manure rate CSO)*(Confined manure P conc)
+(Manure N rate CSO) = (Manure rate CSO)*(Confined manure N conc)
+(Manure rate DR) = 1/5*(Manure rate cornS)+1/5*(Manure rate cornG)+1/5*(Manure rate alf1)+2/5*(Manure rate alf2)
+(Manure P rate DR) = (Manure rate DR)*(Confined manure P conc)
+(Manure N rate DR) = (Manure rate DR)*(Confined manure N conc)
 
 
 % FERTILIZER
 % First, determine the annualized rotational average P recommendation
-(FertP Rec CC) = 60*0.4364
-(FertP Rec CG) = 1/2*(60+40)*0.4364
-(FertP Rec CSO) = 1/3*(80+40+35)*0.4364
-(FertP Rec DR) = (1/5*(80+60+25)+2/5*40)*0.4364
-(FertP Rec Hay) = 55*0.4364
-(FertP Rec Pasture) = 35*0.4364
+(FertP Rec CC) = 60*0.453592*0.4364
+(FertP Rec CG) = 1/2*(60+40)*0.453592*0.4364
+(FertP Rec CSO) = 1/3*(80+40+35)*0.453592*0.4364
+(FertP Rec DR) = (1/5*(80+60+25)+2/5*40)*0.453592*0.4364
+(FertP Rec Hay) = 55*0.453592*0.4364
+(FertP Rec Pasture) = 35*0.453592*0.4364
+
+(FertN Rec CC) = 145*0.453592
+(FertN Rec CG) = 1/2*(110+0)*0.453592
+(FertN Rec CSO) = 1/3*(110+0+40)*0.453592
+(FertN Rec DR) = (1/5*(145+145+0)+2/5*0)*0.453592
+(FertN Rec Hay) = 130*0.453592
+
 
 % Then determine the difference between the manure applied+starter fert applied and the desired proportion of recommendation (RecProp)
 % This is the additional fertilizer P applied
@@ -95,7 +131,8 @@
 (FertP CSO) = RecProp*(FertP Rec CSO)-(Manure P rate CSO)-(StartFertP CSO)
 (FertP DR) = RecProp*(FertP Rec DR)-(Manure P rate DR)-(StartFertP DR)
 (FertP Hay) = RecProp*(FertP Rec Hay)-(Manure P rate Hay)-(StartFertP Hay)
-(FertP Pasture) = RecProp*(FertP Rec Pasture)-(Manure P rate Pasture)-(StartFertP Pasture)
+IF pasture is fertilized
+	(FertP Pasture) = RecProp*(FertP Rec Pasture)-(Manure P rate Pasture)-(StartFertP Pasture)
 
 % Then sum up manure, fertilizer, and starter fertilizer
 (TotP CC) = (Manure P rate CC)+(StartFertP CC)+(FertP CC)
