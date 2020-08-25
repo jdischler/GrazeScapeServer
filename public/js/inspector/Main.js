@@ -129,7 +129,7 @@ Ext.define('DSS.inspector.Main', {
 	//	console.log(data);
 		
 		var obj = Ext.Ajax.request({
-			url: location.href + 'fetch_image',
+			url: location.origin + '/fetch_image',
 			jsonData: data,
 			timeout: 10000,
 			success: function(response, opts) {
@@ -141,7 +141,9 @@ Ext.define('DSS.inspector.Main', {
 				modelResultsLayer.setSource(new ol.source.ImageStatic({
 					url: obj.url,
 					imageExtent: obj.extent,
-					projection: 'EPSG:3071'
+					projection: 'EPSG:3071',
+					imageSmoothing: false
+
 				}))
 				modelResultsLayer.setVisible(true);	
 				

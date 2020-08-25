@@ -325,15 +325,34 @@ Ext.define('DSS.map.Main', {
 			fd.loadRawData(records);
 		})
 */		
+		let farmSource = new ol.source.Vector({
+			format: new ol.format.GeoJSON(),
+			loader: function(extent, resolution, projection) {
+				let url = location.origin + '/get_farms'
+				let xhr = new XMLHttpRequest();
+				xhr.open('GET', url);
+				var onError = function() {
+					farmSource.removeLoadedExtent(extent);
+				}
+				xhr.onerror = onError;
+				xhr.onload = function() {
+					if (xhr.status == 200) {
+						farmSource.addFeatures(farmSource.getFormat().readFeatures(xhr.responseText));
+						DSS.viewModel.master.set("farm_count", farmSource.getFeatures().length);
+					}
+					else {
+						onError();
+					}
+				}
+				xhr.send();
+			},
+		}) 
 		//--------------------------------------------------------------
 		DSS.layer.farms = new ol.layer.Vector({
 			visible: true,
 			updateWhileAnimating: true,
 			updateWhileInteracting: true,
-			source: new ol.source.Vector({
-				format: new ol.format.GeoJSON(),
-				url: location.href + 'get_farms',
-			}),
+			source: farmSource,
 			style: function(feature, resolution) {
 				let r = 1.0 - resolution / 94.0;
 				if (r < 0) r = 0

@@ -65,22 +65,24 @@ Ext.define('DSS.field_shapes.Delete', {
     //-------------------------------------------------------------
 	mouseMoveDeleteHandler: function() {
 		
-		// FIXME: Seems to be getting duplicate features. Bad feature list (from server query)?
-		//	multiple map layers?? Other???
-		DSS.layer.MouseOver.setVisible(true);
+		// NOTE: this mouseover layer is not added currently (commented out)
+	//	DSS.layer.MouseOver.setVisible(true);
 		DSS.mouseMoveFunction = function(evt) {
 			let pixel = DSS.map.getEventPixel(evt.originalEvent);
-			let fs = DSS.map.getFeaturesAtPixel(pixel);
+			let fs = DSS.map.getFeaturesAtPixel(pixel, undefined, {layerFilter: function(candidate) {
+				// FIXME: Note that map.getFeaturesAtPixel() will match every visible layer so
+				//	duplicates may happen via the stock field layer + the crop overlay both being visible...
+				// implement a check that looks at the candidate layer coming in and returns true if that
+				//	layer should be inspected...
+				return true;
+			}});
 			let cursor = '';
-			let hitAny = false;
 			let mouseList = [];
-			DSS.layer.MouseOver.getSource().clear(true);
+		//	DSS.layer.MouseOver.getSource().clear(true);
 			fs.forEach(function(f) {
 				let g = f.getGeometry();
-				if (!g) return;
-				if (g.getType() === "Polygon") {
+				if (g && g.getType() === "Polygon") {
 					cursor = 'pointer';
-					hitAny = true;
 					mouseList.push(f);
 					
 					let extent = g.getExtent();
@@ -89,8 +91,8 @@ Ext.define('DSS.field_shapes.Delete', {
 					center = g.getClosestPoint(center);
 				}
 			})
-			if (hitAny) {
-				DSS.layer.MouseOver.getSource().addFeatures(mouseList);
+			if (mouseList.length > 0) {
+		//		DSS.layer.MouseOver.getSource().addFeatures(mouseList);
 			}
 			DSS.map.getViewport().style.cursor = cursor;
 		}		
@@ -101,22 +103,24 @@ Ext.define('DSS.field_shapes.Delete', {
     	
     	DSS.mapClickFunction = function(evt) {
 			let pixel = DSS.map.getEventPixel(evt.originalEvent);
-			let fs = DSS.map.getFeaturesAtPixel(pixel);
-			let hitAny = false;
+			let fs = DSS.map.getFeaturesAtPixel(pixel, undefined, {layerFilter: function(candidate) {
+				// FIXME: Note that map.getFeaturesAtPixel() will match every visible layer so
+				//	duplicates may happen via the stock field layer + the crop overlay both being visible...
+				// implement a check that looks at the candidate layer coming in and returns true if that
+				//	layer should be inspected...
+				return true;
+			}});
 			let deleteList = [];
 			fs.forEach(function(f) {
 				let g = f.getGeometry();
-				if (!g) return;
-				if (g.getType() === "Polygon") {
-					hitAny = true;
-					deleteList.push(f.getProperties().f_id)
+				if (g && g.getType() === "Polygon") {
+					deleteList.push({'f':f, 'f_id': f.getProperties().f_id});
 				}
 			})
-			if (hitAny) {
+			if (deleteList.length > 0) {
 				console.log(deleteList);
 			}
 		}		
     },
-
 	
 });

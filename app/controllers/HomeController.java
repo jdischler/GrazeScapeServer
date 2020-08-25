@@ -23,6 +23,11 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import analysis.*;
+import analysis.windowing.Moving_CDL_Window;
+import analysis.windowing.Moving_CDL_Window_Z;
+import analysis.windowing.Moving_Sample_Window;
+import analysis.windowing.Moving_Sample_Window_Z;
+import analysis.windowing.Moving_Window;
 import query.*;
 import raster.Extents;
 import db.FieldGeometry;
@@ -269,6 +274,7 @@ public class HomeController extends Controller {
 			logger.error(e1.toString());
 		}
 		
+		//--------------------------------------------------------------------
 		JsonNode valueRestriction = restrictions.get("restrict_by_value");
 		if (valueRestriction != null) {
 			Float value = utils.Json.safeGetOptionalFloat(valueRestriction, "value", 10.0f);

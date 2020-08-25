@@ -34,6 +34,7 @@ Ext.define('DSS.map.LayerMenu', {
                 },{
                 	xtype: 'slider',
                 	itemId: 'dss-slider',
+                    padding: '0 0 8 0',
                 	hideEmptyLabel: true,
                 	increment: 10,
                 	value: 60,
@@ -49,7 +50,87 @@ Ext.define('DSS.map.LayerMenu', {
                 }]
             }			
 		};
-
+		let matrix = new DOMMatrix([1, 0, 0, 1, 0, 0]);
+		let appendTextureMenu = function(baseMenu) {
+		
+			baseMenu.items.push({
+				xtype: 'menuitem',
+				text: 'Pattern Scale', disabled: true,
+				style: 'border-bottom: 1px solid rgba(0,0,0,0.2);padding-top: 4px',
+			},{
+            	xtype: 'slider',
+            	itemId: 'dss-slider2',
+                padding: '0 0 8 0',
+            	hideEmptyLabel: true,
+            	decimalPrecision: 2,
+            	keyIncrement: 0.05,
+            	increment: 0.05,
+            	value: matrix.a,
+            	minValue: 0.2,
+            	maxValue: 2,
+            	listeners: {
+            		change: function(slider, newValue, thumb, eOpts) {
+            			matrix.a = matrix.d = newValue;
+            			Ext.Object.eachValue(DSS.rotationStyles, function(val) {
+            				val.getFill().getColor().setTransform(matrix);
+            			});
+            			DSS.layer.cropOverlay.changed();
+            		}	                		
+            	}
+			},{
+				xtype: 'menuitem',
+				text: 'Pattern Offset X', disabled: true,
+				style: 'border-bottom: 1px solid rgba(0,0,0,0.2);padding-top: 4px'
+			},{
+            	xtype: 'slider',
+            	itemId: 'dss-slider3',
+                padding: '0 0 8 0',
+            	hideEmptyLabel: true,
+            	keyIncrement: 5,
+            	increment: 5,
+            	value: matrix.e,
+            	minValue: 0, 
+            	maxValue: 200,
+            	listeners: {
+            		change: function(slider, newValue, thumb, eOpts) {
+            			matrix.e = newValue;
+            			Ext.Object.eachValue(DSS.rotationStyles, function(val) {
+            				val.getFill().getColor().setTransform(matrix);
+            			});
+            			DSS.layer.cropOverlay.changed();
+            		}	                		
+            	}
+			},{
+				xtype: 'menuitem',
+				text: 'Pattern Offset Y', disabled: true,
+				style: 'border-bottom: 1px solid rgba(0,0,0,0.2);padding-top: 4px'
+			},{
+            	xtype: 'slider',
+            	itemId: 'dss-slider4',
+                padding: '0 0 8 0',
+            	hideEmptyLabel: true,
+            	keyIncrement: 5,
+            	increment: 5,
+            	value: matrix.f,
+            	minValue: 0, 
+            	maxValue: 100,
+            	listeners: {
+            		change: function(slider, newValue, thumb, eOpts) {
+            			matrix.f = newValue;
+            			Ext.Object.eachValue(DSS.rotationStyles, function(val) {
+            				val.getFill().getColor().setTransform(matrix);
+            			});
+            			DSS.layer.cropOverlay.changed();
+            		}	                		
+            	}
+				
+			});
+			return baseMenu;
+		};
+		
+		let tMen = makeOpacityMenu("crop", DSS.layer.cropOverlay);
+		tMen = appendTextureMenu(tMen, DSS.layer.cropOverlay);
+		
 		Ext.applyIf(me, {
 			defaults: {
 				xtype: 'menucheckitem',
@@ -63,7 +144,7 @@ Ext.define('DSS.map.LayerMenu', {
 			},{ //-------------------------------------------
 				text: 'Crops <i class="fas fa-seedling accent-text text-drp-50"></i>',
                 checked: true,
-                menu: makeOpacityMenu("crop", DSS.layer.cropOverlay),
+                menu: tMen,//makeOpacityMenu("crop", DSS.layer.cropOverlay),
                 listeners: {
                 	afterrender: function(self) {
                 		self.setChecked(DSS.layer.cropOverlay.getVisible());

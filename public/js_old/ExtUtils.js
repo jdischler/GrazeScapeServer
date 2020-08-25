@@ -39,8 +39,10 @@ Ext.define('DSS.utils', {
 
 //--------------------------------------------------------------------------
 Ext.define('AppEvents', {
-
-	AppEvents: {},
+	extend: 'Ext.Base',
+    singleton: true,	
+    
+	_events: {},
 	
 	//--------------------------------------------------------------------------
 	constructor: function () {
@@ -56,7 +58,7 @@ Ext.define('AppEvents', {
 			scope: scope
 		};
 		
-		var res = this.AppEvents[eventName];
+		var res = this._events[eventName];
 		var id = Ext.id();
 		if (res) {
 			// already have an event array set up for a given event name so append to that array
@@ -67,7 +69,7 @@ Ext.define('AppEvents', {
 			//	tie an array of event processors to it (with our first event handler in it)
 			var ar = new Object();
 			ar[id] = event;
-			this.AppEvents[eventName] = ar;
+			this._events[eventName] = ar;
 		}
 		
 		return {
@@ -81,7 +83,7 @@ Ext.define('AppEvents', {
 	//--------------------------------------------------------------------------
 	removeListener: function(registeredHandle) {
 		
-		var res = this.AppEvents[registeredHandle.eventName];
+		var res = this._events[registeredHandle.eventName];
 		if (res) {
 		//	console.log(' an item was removed from the listener', registeredHandle);
 			delete res[registeredHandle.id];
@@ -93,7 +95,7 @@ Ext.define('AppEvents', {
 	//--------------------------------------------------------------------------
 	triggerEvent: function(eventName, jsonData) {
 
-		var res = this.AppEvents[eventName];
+		var res = this._events[eventName];
 		if (res) {
 			for (var key in res) {
 				var evt = res[key];

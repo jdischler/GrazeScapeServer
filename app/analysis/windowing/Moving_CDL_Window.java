@@ -40,8 +40,8 @@ public abstract class Moving_CDL_Window extends Moving_Window
 		super(win_sz);
 		
 		Layer_Integer cdl = Layer_CDL.get();
-		mRasterWidth = mFinalX = cdl.getWidth();
-		mRasterHeight = mFinalY = cdl.getHeight();
+		mRasterWidth = mSubsetMaxX = cdl.getWidth();
+		mRasterHeight = mSubsetMaxY = cdl.getHeight();
 	}
 
 	protected int[][] mRasterData;

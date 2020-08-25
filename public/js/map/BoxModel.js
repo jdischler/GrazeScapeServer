@@ -20,15 +20,13 @@ Ext.define('DSS.map.BoxModel', {
 
 		map.addInteraction(DSS.dragBox);
 		
-		//setTimeout(function() {
-			// EVIL:
-			// Hijacking prepare frame function so that image layer can update during animations, otherwise it looks really bad
-			ol.renderer.canvas.ImageLayer.prototype.prepFrame = ol.renderer.canvas.ImageLayer.prototype.prepareFrame; 
-			ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState) {
-				frameState.viewHints[0] = frameState.viewHints[1] = 0
-				return this.prepFrame(frameState); 
-			}
-//		}, 1);//2000);
+		// EVIL:
+		// Hijacking prepare frame function so that image layer can update during animations, otherwise it looks really bad
+		ol.renderer.canvas.ImageLayer.prototype.prepFrame = ol.renderer.canvas.ImageLayer.prototype.prepareFrame; 
+		ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState) {
+			frameState.viewHints[0] = frameState.viewHints[1] = 0
+			return this.prepFrame(frameState); 
+		}
 
 		DSS.layer.ModelResult = new ol.layer.Image({
 			updateWhileAnimating: true,
@@ -38,10 +36,10 @@ Ext.define('DSS.map.BoxModel', {
 			//	However, drawing a computation bounds does turn this layer on automatically so maybe not as bad?
 			visible: false, // DSS.layer['inspector:visibility'],
 			source: new ol.source.ImageStatic({
+				imageSmoothing: false,
 				projection: 'EPSG:3071'
 			})
 		})
-
 		map.addLayer(DSS.layer.ModelResult);
 		
 		DSS.dragBox.on('boxend', function() {

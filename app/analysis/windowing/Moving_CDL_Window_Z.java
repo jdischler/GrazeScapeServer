@@ -131,7 +131,7 @@ public final class Moving_CDL_Window_Z extends Moving_CDL_Window
 			}
 			else {
 				mAt_X++;
-				if (mAt_X >= mFinalX - 1) { // check for need to switch direction
+				if (mAt_X >= mSubsetMaxX - 1) { // check for need to switch direction
 					mbShouldAdvance_Y = true;
 				}
 			}
@@ -178,7 +178,7 @@ public final class Moving_CDL_Window_Z extends Moving_CDL_Window
 			mbMovingLeft = !mbMovingLeft; // also change direction for the next advance call
 		
 			mAt_Y++;
-			if (mAt_Y >= mFinalY) {
+			if (mAt_Y >= mSubsetMaxY) {
 				// process is done...signal back to caller that there is no valid point
 				return false;
 			}

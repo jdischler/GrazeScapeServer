@@ -7,6 +7,7 @@ Ext.Loader.setConfig({
 	}
 });
 
+//--------------------------------------------
 Ext.application({
 	name: 'DSS',
 	views: [
@@ -19,5 +20,28 @@ Ext.application({
 				path: '/'
 			})
 		);
-	},	
+	},
+	
+
+	// Routes handling....
+    routes: {
+    	'browse_or_create': 'browse_or_create'
+    },
+    listen: {
+        controller: {
+            '#': {
+                unmatchedroute: 'onUnmatchedRoute'
+            }
+        }
+    },
+
+    browse_or_create: function() {
+    	alert('hello:' + location.origin);
+    	
+    },
+    onUnmatchedRoute: function(hash) {
+    	alert('badness');
+        console.log('Unmatched', hash);
+     
+    },
 });

@@ -9,9 +9,27 @@
 .x-form-checkbox-default {
 	background-size: 30px 30px;
 }
+.x-menu-item-checked .x-menu-item-icon-default.x-menu-item-checkbox {
+    background-size: contain;
+}
+.x-menu-item-arrow-default {
+    background-size: contain;
+}
+.x-slider-horz, .x-slider-horz .x-slider-end, .x-slider-horz .x-slider-inner {
+    background-size: 10px 45px;
+}
+.x-slider-horz .x-slider-thumb {
+	background-size: 90px 90px;
+}
+.x-menu-item-unchecked .x-menu-item-icon-default.x-menu-item-checkbox {
+    background-size: contain;
+}
 .x-column-header-checkbox .x-column-header-checkbox:after, .x-grid-checkcolumn:after {
 	background-size: 30px 30px;
-	}
+}
+.x-form-spinner-default {
+    background-size: 110px 22px;
+}
 .x-panel-header-title-default {
 //	font-size: 16px;
 	font-weight: bold;

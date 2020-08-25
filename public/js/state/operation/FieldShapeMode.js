@@ -138,7 +138,7 @@ Ext.define('DSS.state.operation.FieldShapeMode', {
 		let wkt = new ol.format.WKT();
 		
 		var obj = Ext.Ajax.request({
-			url: location.href + 'add_field',
+			url: location.origin + '/add_field',
 			jsonData: {
 				farm_id: farm_id,
 				wkt: wkt.writeFeature(feature,{decimals:1}),
@@ -188,7 +188,7 @@ Ext.define('DSS.state.operation.FieldShapeMode', {
 		
 		console.log(finalSet);
 		var obj = Ext.Ajax.request({
-			url: location.href + 'modify_fields',
+			url: location.origin + '/modify_fields',
 			jsonData: finalSet,
 			timeout: 30 * 1000, // 30 seconds
 			

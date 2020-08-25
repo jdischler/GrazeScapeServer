@@ -28,19 +28,20 @@ public abstract class Moving_Window
 	
 	protected int mAt_X, mAt_Y;
 	// Same as raster width/height when doing a full layer sweep. Exists to allow computing a subset
-	protected int mFinalX, mFinalY; 
+	protected int mSubsetMinX, mSubsetMinY; 
+	protected int mSubsetMaxX, mSubsetMaxY; 
 	protected WindowPoint mPoint;
 
 	// Defaults to full layer processing...chain restrict() to limit the extents
 	//--------------------------------------------------------------------------
 	public Moving_Window(int win_sz, int raster_w, int raster_h) {
 		
-		mRasterWidth = mFinalX = raster_w;
-		mRasterHeight = mFinalY = raster_h;
+		mRasterWidth = mSubsetMaxX = raster_w;
+		mRasterHeight = mSubsetMaxY = raster_h;
 		mHalfWindowSize = win_sz / 2;
 		
-		mAt_X = 0;
-		mAt_Y = 0;	
+		mAt_X = mSubsetMinX = 0;
+		mAt_Y = mSubsetMinY = 0;	
 	}
 	
 	// CDL window only...
@@ -55,10 +56,10 @@ public abstract class Moving_Window
 	//--------------------------------------------------------------------------
 	public Moving_Window restrict(int startX, int startY, int finalX, int finalY) {
 		
-		mAt_X = startX;
-		mAt_Y = startY;	
-		mFinalX = finalX;
-		mFinalY = finalY;
+		mAt_X = mSubsetMinX = 0;
+		mAt_Y = mSubsetMinY = 0;	
+		mSubsetMaxX = finalX;
+		mSubsetMaxY = finalY;
 		
 		return this;
 	}
@@ -81,7 +82,7 @@ public abstract class Moving_Window
 	}
 	
 	//--------------------------------------------------------------------------
-	protected final void updateBoundsMoving_X() {
+	protected void updateBoundsMoving_X() {
 		
 		mUpLeft_X = mAt_X - mHalfWindowSize;
 		mLowRight_X = mAt_X + mHalfWindowSize;
@@ -95,7 +96,7 @@ public abstract class Moving_Window
 	}
 
 	//--------------------------------------------------------------------------
-	protected final void updateBoundsMoving_Y() {
+	protected void updateBoundsMoving_Y() {
 		
 		mUpLeft_Y = mAt_Y - mHalfWindowSize;
 		mLowRight_Y = mAt_Y + mHalfWindowSize;
