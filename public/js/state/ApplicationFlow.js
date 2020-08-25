@@ -43,7 +43,7 @@ Ext.define('DSS.state.ApplicationFlow', {
 		'DSS.state.MapStateTools',
 		'DSS.state.BrowseOrCreate',
 		'DSS.state.CreateNew',
-		'DSS.state.operation.Manage',
+		'DSS.state.Manage',
 	],
 	
 	layout: DSS.utils.layout('vbox', 'start', 'stretch'),
@@ -188,7 +188,7 @@ Ext.define('DSS.state.ApplicationFlow', {
 	showManageOperationPage: function(operationName) {
 		let me = this;
 		
-		operationName = operationName || "Grazing Acres";
+//		operationName = operationName || "Grazing Acres";
 		
 		Ext.suspendLayouts();
 			me.setControlBlock([	
@@ -202,6 +202,17 @@ Ext.define('DSS.state.ApplicationFlow', {
 		DSS.MapState.showFieldsForFarm(DSS.activeFarm);
 		
 		DSS.popupOverlay.setPosition(false);
+	},
+
+	//----------------------------------------------------------------------------------
+	showManageScenarioPage: function(operationName) {
+		let me = this;
+		
+		Ext.suspendLayouts();
+			me.setControlBlock([	
+				DSS.OperationScenario.get()
+			]);
+		Ext.resumeLayouts(true);
 	},
 	
 	//----------------------------------------------------------------------------------

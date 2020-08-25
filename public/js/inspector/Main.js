@@ -28,7 +28,7 @@ Ext.define('DSS.inspector.Main', {
     ],
     
     scrollable: 'y',
-    
+
 	//--------------------------------------------------------------------------
 	initComponent: function() {
 		let me = this;
@@ -56,8 +56,10 @@ Ext.define('DSS.inspector.Main', {
 		me.callParent(arguments);
 //		me.setMode('crop-yield');
 		
-		AppEvents.registerListener('set_inspector_bounds', function(extents) {
-			me.computeResults(extents,DSS.layer.ModelResult);
+		AppEvents.registerListener('set_inspector_bounds', function(extents, silent) {
+			if (!silent) {
+				me.computeResults(extents,DSS.layer.ModelResult);
+			}
 		})
 		
 	},

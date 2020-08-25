@@ -6,7 +6,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
 scalaVersion := "2.13.0"
 
-resolvers += "os geo" at ("https://download.osgeo.org/webdav/geotools/")
+resolvers += "os geo" at ("https://repo.osgeo.org/repository/release/")
 
 javacOptions ++= Seq(
   "-encoding", "UTF-8",
@@ -26,7 +26,7 @@ libraryDependencies ++= Seq(
   "com.h2database" % "h2" % "1.4.200",
   "org.apache.commons" % "commons-email" % "1.5",
   "org.gdal" % "gdal" % "3.0.0",
-  "org.geotools" % "gt-main" % "22.3" ,
+  "org.geotools" % "gt-main" % "22.4" ,
   "org.postgresql" % "postgresql" % "42.2.10",  
   "io.ebean" % "ebean" % "11.45.1",
   "io.ebean" % "ebean-agent" % "11.45.1"

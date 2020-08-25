@@ -1,17 +1,15 @@
 
 
 //------------------------------------------------------------------------------
-Ext.define('DSS.state.operation.Manage', {
+Ext.define('DSS.state.Manage', {
 //------------------------------------------------------------------------------
 	extend: 'Ext.Container',
     alternateClassName: 'DSS.OperationManage',
 	alias: 'widget.operation_manage',
 
 	requires: [
-		'DSS.state.operation.CropNutrientMode',
 		'DSS.state.operation.FieldShapeMode',
-		'DSS.state.operation.AnimalGrazingMode',
-		'DSS.state.operation.ComputeMode',
+		'DSS.state.operation.Scenario',
 	],
 	
 	layout: DSS.utils.layout('vbox', 'center', 'stretch'),
@@ -26,8 +24,6 @@ Ext.define('DSS.state.operation.Manage', {
 			return def;
 		}
 	},
-	
-	DSS_text: 'Select <i class="accent-text fas fa-hand-pointer"></i> an operation on the map... or create a new one',
 	
 	//--------------------------------------------------------------------------
 	initComponent: function() {
@@ -53,6 +49,7 @@ Ext.define('DSS.state.operation.Manage', {
 					cls: 'button-text-pad',
 					componentCls: 'button-margin',
 					text: 'Field Shapes',
+//					allowDepress:
 					toggleGroup: 'manage-operation',
 					toggleHandler: function(self, pressed) {
 						if (pressed) {
@@ -66,58 +63,15 @@ Ext.define('DSS.state.operation.Manage', {
 				},{//------------------------------------------
 					xtype: 'component',
 					cls: 'information med-text',
-					html: 'Assign crops and nutrients'
+					html: 'Design a scenario'
 				},{
 					xtype: 'button',
 					cls: 'button-text-pad',
 					componentCls: 'button-margin',
-					toggleGroup: 'manage-operation',
-					text: 'Crops / Nutrients',
-					toggleHandler: function(self, pressed) {
-						if (pressed) {
-							AppEvents.triggerEvent('show_crop_nutrient_mode')
-						}
-						else {
-							AppEvents.triggerEvent('hide_crop_nutrient_mode')
-						}
-//						DSS.ApplicationFlow.instance.showNewOperationPage();
-					}
-				},{//------------------------------------------
-					xtype: 'component',
-					cls: 'information med-text',
-					html: 'Manage animals and grazing'
-				},{
-					xtype: 'button',
-					cls: 'button-text-pad',
-					componentCls: 'button-margin',
-					toggleGroup: 'manage-operation',
-					text: 'Animals / Grazing',
-					toggleHandler: function(self, pressed) {
-						if (pressed) {
-							AppEvents.triggerEvent('show_animal_grazing_mode')
-						}
-						else {
-							AppEvents.triggerEvent('hide_animal_grazing_mode')
-						}
-					//	DSS.ApplicationFlow.instance.showNewOperationPage();
-					}
-				},{
-					xtype: 'component',
-					cls: 'information med-text',
-					html: 'Run simulations'
-				},{
-					xtype: 'button',
-					cls: 'button-text-pad',
-					componentCls: 'button-margin',
-					text: 'Compute',
-					toggleGroup: 'manage-operation',
-					toggleHandler: function(self, pressed) {
-						if (pressed) {
-							AppEvents.triggerEvent('show_compute_mode')
-						}
-						else {
-							AppEvents.triggerEvent('hide_compute_mode')
-						}
+					text: 'Scenarios',
+					handler: function(self) {
+						AppEvents.triggerEvent('hide_field_shape_mode')
+						DSS.ApplicationFlow.instance.showManageScenarioPage();
 					}
 				}]
 			}]

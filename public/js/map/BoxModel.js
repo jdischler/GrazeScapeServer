@@ -32,12 +32,15 @@ Ext.define('DSS.map.BoxModel', {
 			updateWhileAnimating: true,
 			updateWhileInteracting: true,
 			opacity: DSS.layer['inspector:opacity'],
-			// FIXME: for some reason, letting this be visible immediately will cause an exception..
-			//	However, drawing a computation bounds does turn this layer on automatically so maybe not as bad?
 			visible: false, // DSS.layer['inspector:visibility'],
 			source: new ol.source.ImageStatic({
 				imageSmoothing: false,
-				projection: 'EPSG:3071'
+				projection: 'EPSG:3071',
+				// Something would be required here or there will be an exception whilst trying to dry this layer
+				imageExtent: [
+					44240,328120,
+					448350,335420
+				],
 			})
 		})
 		map.addLayer(DSS.layer.ModelResult);

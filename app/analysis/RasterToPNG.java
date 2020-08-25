@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.*;
 
 import ar.com.hjg.pngj.chunks.*;
-import query.Layer_Integer.KeyItem;
+import query.Layer_Integer;//.KeyItem;
 import utils.Png.RGB;
 
 //------------------------------------------------------------------------------
@@ -217,13 +217,13 @@ public class RasterToPNG {
 
 	
 	//--------------------------------------------------------------------------
-	private static void makePalette(Png png, List<KeyItem> colorMap) throws Exception {
+	private static void makePalette(Png png, List<Layer_Integer.KeyItem> colorMap) throws Exception {
 			
 		int colors = colorMap.size() + 1; // for transparent color
 		PngChunkPLTE palette = png.createPalette(colors );
 		
 		int ct = 1;
-		for (KeyItem ki: colorMap) {
+		for (Layer_Integer.KeyItem ki: colorMap) {
 			RGB rgb = new RGB(ki.mHexColor.toUpperCase());
 			palette.setEntry(ct, rgb.mR, rgb.mG, rgb.mB);ct++;
 		}
@@ -239,10 +239,10 @@ public class RasterToPNG {
 	}
 
 	//--------------------------------------------------------------------------
-	private static JsonNode getPaletteKey(List<KeyItem> colorMap) {
+	private static JsonNode getPaletteKey(List<Layer_Integer.KeyItem> colorMap) {
 
 		ArrayNode data = JsonNodeFactory.instance.arrayNode();
-		for (KeyItem ki: colorMap) {
+		for (Layer_Integer.KeyItem ki: colorMap) {
 			data.add(Json.pack("color", ki.mHexColor, "label", ki.mName));
 		}
 		return Json.pack("key", data);
@@ -266,7 +266,7 @@ public class RasterToPNG {
 	}
 
 	//--------------------------------------------------------------------------
-	public static JsonNode saveClassified(int [][]data, List<KeyItem> colorMap, int width, int height, File file) {
+	public static JsonNode saveClassified(int [][]data, List<Layer_Integer.KeyItem> colorMap, int width, int height, File file) {
 		
 		byte[][] idx = convertToIndexed(data, width, height);
 	

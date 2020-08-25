@@ -38,7 +38,7 @@ Ext.define('DSS.field_shapes.DrawAndApply', {
 					value: 32,
 				},
 				crop: {
-					is_active: false,
+					is_active: true,
 					value: 'ps',
 				},
 				tillage: {
