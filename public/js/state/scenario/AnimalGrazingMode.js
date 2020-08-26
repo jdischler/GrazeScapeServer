@@ -1,6 +1,6 @@
 
 //------------------------------------------------------------------------------
-Ext.define('DSS.state.operation.AnimalGrazingMode', {
+Ext.define('DSS.state.scenario.AnimalGrazingMode', {
 //------------------------------------------------------------------------------
 	extend: 'Ext.button.Segmented', // Ext.container
 	alias: 'widget.state_animal_grazing_mode',

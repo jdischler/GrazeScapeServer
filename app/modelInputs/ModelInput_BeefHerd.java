@@ -23,7 +23,7 @@ public class ModelInput_BeefHerd extends Model {
 	public Integer		mNumFinishing;
 	
 	// specific to a single operation type?
-	public Float	mFinishingRatio; // Grass/Forage : Concentrate ratio, unitless, 0 to 1
+	//public Float	mFinishingRatio; // Grass/Forage : Concentrate ratio, unitless, 0 to 1
 	
 	public Float	mAverageDailyGainTarget;// kg/day
 	public Float	mGrazingTime;			// hours/day

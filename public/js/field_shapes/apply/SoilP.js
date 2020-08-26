@@ -28,9 +28,9 @@ Ext.define('DSS.field_shapes.apply.SoilP', {
 					width: '100%',
 					height: 28,
 					cls: 'information accent-text bold',
-					html: "Set Soil P",
+					html: "Set Soil-Test P",
 				},
-					getToggle(me, 'soil_p.is_active')
+					getToggle(me, 'soil_p.is_active') // Helper defined in DrawAndApply.js
 				]
 			},{
 				xtype: 'container',

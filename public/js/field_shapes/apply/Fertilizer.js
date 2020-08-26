@@ -30,7 +30,7 @@ Ext.define('DSS.field_shapes.apply.Fertilizer', {
 					cls: 'information accent-text bold',
 					html: "Apply Fertilizer",
 				},
-					getToggle(me, 'fertilizer.is_active')
+					getToggle(me, 'fertilizer.is_active') // Helper defined in DrawAndApply.js
 				]
 			},{
 				xtype: 'container',

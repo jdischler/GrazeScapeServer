@@ -9,7 +9,7 @@ Ext.define('DSS.state.Manage', {
 
 	requires: [
 		'DSS.state.operation.FieldShapeMode',
-		'DSS.state.operation.Scenario',
+		'DSS.state.Scenario',
 	],
 	
 	layout: DSS.utils.layout('vbox', 'center', 'stretch'),
@@ -71,7 +71,7 @@ Ext.define('DSS.state.Manage', {
 					text: 'Scenarios',
 					handler: function(self) {
 						AppEvents.triggerEvent('hide_field_shape_mode')
-						DSS.ApplicationFlow.instance.showManageScenarioPage();
+						DSS.ApplicationFlow.instance.showScenarioPage();
 					}
 				}]
 			}]

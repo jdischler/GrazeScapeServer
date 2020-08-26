@@ -19,12 +19,13 @@ Ext.define('DSS.map.LayerMenu', {
 		let makeOpacityMenu = function(key, openLayersLayer, minValue) {
 			minValue = minValue || 20;
 			return {
-                width: 130,
+                width: 150,
                 plain: true,
             	listeners: {
             		show: function(menu) {
             			menu.down('#dss-slider').setValue(openLayersLayer.getOpacity() * 100, false);
             			menu.setY(menu.getY() - 29);
+            			menu.setX(menu.getX() - 20);
             		},
             	},                    
                 items: [{
@@ -34,13 +35,19 @@ Ext.define('DSS.map.LayerMenu', {
                 },{
                 	xtype: 'slider',
                 	itemId: 'dss-slider',
-                    padding: '0 0 8 0',
+                    padding: '0 10 8 10',
                 	hideEmptyLabel: true,
                 	increment: 10,
                 	value: 60,
                 	minValue: minValue, 
                 	maxValue: 100,
                 	listeners: {
+                		focusleave: function(self) {
+                			console.log("leave!")
+                		},
+                		dragstart: function(slider) {
+                			
+                		},
                 		change: function(slider, newValue, thumb, eOpts) {
                 			const val = newValue / 100.0;
                 			openLayersLayer.setOpacity(val)
@@ -60,7 +67,7 @@ Ext.define('DSS.map.LayerMenu', {
 			},{
             	xtype: 'slider',
             	itemId: 'dss-slider2',
-                padding: '0 0 8 0',
+                padding: '0 10 8 10',
             	hideEmptyLabel: true,
             	decimalPrecision: 2,
             	keyIncrement: 0.05,
@@ -84,7 +91,7 @@ Ext.define('DSS.map.LayerMenu', {
 			},{
             	xtype: 'slider',
             	itemId: 'dss-slider3',
-                padding: '0 0 8 0',
+                padding: '0 10 8 10',
             	hideEmptyLabel: true,
             	keyIncrement: 5,
             	increment: 5,
@@ -107,7 +114,7 @@ Ext.define('DSS.map.LayerMenu', {
 			},{
             	xtype: 'slider',
             	itemId: 'dss-slider4',
-                padding: '0 0 8 0',
+                padding: '0 10 8 10',
             	hideEmptyLabel: true,
             	keyIncrement: 5,
             	increment: 5,

@@ -1,9 +1,9 @@
 
 //------------------------------------------------------------------------------
-Ext.define('DSS.field_shapes.apply.Tillage', {
+Ext.define('DSS.field_shapes.apply.GrazeAnimals', {
 //------------------------------------------------------------------------------
 	extend: 'Ext.Container',
-	alias: 'widget.field_shapes_apply_tillage',
+	alias: 'widget.field_shapes_apply_graze_animals',
 	
 	cls: 'restriction-widget',
 	margin: '2 0 4 0',
@@ -11,12 +11,12 @@ Ext.define('DSS.field_shapes.apply.Tillage', {
 	
 	layout: DSS.utils.layout('vbox', 'start', 'center'),
 	
-	DSS_sectionHeight: 98,
+	DSS_sectionHeight: 75,
 	
 	//--------------------------------------------------------------------------
 	initComponent: function() {
 		let me = this;
-
+		
 		Ext.applyIf(me, {
 			items: [{
 				xtype: 'container',
@@ -28,29 +28,23 @@ Ext.define('DSS.field_shapes.apply.Tillage', {
 					width: '100%',
 					height: 28,
 					cls: 'information accent-text bold',
-					html: "Set Tillage",
+					html: "Graze Animals",
 				},
-					getToggle(me, 'tillage.is_active') // Helper defined in DrawAndApply.js
+					getToggle(me, 'graze_animals.is_active') // Helper defined in DrawAndApply.js
 				]
 			},{
-				xtype: 'radiogroup',
+				xtype: 'checkboxgroup',
 				itemId: 'contents',
 				style: 'padding: 0px; margin: 0px', // fixme: eh...
 				hideEmptyLabel: true,
 				columns: 1, 
 				vertical: true,
-				bind: { value: '{tillageValue}' },
-				defaults: {
-					name: 'tillage'
-				},
 				items: [{ 
-					boxLabel: 'No-till', 			inputValue: 'nt',
+					boxLabel: 'Dairy - Lactating', 		bind: '{graze_animals.dairy-lactating}',
 				},{
-					boxLabel: 'Spring-cultivation',	inputValue: 'spcu',
+					boxLabel: 'Dairy - Non-Lactating', 	bind: '{graze_animals.dairy-nonlactating}',
 				},{
-					boxLabel: 'Chisel + disk',		inputValue: 'chdsk',
-				},{
-					boxLabel: 'Moldboard plow', 	inputValue: 'mp'
+					boxLabel: 'Beef Cows', 			bind: '{graze_animals.beef}',
 				}]
 			}]
 		});
