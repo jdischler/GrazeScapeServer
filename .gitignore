@@ -1,13 +1,24 @@
-project/project
-project/target
-target/
+## .gitignore
+
+# system files
 *.DS_Store
-logs/application.log
+*.swp
+
+# secrets
+conf/production.conf
+
+# app files
 conf/evolutions/
-layerData
+logs/
+project/project/
+project/target/
+target/
+
+# large/data files
 *.asc
 *.dss
 *.tif
-dynamicFiles
-target/.history
-dynamicFiles/yes1.png
+dynamicFiles/
+layerData/
+
+

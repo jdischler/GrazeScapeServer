@@ -1,0 +1,22 @@
+## .sbtopts
+
+# postgres
+-J-Ddb_host=localhost
+-J-Ddb_port=5432
+-J-Ddb_name=GrazeScape
+-J-Ddb_user=postgres
+-J-Ddb_pass=GrazeScape
+
+# app server
+-J-Dhttp.address=0.0.0.0
+-J-Dhttp.nonProxyHosts="localhost|*.glbrc.org|*.wei.wisc.edu"
+-J-Dhttp.port=9000
+-J-Dplay.filters.hosts.allowed.0="localhost:9000"
+-J-Dplay.filters.hosts.allowed.1=".glbrc.org:9000"
+
+# java
+-J-Djava.net.preferIPv4Stack=true
+-J-Xms1g
+-J-Xmx4g
+
+
