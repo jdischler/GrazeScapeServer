@@ -44,6 +44,7 @@ Ext.define('DSS.state.ApplicationFlow', {
 		'DSS.state.BrowseOrCreate',
 		'DSS.state.CreateNew',
 		'DSS.state.Manage',
+		'DSS.state.Scenario'
 	],
 	
 	layout: DSS.utils.layout('vbox', 'start', 'stretch'),
@@ -205,12 +206,12 @@ Ext.define('DSS.state.ApplicationFlow', {
 	},
 
 	//----------------------------------------------------------------------------------
-	showManageScenarioPage: function(operationName) {
+	showScenarioPage: function(operationName) {
 		let me = this;
 		
 		Ext.suspendLayouts();
 			me.setControlBlock([	
-				DSS.OperationScenario.get()
+				DSS.StateScenario.get()
 			]);
 		Ext.resumeLayouts(true);
 	},

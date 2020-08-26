@@ -12,7 +12,7 @@ conf/evolutions/
 logs/
 project/project/
 project/target/
-target/
+target/.history
 
 # large/data files
 *.asc
@@ -20,5 +20,4 @@ target/
 *.tif
 dynamicFiles/
 layerData/
-
 

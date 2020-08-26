@@ -17,6 +17,7 @@ Ext.define('DSS.field_shapes.DrawAndApply', {
 		'DSS.field_shapes.apply.Tillage',
 		'DSS.field_shapes.apply.SpreadManure',
 		'DSS.field_shapes.apply.Fertilizer',
+		'DSS.field_shapes.apply.GrazeAnimals',
 	],
 	
 	//--------------------------------------------------------------------------
@@ -44,6 +45,12 @@ Ext.define('DSS.field_shapes.DrawAndApply', {
 				tillage: {
 					is_active: false,
 					value: 'spcu'
+				},
+				graze_animals: {
+					is_active: false,
+					'dairy-lactating': true,
+					'dairy-nonlactating': true,
+					beef: false
 				},
 				manure: {
 					is_active: false,
@@ -79,11 +86,13 @@ Ext.define('DSS.field_shapes.DrawAndApply', {
 					cls: 'information light-text text-drp-20',
 					html: 'Draw and Apply',
 				},{
-					xtype: 'field_shapes_apply_soil_p'
+					xtype: 'field_shapes_apply_graze_animals'
 				},{
 					xtype: 'field_shapes_apply_landcover'
 				},{
 					xtype: 'field_shapes_apply_tillage'
+				},{
+					xtype: 'field_shapes_apply_soil_p'
 				},{
 					xtype: 'field_shapes_apply_manure'
 				},{
@@ -109,3 +118,61 @@ Ext.define('DSS.field_shapes.DrawAndApply', {
 	}
 	
 });
+
+//TODO: move to a better place...
+let getToggle = function(owner, stateRef, activatedHandler, deactivatedHandler) {
+	
+	return {
+		xtype: 'component',
+		style: 'right: 1px; top: 2px',
+		cls: 'accent-text fa-hover',
+		html: '<i class="far fa-plus-circle"></i>',
+		listeners: {
+			afterrender: function(c) {
+				let vm = owner.lookupViewModel();
+				let active = vm.get(stateRef) ;
+				c.addCls(active ? 'to-close' : 'to-add')
+				
+				let ct = owner.down('#contents');
+				let ht = owner.DSS_sectionHeight;
+				ct.setHeight(active ? ht : 0);
+				
+				c.getEl().getFirstChild().el.on({
+					click: function(self) {
+						if (c.hasCls('to-add')) {
+							c.removeCls('to-add')
+							c.addCls('to-close');
+							vm.set(stateRef, true);
+							ct.animate({
+								duration: 300,
+								dynamic: true,
+								to: {
+									height: ht
+								}
+							});
+							if (typeof activatedHandler === 'function') {
+								activatedHandler.call()
+							}
+						}
+						else {
+							c.addCls('to-add')
+							c.removeCls('to-close');
+							vm.set(stateRef, false);
+							ct.animate({
+								duration: 300,
+								dynamic: true,
+								to: {
+									height: 0
+								}
+							});
+							if (typeof deactivatedHandler === 'function') {
+								deactivatedHandler.call()
+							}
+						}	
+					}
+				});
+			}
+		}					
+	}	
+}
+

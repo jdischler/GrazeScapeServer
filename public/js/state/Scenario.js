@@ -1,16 +1,15 @@
 
 
 //------------------------------------------------------------------------------
-Ext.define('DSS.state.operation.Scenario', {
+Ext.define('DSS.state.Scenario', {
 //------------------------------------------------------------------------------
 	extend: 'Ext.Container',
-    alternateClassName: 'DSS.OperationScenario',
-	alias: 'widget.operation_scenario',
+    alternateClassName: 'DSS.StateScenario',
+	alias: 'widget.state_scenario',
 
 	requires: [
-		'DSS.state.operation.CropNutrientMode',
-		'DSS.state.operation.AnimalGrazingMode',
-		'DSS.state.operation.ComputeMode',
+		'DSS.state.scenario.CropNutrientMode',
+		'DSS.state.scenario.AnimalGrazingMode',
 	],
 	
 	layout: DSS.utils.layout('vbox', 'center', 'stretch'),
@@ -19,7 +18,7 @@ Ext.define('DSS.state.operation.Scenario', {
 	statics: {
 		get: function() {
 			let def = {
-					xtype: 'operation_scenario'
+					xtype: 'state_scenario'
 			};
 			
 			return def;
@@ -94,14 +93,7 @@ Ext.define('DSS.state.operation.Scenario', {
 					cls: 'button-text-pad',
 					componentCls: 'button-margin',
 					text: 'Compute',
-					toggleGroup: 'manage-operation',
-					toggleHandler: function(self, pressed) {
-						if (pressed) {
-							AppEvents.triggerEvent('show_compute_mode')
-						}
-						else {
-							AppEvents.triggerEvent('hide_compute_mode')
-						}
+					handler: function(self) {
 					}
 				}]
 			}]

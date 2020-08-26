@@ -32,7 +32,7 @@ Ext.define('DSS.field_shapes.apply.Landcover', {
 					cls: 'information accent-text bold',
 					html: "Set Crop / Landcover",
 				},
-					getToggle(me, 'crop.is_active')
+					getToggle(me, 'crop.is_active') // Helper defined in DrawAndApply.js
 				]
 			},{
 				xtype: 'radiogroup',
