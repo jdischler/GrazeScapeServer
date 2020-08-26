@@ -38,3 +38,16 @@ lazy val myProject = (project in file("."))
 // pomOnly()
 // Compile the project before generating Eclipse files, so that generated .scala or .class files for views and routes are present
 EclipseKeys.preTasks := Seq(compile in Compile, compile in Test)
+
+// https://dvirf1.github.io/play-tutorial/posts/dockerize-the-app/
+// https://www.scala-sbt.org/sbt-native-packager/formats/docker.html
+import com.typesafe.sbt.packager.docker.DockerChmodType
+import com.typesafe.sbt.packager.docker.DockerPermissionStrategy
+dockerChmodType := DockerChmodType.UserGroupWriteExecute
+dockerExposedPorts := Seq(9000)
+dockerPermissionStrategy := DockerPermissionStrategy.CopyChown
+
+// https://www.playframework.com/documentation/2.8.x/Evolutions
+libraryDependencies ++= Seq(evolutions, jdbc)
+
+
