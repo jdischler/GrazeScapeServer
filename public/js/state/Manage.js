@@ -34,9 +34,28 @@ Ext.define('DSS.state.Manage', {
 				margin: '1rem',
 			},
 			items: [{
-				xtype: 'component',
-				cls: 'section-title accent-text',
-				html: 'Manage'
+				xtype: 'container',
+				layout: DSS.utils.layout('hbox', 'start', 'begin'),
+				items: [{
+					xtype: 'component',
+					cls: 'back-button',
+					tooltip: 'Back',
+					html: '<i class="fas fa-reply"></i>',
+					listeners: {
+						render: function(c) {
+							c.getEl().getFirstChild().el.on({
+								click: function(self) {
+									DSS.ApplicationFlow.instance.showLandingPage();
+								}
+							});
+						}
+					}					
+				},{
+					xtype: 'component',
+					flex: 1,
+					cls: 'section-title accent-text right-pad',
+					html: 'Manage'
+				}]
 			},{ 
 				xtype: 'container',
 				layout: DSS.utils.layout('vbox', 'center', 'stretch'),

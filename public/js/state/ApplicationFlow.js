@@ -29,6 +29,9 @@ DSS.utils.addStyle('.information { padding: 0.5rem 0 0.25rem 0; font-size: 0.9re
 DSS.utils.addStyle('.section-title { padding: 0.5rem; font-size: 1.2rem; text-align: center; font-weight: bold}');
 DSS.utils.addStyle('.section { margin: 0.5rem; margin-bottom: 1rem; padding: 0.75rem; background-color: #fff; border: 1px solid #bbb; border-radius: 0.3rem; box-shadow: 0px 4px 8px rgba(0,0,0,0.25) }')
 
+DSS.utils.addStyle('.back-button { padding: 0.23rem; color: #27c; font-size: 1.25rem; cursor: pointer; text-shadow: 0 1px 0 rgba(0,0,0,0.5)}');
+DSS.utils.addStyle('.back-button:hover { color: #48f; text-shadow: 0 2px 2px rgba(0,0,0,0.8), 1px 0 rgba(0,0,0,0.5), -1px 0 rgba(0,0,0,0.5), 0 0 6px rgba(0,0,0,0.4)}');
+
 // Section that roughly corresponds to the left portion of the application. This area will contain logos, titles, controls, etc
 //	and generally be the starting point/container for controlling the entire application flow...whereas the remainder of the
 //	application space will contain (primarily) the map display but will be switched out as needed for charts/reports/other.

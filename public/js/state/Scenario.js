@@ -9,7 +9,7 @@ Ext.define('DSS.state.Scenario', {
 
 	requires: [
 		'DSS.state.scenario.CropNutrientMode',
-		'DSS.state.scenario.AnimalGrazingMode',
+		'DSS.state.scenario.AnimalDialog'
 	],
 	
 	layout: DSS.utils.layout('vbox', 'center', 'stretch'),
@@ -34,14 +34,49 @@ Ext.define('DSS.state.Scenario', {
 				margin: '1rem',
 			},
 			items: [{
-				xtype: 'component',
-				cls: 'section-title accent-text',
-				// TODO: Dynamic name...
-				html: '"Baseline"'
+				xtype: 'container',
+				layout: DSS.utils.layout('hbox', 'start', 'begin'),
+				items: [{
+					xtype: 'component',
+					cls: 'back-button',
+					tooltip: 'Back',
+					html: '<i class="fas fa-reply"></i>',
+					listeners: {
+						render: function(c) {
+							c.getEl().getFirstChild().el.on({
+								click: function(self) {
+									DSS.ApplicationFlow.instance.showManageOperationPage();
+								}
+							});
+						}
+					}					
+				},{
+					xtype: 'component',
+					flex: 1,
+					cls: 'section-title accent-text right-pad',
+					// TODO: Dynamic name...
+					html: '"Baseline"'
+				}]
 			},{ 
 				xtype: 'container',
 				layout: DSS.utils.layout('vbox', 'center', 'stretch'),
-				items: [{ //------------------------------------------
+				items: [{//------------------------------------------
+					xtype: 'component',
+					cls: 'information med-text',
+					html: 'Configure animals and grazing'
+				},{
+					xtype: 'button',
+					cls: 'button-text-pad',
+					componentCls: 'button-margin',
+					text: 'Animals',
+					handler: function(self) {
+						if (!DSS.dialogs) DSS.dialogs = {};
+						if (!DSS.dialogs.AnimalDialog) {
+							DSS.dialogs.AnimalDialog = Ext.create('DSS.state.scenario.AnimalDialog'); 
+						}
+						DSS.dialogs.AnimalDialog.show().center();
+					}
+				},{//------------------------------------------
 					xtype: 'component',
 					cls: 'information med-text',
 					html: 'Assign crops and nutrients'
@@ -51,7 +86,7 @@ Ext.define('DSS.state.Scenario', {
 					componentCls: 'button-margin',
 					toggleGroup: 'create-scenario',
 					allowDepress: true,
-					text: 'Crops / Nutrients',
+					text: 'Field Properties',
 					toggleHandler: function(self, pressed) {
 						if (pressed) {
 							AppEvents.triggerEvent('show_crop_nutrient_mode')
@@ -60,26 +95,6 @@ Ext.define('DSS.state.Scenario', {
 							AppEvents.triggerEvent('hide_crop_nutrient_mode')
 						}
 //						DSS.ApplicationFlow.instance.showNewOperationPage();
-					}
-				},{//------------------------------------------
-					xtype: 'component',
-					cls: 'information med-text',
-					html: 'Manage animals and grazing'
-				},{
-					xtype: 'button',
-					cls: 'button-text-pad',
-					componentCls: 'button-margin',
-					toggleGroup: 'create-scenario',
-					allowDepress: true,
-					text: 'Animals / Grazing',
-					toggleHandler: function(self, pressed) {
-						if (pressed) {
-							AppEvents.triggerEvent('show_animal_grazing_mode')
-						}
-						else {
-							AppEvents.triggerEvent('hide_animal_grazing_mode')
-						}
-					//	DSS.ApplicationFlow.instance.showNewOperationPage();
 					}
 				},{//------------------------------------------
 					xtype: 'component',
@@ -100,6 +115,11 @@ Ext.define('DSS.state.Scenario', {
 		});
 		
 		me.callParent(arguments);
+		DSS.Inspector.addModeControl()
+		DSS.MapState.disableFieldDraw();
+		DSS.draw.setActive(false);
+		DSS.modify.setActive(false);
+		DSS.fieldStyleFunction = undefined;	DSS.layer.fields.changed();
 
 //		Ext.create('DSS.controls.ApplicationState', {id: 'crap-state'}).showAt(400,-4);
 		

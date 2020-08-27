@@ -1,6 +1,7 @@
 
 DSS.utils.addStyle('.underlined-input { border: none; border-bottom: 1px solid #ddd; display:table; width: 100%; height:100%; padding: 0 0 2px}')   
 DSS.utils.addStyle('.underlined-input:hover { border-bottom: 1px solid #7ad;}')
+DSS.utils.addStyle('.right-pad { padding-right: 32px }')   
 
 //------------------------------------------------------------------------------
 Ext.define('DSS.state.CreateNew', {
@@ -22,9 +23,28 @@ Ext.define('DSS.state.CreateNew', {
 				margin: '2rem',
 			},
 			items: [{
-				xtype: 'component',
-				cls: 'section-title accent-text',
-				html: 'Create New'
+				xtype: 'container',
+				layout: DSS.utils.layout('hbox', 'start', 'begin'),
+				items: [{
+					xtype: 'component',
+					cls: 'back-button',
+					tooltip: 'Back',
+					html: '<i class="fas fa-reply"></i>',
+					listeners: {
+						render: function(c) {
+							c.getEl().getFirstChild().el.on({
+								click: function(self) {
+									DSS.ApplicationFlow.instance.showLandingPage();
+								}
+							});
+						}
+					}					
+				},{
+					xtype: 'component',
+					flex: 1,
+					cls: 'section-title accent-text right-pad',
+					html: 'Create New'
+				}]
 			},{ 
 				xtype: 'component',
 				cls: 'information',
