@@ -21,3 +21,5 @@ target/
 dynamicFiles/
 layerData/
 
+#startup helper
+graze
