@@ -12,7 +12,7 @@ conf/evolutions/
 logs/
 project/project/
 project/target/
-target/.history
+target/
 
 # large/data files
 *.asc
