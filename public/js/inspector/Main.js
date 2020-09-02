@@ -138,8 +138,6 @@ Ext.define('DSS.inspector.Main', {
 				var obj = JSON.parse(response.responseText);
 				me.DSS_isWorking = false;
 
-				console.log("-----------------");
-				console.log(obj);
 				modelResultsLayer.setSource(new ol.source.ImageStatic({
 					url: obj.url,
 					imageExtent: obj.extent,

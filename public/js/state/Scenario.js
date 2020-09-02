@@ -74,7 +74,7 @@ Ext.define('DSS.state.Scenario', {
 						if (!DSS.dialogs.AnimalDialog) {
 							DSS.dialogs.AnimalDialog = Ext.create('DSS.state.scenario.AnimalDialog'); 
 						}
-						DSS.dialogs.AnimalDialog.show().center();
+						DSS.dialogs.AnimalDialog.show().center().setY(0);
 					}
 				},{//------------------------------------------
 					xtype: 'component',

@@ -61,7 +61,7 @@ Ext.define('DSS.map.Main', {
 		'DSS.map.RotationLayer'
 	],
 	
-	layout: 'border',
+	layout: 'fit', // border
 	listeners: {
 		afterrender: function(self) {
 			self.instantiateMap()
@@ -94,10 +94,6 @@ Ext.define('DSS.map.Main', {
 						}*/
 					}
 				}
-			},{
-				xtype: 'container',
-		//		padding: 8, style: 'background-color: #ff0',
-				region: 'south'
 			}]
 		});
 		me.callParent(arguments);
@@ -121,9 +117,8 @@ Ext.define('DSS.map.Main', {
 		});
 		
 		setTimeout(function() {
-			me.DSS_LayerButton.showAt(me.getX() + 2,-32);
-			me.showLayerButton();
-		}, 1000);
+			me.DSS_LayerButton.showAt(me.getX() + 2,2);
+		}, 100);
 		
 	},
 

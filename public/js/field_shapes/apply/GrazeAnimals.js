@@ -28,7 +28,7 @@ Ext.define('DSS.field_shapes.apply.GrazeAnimals', {
 					width: '100%',
 					height: 28,
 					cls: 'information accent-text bold',
-					html: "Graze Animals",
+					html: "Grazing Access",
 				},
 					getToggle(me, 'graze_animals.is_active') // Helper defined in DrawAndApply.js
 				]
@@ -44,7 +44,7 @@ Ext.define('DSS.field_shapes.apply.GrazeAnimals', {
 				},{
 					boxLabel: 'Dairy - Non-Lactating', 	bind: '{graze_animals.dairy-nonlactating}',
 				},{
-					boxLabel: 'Beef Cows', 			bind: '{graze_animals.beef}',
+					boxLabel: 'Beef Cattle', 			bind: '{graze_animals.beef}',
 				}]
 			}]
 		});

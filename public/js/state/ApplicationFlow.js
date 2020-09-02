@@ -16,8 +16,7 @@ DSS.utils.addStyle('.text-drp-50 { text-shadow: 0 1px rgba(0,0,0,0.3),1px 0 rgba
 DSS.utils.addStyle('.font-10 { font-size: 1rem }');
 DSS.utils.addStyle('.font-9 { font-size: 0.9rem }');
 DSS.utils.addStyle('.bold { font-weight: bold}');
-
-DSS.utils.addStyle('.section-title { padding: 0.5rem; font-size: 1.2rem; text-align: center; font-weight: bold}');
+DSS.utils.addStyle('.box-underline { border-bottom: 1px solid rgba(0,120,180,0.5) }');
 
 DSS.utils.addStyle('.x-mask { background-color: rgba(102,102,102,0.6);}')
 DSS.utils.addStyle('.footer-text {border-top: 1px solid rgba(0,0,0,0.15); background: rgba(0,0,0,0.5);padding: 0.72rem; color: #fff; font-size: 0.8rem; text-align: center}')
@@ -26,6 +25,7 @@ DSS.utils.addStyle('.button-margin { margin: 0.5rem 1.75rem 0.75rem;}')
 DSS.utils.addStyle('.button-text-pad { padding: 0.33rem;}')
 
 DSS.utils.addStyle('.information { padding: 0.5rem 0 0.25rem 0; font-size: 0.9rem; text-align: center}')
+DSS.utils.addStyle('.information-compact { padding: 0.1rem 0 0.1rem 0; font-size: 0.9rem; text-align: center}')
 DSS.utils.addStyle('.section-title { padding: 0.5rem; font-size: 1.2rem; text-align: center; font-weight: bold}');
 DSS.utils.addStyle('.section { margin: 0.5rem; margin-bottom: 1rem; padding: 0.75rem; background-color: #fff; border: 1px solid #bbb; border-radius: 0.3rem; box-shadow: 0px 4px 8px rgba(0,0,0,0.25) }')
 
@@ -113,13 +113,6 @@ Ext.define('DSS.state.ApplicationFlow', {
 					flex: 1,
 					height: 114, margin: '8 8 0 -12',
 					style: 'background-image: url("assets/images/graze_logo.png"); background-size: contain; background-repeat: no-repeat',
-						
-/*				},{
-					xtype: 'component',
-					padding: '4 8',
-
-					cls: 'accent-text section-title',
-					html: '<i class="fas fa-user"></i>'*/
 				}]
 			},{
 				// Container for controls necessary at each step in the application flow
@@ -175,14 +168,6 @@ Ext.define('DSS.state.ApplicationFlow', {
 		DSS.layer.farms.setVisible(true);
 		DSS.layer.farms.setOpacity(1);
 		DSS.layer.markers.setVisible(false);
-		
-	
-		return;
-		if (!DSS.dialogs) DSS.dialogs = {};
-		if (!DSS.dialogs.AnimalDialog) {
-			DSS.dialogs.AnimalDialog = Ext.create('DSS.state.scenario.AnimalDialog'); 
-		}
-		DSS.dialogs.AnimalDialog.show().center();
 	},
 	
 	//----------------------------------------------------------------------------------

@@ -1,4 +1,6 @@
 
+DSS.utils.addStyle('.hover {cursor: pointer}');
+
 //------------------------------------------------------------------------------
 Ext.define('DSS.field_shapes.apply.Landcover', {
 //------------------------------------------------------------------------------
@@ -11,7 +13,7 @@ Ext.define('DSS.field_shapes.apply.Landcover', {
 	
 	layout: DSS.utils.layout('vbox', 'start', 'center'),
 	
-	DSS_sectionHeight: 148,
+	DSS_sectionHeight: 178,
 	
 	//--------------------------------------------------------------------------
 	initComponent: function() {
@@ -58,20 +60,37 @@ Ext.define('DSS.field_shapes.apply.Landcover', {
 				},
 				bind: '{cropValue}', // formula from viewModel above
 				defaults: {
-					name: rbName
+					name: rbName,
+					listeners: {
+						afterrender: function(self) {
+							if ( self.boxLabelEl) {
+								self.boxLabelEl.setStyle('cursor', 'pointer')
+							}
+						}
+					}
+				//	boxLabelCls: 'hover'
 				},
 				items: [{ 
 					boxLabel: 'Dry Lot', 			inputValue: 'dl',
 				},{
 					boxLabel: 'Pasture', 			inputValue: 'ps',
 				},{
+					xtype: 'component',
+					style: 'border-bottom: 1px solid rgba(0,0,0,0.1); margin: 2px -32px'
+				},{
 					boxLabel: 'Continuous Corn',	inputValue: 'cc',
 				},{
 					boxLabel: 'Cash Grain',			inputValue: 'cg',
+					boxLabelAttrTpl: 'data-qtip="Two-year rotation: Corn Grain & Soybeans"',
 				},{
 					boxLabel: 'Dairy Rotation 1',	inputValue: 'd1',
+					boxLabelAttrTpl: 'data-qtip="Five-year rotation: Corn Grain, Corn Silage, Three years of Alfalfa"',
 				},{
-					boxLabel: 'Dairy Rotation 2', 	inputValue: 'd2'
+					boxLabel: 'Dairy Rotation 2', 	inputValue: 'd2',
+					boxLabelAttrTpl: 'data-qtip="Three-year rotation: Corn Silage, Soybeans, Oats"',
+				},{
+					xtype: 'checkbox',
+					boxLabel: 'Plant/Till on Contour',
 				}]
 			}]
 		});

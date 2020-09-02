@@ -28,7 +28,7 @@ Ext.define('DSS.field_shapes.apply.Fertilizer', {
 					width: '100%',
 					height: 28,
 					cls: 'information accent-text bold',
-					html: "Apply Fertilizer",
+					html: "Manage Nutrients",
 				},
 					getToggle(me, 'fertilizer.is_active') // Helper defined in DrawAndApply.js
 				]
@@ -37,28 +37,26 @@ Ext.define('DSS.field_shapes.apply.Fertilizer', {
 				itemId: 'contents',
 				layout: DSS.utils.layout('vbox', 'start'),//, 'stretch'),
 				padding: '0 0 6 0',
-				items: [{
-					xtype: 'numberfield',
-					itemId: 'dss-fert-n',
-					fieldLabel: 'lbs N / acre',
-					labelWidth: 90,
+				defaults: {
+					labelWidth: 110,
 					labelAlign: 'right',
-					bind: { value: '{fertilizer.n}' },
-					minValue: 0,
-					maxValue: 200,
-					width: 160,
-					step: 5
+					width: 180,
+				},
+				items: [{
+					xtype: 'checkbox',
+					itemId: 'dss-fert-can-manure-pastures',
+					fieldLabel: 'Manure Pastures',
+					bind: { value: '{fertilizer.canManurePastures}' },
+					inputAttrTpl: 'data-qtip="Allow pastures to accept confined manure"',
 				},{
 					xtype: 'numberfield',
-					itemId: 'dss-fert-p',
-					fieldLabel: 'lbs P / acre',
-					labelWidth: 90,
-					labelAlign: 'right', 
-					bind: { value: '{fertilizer.p}' },
+					itemId: 'dss-fert-ext-recs',
+					fieldLabel: 'Extensions Recs',
+					inputAttrTpl: 'data-qtip="Nutrient application %, relative to UW Extension recommendations"',
+					bind: { value: '{fertilizer.extRecs}' },
 					minValue: 0,
 					maxValue: 200,
-					width: 160,
-					step: 5
+					step: 10
 				}]
 			}]
 		});

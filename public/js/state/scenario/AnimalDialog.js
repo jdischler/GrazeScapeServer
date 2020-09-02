@@ -1,4 +1,19 @@
 
+DSS.utils.addStyle('.sub-container {background-color: rgba(180,180,160,0.1); border-radius: 8px; border: 1px solid rgba(0,0,0,0.2); margin: 4px}')
+
+let rotationFreq = Ext.create('Ext.data.Store', {
+	fields: ['label', 'enum'],
+	autoLoad: true,
+	proxy: {
+		type: 'ajax',
+		url: '/get_options',
+		reader: 'json',
+		extraParams: {
+			type: 'rotationalFrequency'
+		}
+	}
+});
+
 //------------------------------------------------------------------------------
 Ext.define('DSS.state.scenario.AnimalDialog', {
 //------------------------------------------------------------------------------
@@ -9,20 +24,434 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 	closeAction: 'hide',
 	constrain: true,
 	modal: true,
-	width: 480,
-	minHeight: 80,
-	minWidth: 320,
-	resizable: true,
+	width: 832,
+	resizable: false,
+	bodyPadding: 8,
+	titleAlign: 'center',
 	
 	title: 'Configure Animals',
 	
-//	style: 'border-radius: 2px; box-shadow: 0 4px 8px rgba(0,0,0,0.5);',
 	layout: DSS.utils.layout('vbox', 'start', 'stretch'),
 	
 	//--------------------------------------------------------------------------
 	initComponent: function() {
 		let me = this;
 
+		//--------------------------------------------
+		// Dairy Container
+		//--------------------------------------------
+		let dairyContainer = {
+			xtype: 'container',
+			layout: 'fit',
+			items: [{
+				xtype: 'container',
+				itemId: 'dairy-section',
+				cls: 'sub-container',
+				layout: DSS.utils.layout('vbox', 'start', 'stretch'),
+				hidden: true,
+				items: [{
+					xtype: 'component',
+					cls: 'information accent-text box-underline',
+					html: 'Configure the size of the Dairy herd',
+					margin: '0 32',
+				},{
+					xtype: 'container',
+					layout: DSS.utils.layout('vbox', 'start', 'middle'),
+					margin: 8,
+					defaults: {
+						xtype: 'numberfield',
+						value: 20,
+						minValue: 0,
+						step: 10,
+						labelAlign: 'right',
+						labelWidth: 100,
+						width: 200,
+					},
+					items: [{
+						fieldLabel: 'Lactating Cows'
+					},{
+						fieldLabel: 'Dry Cows'
+					},{
+						fieldLabel: 'Heifers'
+					},{
+						fieldLabel: 'Youngstock'
+					}]
+				},{//----------------------------------------------------------------
+					xtype: 'component',
+					cls: 'information accent-text box-underline',
+					html: 'Specify the Average Daily Milk Yield',
+					margin: '0 32',
+				},{
+					xtype: 'numberfield',
+					width: 200,
+					margin: '8 82',
+					fieldLabel: 'Milk Yield (lb/day/Cow)',
+					labelAlign: 'right',
+					labelWidth: 148,
+					value: 60,
+					minValue: 1,
+					step: 0.5,
+				},{ //------------------------------------------------------------
+					xtype: 'component',
+					cls: 'information accent-text box-underline',
+					html: 'How are the Lactating cattle managed?',
+					margin: '0 32',
+				},{
+					xtype: 'container',
+					itemId: 'lactating-cattle',
+					layout: DSS.utils.layout('vbox', 'start', 'middle'),
+					margin: 8,
+					items: [{
+						xtype: 'container',
+						width: undefined,
+						layout: DSS.utils.layout('hbox', 'center'),
+						items: [{
+							xtype: 'component',
+							itemId: 'grazed-display',
+							cls: 'information',
+							padding: 4,margin: '0 4',
+							width: 32,
+							style: 'border: 1px solid rgba(0,0,0,0.1); background-color: white; border-radius: 2px',
+							html: '6'
+						},{
+							xtype: 'slider',
+							width: 200,
+							minValue: 0,
+							maxValue: 12,
+							value: 6,
+							step: 1,
+							listeners: {
+								change: function(slider, newValue) {
+									slider.up().down('#grazed-display').update('' + (12 - newValue));
+									slider.up().down('#confined-display').update('' + newValue);
+									Ext.each(
+										Ext.ComponentQuery.query('[dssID=if-grazed]', me.down('#lactating-cattle')),
+										function(item) {
+											item.setDisabled(newValue == 12);
+										}
+									);
+								}
+							},
+							tipText: function(thumb)  {
+								const v = thumb.slider.getValue();
+								return 12 - v + " / " + v;
+							}
+						},{
+							xtype: 'component',
+							itemId: 'confined-display',
+							cls: 'information',
+							padding: 4,margin: '0 4',
+							width: 32,
+							style: 'border: 1px solid rgba(0,0,0,0.1); background-color: white; border-radius: 2px',
+							html: '6'
+						}]
+					},{
+						xtype: 'container',
+						width: undefined,
+						layout: DSS.utils.layout('hbox', 'center'),
+						items: [{
+							xtype: 'component',
+							width: 64,
+							cls: 'information accent-text bold',
+							html: 'Grazed'
+						},{
+							xtype: 'component',
+							cls: 'information-compact med-text',
+							width: 180,
+							html: 'Period (mo / yr)'
+						},{
+							xtype: 'component',
+							width: 64,
+							cls: 'information accent-text bold',
+							html: 'Confined'
+						}]
+					},{
+						xtype: 'numberfield',
+						dssID: 'if-grazed',
+						value: 24,
+						minValue: 0,
+						maxValue: 12,
+						step: 1,
+						labelAlign: 'right',
+						labelWidth: 140,
+						width: 240,
+						fieldLabel: 'Grazing Time (h/d)',
+						maxValue: 24
+					},{
+						xtype: 'combo',
+						dssID: 'if-grazed',
+						fieldLabel: 'Rotational Frequency',
+						labelWidth: 140,
+						width: 240,
+						labelAlign: 'right',
+						mode: 'remote',
+						triggerAction: 'all',
+						store: rotationFreq,
+						displayField: 'label',
+						valueField: 'enum',
+						value: 'R2'
+					}]
+				},{ //------------------------------------------------------------
+					xtype: 'component',
+					cls: 'information accent-text box-underline',
+					html: 'How are the Non-Lactating cattle managed?',
+					margin: '0 32',
+				},{
+					xtype: 'container',
+					itemId: 'non-lactating-cattle',
+					layout: DSS.utils.layout('vbox', 'start', 'middle'),
+					margin: 8,
+					items: [{
+						xtype: 'container',
+						width: undefined,
+						layout: DSS.utils.layout('hbox', 'center'),
+						items: [{
+							xtype: 'component',
+							itemId: 'grazed-display',
+							cls: 'information',
+							padding: 4,margin: '0 4',
+							width: 32,
+							style: 'border: 1px solid rgba(0,0,0,0.1); background-color: white; border-radius: 2px',
+							html: '6'
+						},{
+							xtype: 'slider',
+							width: 200,
+							minValue: 0,
+							maxValue: 12,
+							value: 6,
+							step: 1,
+							listeners: {
+								change: function(slider, newValue) {
+									slider.up().down('#grazed-display').update('' + (12 - newValue));
+									slider.up().down('#confined-display').update('' + newValue);
+									Ext.each(
+										Ext.ComponentQuery.query('[dssID=if-grazed]', me.down('#non-lactating-cattle')),
+										function(item) {
+											item.setDisabled(newValue == 12);
+										}
+									);
+								}
+							},
+							tipText: function(thumb)  {
+								const v = thumb.slider.getValue();
+								return 12 - v + " / " + v;
+							}
+						},{
+							xtype: 'component',
+							itemId: 'confined-display',
+							cls: 'information',
+							padding: 4,margin: '0 4',
+							width: 32,
+							style: 'border: 1px solid rgba(0,0,0,0.1); background-color: white; border-radius: 2px',
+							html: '6'
+						}]
+					},{
+						xtype: 'container',
+						width: undefined,
+						layout: DSS.utils.layout('hbox', 'center'),
+						items: [{
+							xtype: 'component',
+							width: 64,
+							cls: 'information accent-text bold',
+							html: 'Grazed'
+						},{
+							xtype: 'component',
+							cls: 'information-compact med-text',
+							width: 180,
+							html: 'Period (mo / yr)'
+						},{
+							xtype: 'component',
+							width: 64,
+							cls: 'information accent-text bold',
+							html: 'Confined'
+						}]
+					},{
+						xtype: 'numberfield',
+						dssID: 'if-grazed',
+						value: 24,
+						minValue: 0,
+						maxValue: 12,
+						step: 1,
+						labelAlign: 'right',
+						labelWidth: 140,
+						width: 240,
+						fieldLabel: 'Grazing Time (h/d)',
+						maxValue: 24
+					},{
+						xtype: 'combo',
+						dssID: 'if-grazed',
+						fieldLabel: 'Rotational Frequency',
+						labelWidth: 140,
+						width: 240,
+						labelAlign: 'right',
+						mode: 'remote',
+						triggerAction: 'all',
+						store: rotationFreq,
+						displayField: 'label',
+						valueField: 'enum',
+						value: 'R2'
+					}]
+				}]
+			}]
+		};
+		
+		//------------------------------------------------------------------
+		// Beef Container
+		//------------------------------------------------------------------
+		let beefContainer = {
+			xtype: 'container',
+			layout: 'fit',
+			items: [{
+				xtype: 'container',
+				itemId: 'beef-section',
+				cls: 'sub-container',
+				layout: DSS.utils.layout('vbox', 'start', 'stretch'),
+				hidden: true,
+				items: [{
+					xtype: 'component',
+					cls: 'information accent-text box-underline',
+					html: 'Configure the size of the Beef herd',
+					margin: '0 32',
+				},{
+					xtype: 'container',
+					layout: DSS.utils.layout('vbox', 'start', 'middle'),
+					margin: 8,
+					defaults: {
+						xtype: 'numberfield',
+						value: 20,
+						minValue: 0,
+						step: 10,
+						labelAlign: 'right',
+						labelWidth: 100,
+						width: 200,
+					},
+					items: [{
+						fieldLabel: 'Beef Cows'
+					},{
+						fieldLabel: 'Stockers'
+					},{
+						fieldLabel: 'Finishers',
+						margin: '0 0 34 0'
+					}]
+				},{//----------------------------------------------------------------
+					xtype: 'component',
+					cls: 'information accent-text box-underline',
+					html: 'Specify the Average Daily Weight Gain',
+					margin: '0 32',
+				},{
+					xtype: 'numberfield',
+					width: 200,
+					margin: '8 82',
+					fieldLabel: 'Daily Gain (lb/day/AU)',
+					labelAlign: 'right',
+					labelWidth: 140,
+					value: 2,
+					minValue: 0.25,
+					step: 0.25,
+				},{ //-------------------------------------------------------------
+					xtype: 'component',
+					cls: 'information accent-text box-underline',
+					html: 'How are the Beef cattle managed?',
+					margin: '0 32',
+				},{
+					xtype: 'container',
+					itemId: 'beef-cattle',
+					layout: DSS.utils.layout('vbox', 'start', 'middle'),
+					margin: 8,
+					items: [{
+						xtype: 'container',
+						width: undefined,
+						layout: DSS.utils.layout('hbox', 'center'),
+						items: [{
+							xtype: 'component',
+							itemId: 'grazed-display',
+							cls: 'information',
+							padding: 4,margin: '0 4',
+							width: 32,
+							style: 'border: 1px solid rgba(0,0,0,0.1); background-color: white; border-radius: 2px',
+							html: '6'
+						},{
+							xtype: 'slider',
+							width: 200,
+							minValue: 0,
+							maxValue: 12,
+							value: 6,
+							step: 1,
+							listeners: {
+								change: function(slider, newValue) {
+									slider.up().down('#grazed-display').update('' + (12 - newValue));
+									slider.up().down('#confined-display').update('' + newValue);
+									Ext.each(
+										Ext.ComponentQuery.query('[dssID=if-grazed]', me.down('#beef-cattle')),
+										function(item) {
+											item.setDisabled(newValue == 12);
+										}
+									);
+								}
+							},
+							tipText: function(thumb)  {
+								const v = thumb.slider.getValue();
+								return 12 - v + " / " + v;
+							}
+						},{
+							xtype: 'component',
+							itemId: 'confined-display',
+							cls: 'information',
+							padding: 4,margin: '0 4',
+							width: 32,
+							style: 'border: 1px solid rgba(0,0,0,0.1); background-color: white; border-radius: 2px',
+							html: '6'
+						}]
+					},{
+						xtype: 'container',
+						width: undefined,
+						layout: DSS.utils.layout('hbox', 'center'),
+						items: [{
+							xtype: 'component',
+							width: 64,
+							cls: 'information accent-text bold',
+							html: 'Grazed'
+						},{
+							xtype: 'component',
+							cls: 'information-compact med-text',
+							width: 180,
+							html: 'Period (mo / yr)'
+						},{
+							xtype: 'component',
+							width: 64,
+							cls: 'information accent-text bold',
+							html: 'Confined'
+						}]
+					},{
+						xtype: 'numberfield',
+						dssID: 'if-grazed',
+						value: 24,
+						minValue: 0,
+						maxValue: 12,
+						step: 1,
+						labelAlign: 'right',
+						labelWidth: 140,
+						width: 240,
+						fieldLabel: 'Grazing Time (h/d)',
+						maxValue: 24
+					},{
+						xtype: 'combo',
+						dssID: 'if-grazed',
+						fieldLabel: 'Rotational Frequency',
+						labelWidth: 140,
+						width: 240,
+						labelAlign: 'right',
+						mode: 'remote',
+						triggerAction: 'all',
+						store: rotationFreq,
+						displayField: 'label',
+						valueField: 'enum',
+						value: 'R2'
+					}]
+				}]
+			}]
+		};
+		
 		Ext.applyIf(me, {
 			items: [{
 				xtype: 'component',
@@ -39,18 +468,17 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 					minWidth: 100,
 					enableToggle: true
 				},
-				items: [{
+				items: [{//--------------------------------------------------------------------------
 					text: 'Dairy',
 					toggleHandler: function(self, pressed) {
-						
-						let container = me.down("#bloof-1");
+						let container = me.down("#dairy-section");
 						if (pressed) {
 							container.setHeight(0);
 							container.setVisible(true)
 							container.animate({
 								dynamic: true,
 								to: {
-									height: 230
+									height: 550
 								}
 							});
 						} 
@@ -67,55 +495,46 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 							});
 						}
 					}
-				},{
+				},{ //--------------------------------------------------------------------------
 					text: 'Beef',
 					toggleHandler: function(self, pressed) {
-						me.setHeight(null)
-						me.down("#bloof-2").setVisible(pressed)
+						let container = me.down("#beef-section");
+						if (pressed) {
+							container.setHeight(0);
+							container.setVisible(true)
+							container.animate({
+								dynamic: true,
+								to: {
+									height: 390
+								}
+							});
+						} 
+						else {
+							me.setHeight(null)
+							container.animate({
+								dynamic: true,
+								to: {
+									height: 0
+								},
+								callback: function() {
+									container.setVisible(false);
+								}
+							});
+						}
 					}
 				}]
-			},{
+			},{//------------------------------------------------------------------
 				xtype: 'container',
-				//width: '100%',
-				//flex: 1,
-				margin: 8,
-				scrollable: 'y',
-				layout: DSS.utils.layout('vbox', 'start', 'stretch'),
-				items: [{
-					itemId: 'bloof-1',
-					xtype: 'component',
-					hidden: true,
-					height: 230,
-					style: 'background-color: red'
-				},{
-					itemId: 'bloof-2',
-					xtype: 'component',
-					hidden: true,
-					height: 230,
-					style: 'background-color: yellow'
-				}]	
+				layout: DSS.utils.layout('hbox', 'center'),
+//				layout: DSS.utils.layout('vbox', 'start', 'stretch'),
+				defaults: {
+					width: 400,
+				},
+				items: [
+					dairyContainer,
+					beefContainer
+				]	
 			}]
-			// Add Dairy
-			// 	number of lactating cows
-			// 	number of dry cows
-			//  number of heifers
-			//	number of youngstock
-			//	- Lactating Cows
-			//		Grazing Time (hours/day)
-			//		Grazing Period (months/year)
-			//		Confined Period (months/year)
-			//	- Non-Lactating Cows
-			//		Grazing Time (hours/day)
-			//		Grazing Period (months/year)
-			//		Confined Period (months/year)
-			// Add Beef
-			//	number of beef cow
-			//	number of stockers
-			//	number of finishing
-			//	- Beef
-			//		Grazing Time (hours/day)
-			//		Grazing Period (months/year)
-			//		Confined Period (months/year)
 		});
 		
 		me.callParent(arguments);

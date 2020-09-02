@@ -86,7 +86,7 @@ Ext.define('DSS.view.AppViewport', {
 					maxWidth: 420,
 				},
 				resizeHandles: 'w',
-				width: 0,
+				width: 280,
 				itemId: 'DSS-mode-controls',
 				maxWidth: 420,
 				padding: '8 6',
@@ -111,7 +111,7 @@ Ext.define('DSS.view.AppViewport', {
 									self.resizer.resizeTracker.minWidth = targetSize;
 								}
 							})
-						}, 2000);
+						}, 10);
 					}
 				}
 			}]
