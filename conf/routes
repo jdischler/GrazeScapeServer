@@ -10,6 +10,8 @@ POST	/create_operation			controllers.HomeController.createOperation(request: Req
 POST	/add_field					controllers.HomeController.addField(request: Request)
 POST 	/modify_fields				controllers.HomeController.modifyFields(request: Request)
 
+GET		/get_options				controllers.HomeController.getOptions(type: String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET		/renders/:file				controllers.FileService.getFile(file: String)
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

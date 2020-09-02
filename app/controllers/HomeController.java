@@ -23,14 +23,10 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import analysis.*;
-import analysis.windowing.Moving_CDL_Window;
-import analysis.windowing.Moving_CDL_Window_Z;
-import analysis.windowing.Moving_Sample_Window;
-import analysis.windowing.Moving_Sample_Window_Z;
-import analysis.windowing.Moving_Window;
 import query.*;
 import raster.Extents;
 import db.FieldGeometry;
+import db.RotationalFrequency;
 import io.ebean.Ebean;
 import io.ebean.SqlRow;
 import models.BirdHabitat;
@@ -139,6 +135,17 @@ public class HomeController extends Controller {
 		return ok((Content) views.html.app.render()).withSession(session);
 	}
 
+	//------------------------------------------------------------------
+	public Result getOptions(String type) {
+		
+		JsonNode js = null;
+		logger.debug(type);
+		if (type.equalsIgnoreCase("rotationalFrequency")) {
+			js = RotationalFrequency.toJson();
+		}
+		return ok(js);
+	}
+	
 	//------------------------------------------------------------------
 	public Result getFarms() {
 		return ok(db.Farm.getAllAsGeoJson());
