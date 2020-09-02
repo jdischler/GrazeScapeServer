@@ -5,7 +5,13 @@
 *.swp
 
 # secrets
+.env
+.env_prod
+certs/
 conf/production.conf
+docker-compose.yml
+docker-compose_prod.yml
+nginx/.htpasswd
 
 # app files
 conf/evolutions/
@@ -21,5 +27,7 @@ target/
 dynamicFiles/
 layerData/
 
-#startup helper
+# startup helper
 graze
+
+
