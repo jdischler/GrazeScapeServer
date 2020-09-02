@@ -115,6 +115,11 @@ public class Json
 	}
 	
 	//--------------------------------------------------------------------------	
+	public static ArrayNode makeArray() {
+		return JsonNodeFactory.instance.arrayNode();
+	}
+	
+	//--------------------------------------------------------------------------	
 	public static ArrayNode array(Object ... arguments) {
 		
 		ArrayNode data = JsonNodeFactory.instance.arrayNode();
@@ -132,9 +137,12 @@ public class Json
 			} else if (o instanceof Integer) {
 				data.add((Integer)o);
 				
-			} else  if (o instanceof String) {
+			} else if (o instanceof String) {
 				data.add(o.toString());
 				
+			} else if (o instanceof ObjectNode) {
+				data.add((ObjectNode)o);
+			
 			} else {
 				data.add(o.toString());
 			}
