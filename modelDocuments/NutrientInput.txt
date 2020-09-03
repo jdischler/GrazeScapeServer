@@ -9,6 +9,7 @@
 
 % MANURE
 % First, we need to determine how much grazed manure will be applied to a given paddock
+% in units of kg/ha
 (Grazed manure P rate lactating) =
 		(Grazed manure P production lactating)/(Pasture area lactating)
 (Grazed manure N rate lactating) =
@@ -36,14 +37,14 @@
 %	THEN add up all paddock area as (Pasture area)
 
 % Assume that all cropland will be receiving manure
-% Add up each individual crop rotation area
+% Add up each individual crop rotation area [ha]
 (CC area)
 (CG area)
 (CSO area)
 (DR area)
 (Hay area)
 
-% Then add up each individual crop area
+% Then add up each individual crop area [ha]
 (CornG area) = (CC area)+1/2*(CG area)+1/5*(DR area)
 (CornS area) = 1/3*(CSO area)+1/5*(DR area)
 (Soy area) = 1/2*(CG area)+1/3*(CSO area)
@@ -52,7 +53,7 @@
 (Oat area) = 1/3*(CSO area)
 
 
-% Third, sum up all available manure from confined animals
+% Third, sum up all available manure from confined animals [kg]
 (Confined manure production) =
 		(Lactating cow manure confined)+(NonLact cow manure confined)+(Beef manure confined)
 (Confined manure P production) =
@@ -60,11 +61,11 @@
 (Confined manure N production) =
 		(Lactating cow manure P confined)+(NonLact cow manure P confined)+(Beef manure P confined)
 
-% find manure P and manure N concentrations
+% find manure P and manure N concentrations [kg/kg]
 (Confined manure P conc) = (Confined manure P production)/(Confined manure production)
 (Confined manure N conc) = (Confined manure P production)/(Confined manure production)
 
-% determine manure exports
+% determine manure exports [kg]
 (Confined manure P exported) = (Confined manure exported)*(Confined manure P conc)
 (Confined manure N exported) = (Confined manure exported)*(Confined manure N conc)
 
@@ -81,6 +82,7 @@
 % (hayP_ratio2corn) = 55/60
 % (pastureP_ratio2corn) = 35/60
 
+% manure rates [kg/ha]
 (Manure rate cornG) = 
 		(Avail confined manure)/((CornG area)+80/60*(CornS area)+40/60*(Soy area)+25/60*(Alf1 area)+40/60*(Alf2 area)+35/60*(Oat area)+55/60*(Hay area)+35/60*(Pasture area))
 (Manure rate cornS) = 80/60*(Manure rate cornG)
@@ -91,7 +93,7 @@
 (Manure rate hay) = 55/60*(Manure rate cornG)
 (Manure rate pasture) = 35/60*(Manure rate cornG)
 
-% Calculate annualized manure P rate for each rotation
+% Calculate annualized manure P rate for each rotation [kg/ha]
 (Manure rate CC) = (Manure rate cornG)
 (Manure P rate CC) = (Manure rate CC)*(Confined manure P conc)
 (Manure N rate CC) = (Manure rate CC)*(Confined manure N conc)
@@ -107,23 +109,23 @@
 
 
 % FERTILIZER
-% First, determine the annualized rotational average P recommendation
-(FertP Rec CC) = 60*0.453592*0.4364
-(FertP Rec CG) = 1/2*(60+40)*0.453592*0.4364
-(FertP Rec CSO) = 1/3*(80+40+35)*0.453592*0.4364
-(FertP Rec DR) = (1/5*(80+60+25)+2/5*40)*0.453592*0.4364
-(FertP Rec Hay) = 55*0.453592*0.4364
-(FertP Rec Pasture) = 35*0.453592*0.4364
+% First, determine the annualized rotational average P recommendation [kg/ha]
+(FertP Rec CC) = 60*0.453592*0.4364*2.47105
+(FertP Rec CG) = 1/2*(60+40)*0.453592*0.4364*2.47105
+(FertP Rec CSO) = 1/3*(80+40+35)*0.453592*0.4364*2.47105
+(FertP Rec DR) = (1/5*(80+60+25)+2/5*40)*0.453592*0.4364*2.47105
+(FertP Rec Hay) = 55*0.453592*0.4364*2.47105
+(FertP Rec Pasture) = 35*0.453592*0.4364*2.47105
 
-(FertN Rec CC) = 145*0.453592
-(FertN Rec CG) = 1/2*(110+0)*0.453592
-(FertN Rec CSO) = 1/3*(110+0+40)*0.453592
-(FertN Rec DR) = (1/5*(145+145+0)+2/5*0)*0.453592
-(FertN Rec Hay) = 130*0.453592
+(FertN Rec CC) = 145*0.453592*2.47105
+(FertN Rec CG) = 1/2*(110+0)*0.453592*2.47105
+(FertN Rec CSO) = 1/3*(110+0+40)*0.453592*2.47105
+(FertN Rec DR) = (1/5*(145+145+0)+2/5*0)*0.453592*2.47105
+(FertN Rec Hay) = 130*0.453592*2.47105
 
 
 % Then determine the difference between the manure applied+starter fert applied and the desired proportion of recommendation (RecProp)
-% This is the additional fertilizer P applied
+% This is the additional fertilizer P applied [kg/ha]
 % Only use values that are greater than zero
 % Note: these fertilizer P application rates could be overriden by the user if known
 (FertP CC) = RecProp*(FertP Rec CC)-(Manure P rate CC)-(StartFertP CC)
@@ -134,10 +136,17 @@
 IF pasture is fertilized
 	(FertP Pasture) = RecProp*(FertP Rec Pasture)-(Manure P rate Pasture)-(StartFertP Pasture)
 
-% Then sum up manure, fertilizer, and starter fertilizer
+% Then sum up manure, fertilizer, and starter fertilizer [kg/ha]
 (TotP CC) = (Manure P rate CC)+(StartFertP CC)+(FertP CC)
 (TotP CG) = (Manure P rate CG)+(StartFertP CG)+(FertP CG)
 (TotP CSO) = (Manure P rate CSO)+(StartFertP CSO)+(FertP CSO)
 (TotP DR) = (Manure P rate DR)+(StartFertP DR)+(FertP DR)
 (TotP Hay) = (Manure P rate Hay)+(StartFertP Hay)+(FertP Hay)
 (TotP Pasture) = (Manure P rate Pasture)+(StartFertP Pasture)+(FertP Pasture)
+
+% Then determine additional fertilizer N applied [kg/ha] in same way as P (using same value for RecProp)
+(FertN CC) = RecProp*(FertN Rec CC)-(Manure N rate CC)-(StartFertN CC)
+(FertN CG) = RecProp*(FertN Rec CG)-(Manure N rate CG)-(StartFertN CG)
+(FertN CSO) = RecProp*(FertN Rec CSO)-(Manure N rate CSO)-(StartFertN CSO)
+(FertN DR) = RecProp*(FertN Rec DR)-(Manure N rate DR)-(StartFertN DR)
+(FertN Hay) = RecProp*(FertN Rec Hay)-(Manure N rate Hay)-(StartFertN Hay)
