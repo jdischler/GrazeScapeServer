@@ -73,6 +73,8 @@ Ext.define('DSS.state.Scenario', {
 						if (!DSS.dialogs) DSS.dialogs = {};
 						if (!DSS.dialogs.AnimalDialog) {
 							DSS.dialogs.AnimalDialog = Ext.create('DSS.state.scenario.AnimalDialog'); 
+							DSS.dialogs.AnimalDialog.setViewModel(DSS.viewModel.scenario);		
+
 						}
 						DSS.dialogs.AnimalDialog.show().center().setY(0);
 					}
@@ -121,8 +123,48 @@ Ext.define('DSS.state.Scenario', {
 		DSS.modify.setActive(false);
 		DSS.fieldStyleFunction = undefined;	DSS.layer.fields.changed();
 
-//		Ext.create('DSS.controls.ApplicationState', {id: 'crap-state'}).showAt(400,-4);
+		me.initViewModel();
+	},
+	
+	//-----------------------------------------------------------------------------
+	initViewModel: function() {
+		if (DSS && DSS.viewModel && DSS.viewModel.scenario) return;
 		
+		if (!DSS['viewModel']) DSS['viewModel'] = {}
+		DSS.viewModel.scenario = new Ext.app.ViewModel({
+			formulas: {
+				tillageValue: { 
+					bind: '{tillage.value}',
+					get: function(value) { return {tillage: value }; 			},
+					set: function(value) { this.set('tillage.value', value); 	}
+				}
+			},
+			data: {
+				dairy: {
+					// counts
+					lactating: 10,
+					dry: 20,
+					heifers: 40,
+					youngstock: 80,
+					// milk yield
+					'daily-yield': 50,
+					// lactating cows / confinement / grazing
+					'lactating-confined': 12,
+					'lactating-graze-time': 20,
+					'lactating-rotation-freq': 'R4',
+					// non-lactating cows / confinement / grazing
+					'non-lactating-confined': 3,
+					'non-lactating-graze-time': 24,
+					'non-lactating-rotation-freq': 'R2',
+				},
+				beef: {
+					cows: 20,
+					stockers: 40,
+					finishers: 80,
+					'daily-gain': 4
+				}
+			}
+		})
 	}
 
 });

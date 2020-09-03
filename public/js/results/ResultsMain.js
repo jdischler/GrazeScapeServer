@@ -2,15 +2,15 @@
 //------------------------------------------------------------------------------
 Ext.define('DSS.results.ResultsMain', {
 //------------------------------------------------------------------------------
-	extend: 'Ext.Container',
+	extend: 'Ext.window.Window',
 	alias: 'widget.results_main',
-    alternateClassName: 'DSS.ResultsMain',
-    singleton: true,	
 	
-    autoDestroy: false,
-    
     scrollable: 'y',
 
+    title: 'Results',
+    layout: DSS.utils.layout('vbox', 'start', 'stretch'),
+ //   style: 'background-color: #fff',
+	titleAlign: 'center',
 	requires: [
 	],
 	
@@ -20,91 +20,72 @@ Ext.define('DSS.results.ResultsMain', {
 
 		Ext.applyIf(me, {
 			items: [{
-				xtype: 'component',
-				cls: 'section-title light-text text-drp-20',
-				html: 'Results <i class="fas fa-chart-line fa-fw accent-text text-drp-50"></i>',
-				height: 35,
-			},{
 				xtype: 'container',
-				style: 'background-color: #fff; border-radius: 6px; border: 1px solid #444',
-				margin: '8 4 4 4',
-			//	height: 350,
-				layout: DSS.utils.layout('vbox', 'start', 'stretch'),
+				height: 300,
+				margin: 4,
+				layout: DSS.utils.layout('hbox', 'start', 'stretch'),
 				items: [{
-					xtype: 'component',
-					cls: 'section-title accent-text',
-					html: '80,496'
-				},{
-					xtype: 'container',
-					layout: DSS.utils.layout('hbox', 'start', 'stretch'),
-					items:[{
-						xtype: 'component', flex: 1
-					},{
-						xtype: 'component',
-						cls: 'information med-text',
-						style: 'border-top: 1px solid #aaa',
-						padding: '4 8',
-						html: 'Total Dry Matter (kg)'
-					},{
-						xtype: 'component', flex: 1
-					}]
-				},{ //-------------------------------------------------------------------
-				   xtype: 'polar',
-				   height: 320,
-				   border: false,
-				   innerPadding: 4,
-				   store: {
-				       fields: ['name', 'data1'],
-				       data: [{
-				           name: 'Silage',
-				           data1: 25592
-				       }, {
-				           name: 'Alfalfa',
-				           data1: 12809
-				       }, {
-				           name: 'Grass',
-				           data1: 8701
-				       }, {
-				           name: 'Oats',
-				           data1: 3204.3
-				       }, {
-				           name: 'Soybeans',
-				           data1: 6216
-				       }, {
-				           name: 'Corn Grain',
-				           data1: 23972
-				       }]
-				   },
-				   legend: {
-					   type: 'sprite',
-					   docked: 'bottom'
-				   },
-				   series: {
-				       type: 'pie',
-				       angleField: 'data1',
-				       label: {
-				           field: 'name',
-				           display: 'inside'
-				       },
-				       colors: [
-				    	   '#a84',
-				    	   '#a6d',
-				    	   '#6c4',
-				    	   '#c74',
-				    	   '#49d',
-				    	   '#ee5',
-				       ]
-				   }					
-				},{ //---------------------------------------------------------------------------
-				   xtype: 'cartesian',
-				   height: 320,
-				   legend: {
-					   type: 'sprite',
-					   docked: 'bottom'
-				   },				   
-				   insetPadding: 4,
-				   border: false,
-				   store: {
+					xtype: 'polar',
+					flex: 1,
+					insetPadding: 0,
+					border: false,
+					store: {
+						fields: ['name', 'data1'],
+						data: [{
+							name: 'Silage',
+							data1: 25592
+						},{
+							name: 'Alfalfa',
+							data1: 12809
+						},{
+							name: 'Grass',
+							data1: 8701
+						},{
+							name: 'Oats',
+							data1: 3204.3
+						},{
+							name: 'Soybeans',
+							data1: 6216
+						},{
+							name: 'Corn Grain',
+							data1: 23972
+						}]
+					},
+					legend: {
+						type: 'sprite',
+						docked: 'bottom'
+					},
+					series: {
+						type: 'pie',
+						angleField: 'data1',
+						label: {
+							field: 'name',
+							display: 'inside'
+						},
+						colors: [
+							'#a84',
+							'#a6d',
+							'#6c4',
+							'#c74',
+							'#49d',
+							'#ee5',
+						]
+					}				
+				},{ //--------------------------
+					xtype: 'cartesian',
+					flex: 1,
+					insetPadding: {
+						left: 0, right: 10, top: 10, bottom: 0
+					},
+					innerPadding: {
+						left: 6, right: 6,
+					},
+					border: false,
+					legend: {
+						type: 'sprite',
+						docked: 'bottom'
+					},				   
+					store: {
 						fields: ['name', 'datax_cg', 'datay_cg', 'datax_il', 'datay_il'],
 						data: [{
 							'datax_cg':1.36535, 'datay_cg':0
@@ -149,7 +130,7 @@ Ext.define('DSS.results.ResultsMain', {
 						},{
 							'datax_cg':10.396481, 'datay_cg':0.01
 						},
-						
+							
 						{'datax_il':3.8, 'datay_il':0.0},
 						{'datax_il':3.96, 'datay_il':2.61},{'datax_il':4.18, 'datay_il':5.88},
 						{'datax_il':4.39, 'datay_il':9.15},{'datax_il':4.59, 'datay_il':4.19},
@@ -170,104 +151,122 @@ Ext.define('DSS.results.ResultsMain', {
 						
 						{'datax_al':4.86, 'datay_al':0},{'datax_al':4.931372, 'datay_al':0.19},{'datax_al':5.006387, 'datay_al':0.19},{'datax_al':5.0814023, 'datay_al':0.22999999},{'datax_al':5.156418, 'datay_al':0.25},{'datax_al':5.231433, 'datay_al':0.42999998},{'datax_al':5.306448, 'datay_al':0.51},{'datax_al':5.381463, 'datay_al':0.57},{'datax_al':5.456478, 'datay_al':0.9},{'datax_al':5.531493, 'datay_al':1.38},{'datax_al':5.6065083, 'datay_al':1.36},{'datax_al':5.681524, 'datay_al':1.64},{'datax_al':5.756539, 'datay_al':2.1},{'datax_al':5.831554, 'datay_al':1.52},{'datax_al':5.906569, 'datay_al':2.09},{'datax_al':5.981584, 'datay_al':3.3799999},{'datax_al':6.056599, 'datay_al':2.35},{'datax_al':6.1316147, 'datay_al':2.1599998},{'datax_al':6.2066298, 'datay_al':0.55},{'datax_al':6.281645, 'datay_al':0.02},{'datax_al':6.35666, 'datay_al':0.01},
 						]
-				   },
-				   axes: [{
-				       type: 'numeric',
-				       position: 'left',
-				       fields: ['datay_cg', 'datay_gg', 'datay_sb', 'datay_il', 'datay_al'],
-				       title: {
-				           text: 'ha',
-				           fontSize: 15
-				       },
-				       grid: true,
-				   }, {
-				       type: 'numeric',
-				       position: 'bottom',
-				       fields: ['datax_cg','datax_gg', 'datax_sb', 'datax_il', 'datax_al'],
-				       title: {
-				           text: 'DM (kg)',
-				           fontSize: 15
-				       }
-				   }],
-				   series: [{
-				       type: 'line', fill: true,//, smooth: true,
-				       xField: 'datax_il', yField: 'datay_il',
-				       title: 'Silage',
-				       style: {
-				           fill: '#962',
-				           fillOpacity: 0.2,
-				           stroke: '#740',
-				           strokeOpacity: 0.8,
-				       }
-				   },{
-				       type: 'line', fill: true,// smooth: true,
-				       xField: 'datax_al', yField: 'datay_al',
-				       title: 'Alfalfa',
-				       style: {
-				           fill: '#94b',
-				           fillOpacity: 0.2,
-				           stroke: '#729',
-				           strokeOpacity: 0.8,
-				       }
-				   },{
-				       type: 'line', fill: true,// smooth: true,
-				       xField: 'datax_gg', yField: 'datay_gg',
-				       title: 'Grass',
-				       style: {
-				           fill: '#4a2',
-				           fillOpacity: 0.2,
-				           stroke: '#280',
-				           strokeOpacity: 0.8,
-				       }
-				   },{
-				       type: 'line', fill: true,// smooth: true,
-				       xField: 'datax_ot', yField: 'datay_ot',
-				       title: 'Oats',
-				       style: {
-				           fill: '#c74',
-				           fillOpacity: 0.2,
-				           stroke: '#840',
-				           strokeOpacity: 0.8,
-				       }
-				   },{
-				       type: 'line', fill: true,// smooth: true,
-				       xField: 'datax_sb', yField: 'datay_sb',
-				       title: 'Soybeans',
-				       style: {
-				           fill: '#26a',
-				           fillOpacity: 0.2,
-				           stroke: '#048',
-				           strokeOpacity: 0.8,
-				       }
-				   },{
-				       type: 'line', fill: true,//, smooth: true,
-				       xField: 'datax_cg', yField: 'datay_cg',
-				       title: 'Corn Grain',
-				       style: {
-				           fill: '#ee2',
-				           fillOpacity: 0.2,
-				           stroke: '#cc0',
-				           strokeOpacity: 0.8,
-				       }
-				   }]
+					},
+					axes: [{
+						type: 'numeric',
+						position: 'left',
+						fields: ['datay_cg', 'datay_gg', 'datay_sb', 'datay_il', 'datay_al'],
+						title: {
+							text: 'ha',
+							fontSize: 15
+						},
+						grid: true,
+					},{
+						type: 'numeric',
+						position: 'bottom',
+						fields: ['datax_cg','datax_gg', 'datax_sb', 'datax_il', 'datax_al'],
+						title: {
+							text: 'DM (kg)',
+							fontSize: 15
+						}
+					}],
+					series: [{
+						type: 'line', fill: true,//, smooth: true,
+						xField: 'datax_il', yField: 'datay_il',
+						title: 'Silage',
+						style: {
+							fill: '#962',
+							fillOpacity: 0.2,
+							stroke: '#740',
+							strokeOpacity: 0.8,
+						}
+					},{
+						type: 'line', fill: true,// smooth: true,
+						xField: 'datax_al', yField: 'datay_al',
+						title: 'Alfalfa',
+						style: {
+							fill: '#94b',
+							fillOpacity: 0.2,
+							stroke: '#729',
+							strokeOpacity: 0.8,
+						}
+					},{
+						type: 'line', fill: true,// smooth: true,
+						xField: 'datax_gg', yField: 'datay_gg',
+						title: 'Grass',
+						style: {
+							fill: '#4a2',
+							fillOpacity: 0.2,
+							stroke: '#280',
+							strokeOpacity: 0.8,
+						}
+					},{
+						type: 'line', fill: true,// smooth: true,
+						xField: 'datax_ot', yField: 'datay_ot',
+						title: 'Oats',
+						style: {
+							fill: '#c74',
+							fillOpacity: 0.2,
+							stroke: '#840',
+							strokeOpacity: 0.8,
+						}
+					},{
+						type: 'line', fill: true,// smooth: true,
+						xField: 'datax_sb', yField: 'datay_sb',
+						title: 'Soybeans',
+						style: {
+							fill: '#26a',
+							fillOpacity: 0.2,
+							stroke: '#048',
+							strokeOpacity: 0.8,
+						}
+					},{
+						type: 'line', fill: true,//, smooth: true,
+						xField: 'datax_cg', yField: 'datay_cg',
+						title: 'Corn Grain',
+						style: {
+							fill: '#ee2',
+							fillOpacity: 0.2,
+							stroke: '#cc0',
+							strokeOpacity: 0.8,
+						}
+					}]
 				}]
 			}]
 		});
+				
 		
+		
+	/*			xtype: 'container',
+				style: 'background-color: #fff; border-radius: 6px; border: 1px solid #444',
+				width: 250,
+				margin: '8 4 4 4',
+			//	height: 350,
+				layout: DSS.utils.layout('vbox', 'start', 'stretch'),
+				items: [{
+					xtype: 'component',
+					cls: 'section-title accent-text',
+					html: '80,496'
+				},{
+					xtype: 'container',
+					layout: DSS.utils.layout('hbox', 'start', 'stretch'),
+					items:[{
+						xtype: 'component', flex: 1
+					},{
+						xtype: 'component',
+						cls: 'information med-text',
+						style: 'border-top: 1px solid #aaa',
+						padding: '4 8',
+						html: 'Total Dry Matter (kg)'
+					},{
+						xtype: 'component', flex: 1
+					}]
+				},{ //-------------------------------------------------------------------
+				},{ //---------------------------------------------------------------------------
+			}]
+		});
+		*/
 		me.callParent(arguments);
 	},
-	
-	//--------------------------------------------------------------------------
-	addModeControl: function() {
-		let me = this;
-		let c = DSS_viewport.down('#DSS-mode-controls');
-		
-		if (!c.items.has(me)) {
-			Ext.suspendLayouts();
-				c.removeAll(false);
-				c.add(me);
-			Ext.resumeLayouts(true);
-		}
-	}
 	
 });

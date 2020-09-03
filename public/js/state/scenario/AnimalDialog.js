@@ -68,13 +68,17 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 						width: 200,
 					},
 					items: [{
-						fieldLabel: 'Lactating Cows'
+						fieldLabel: 'Lactating Cows',
+						bind: '{dairy.lactating}'
 					},{
-						fieldLabel: 'Dry Cows'
+						fieldLabel: 'Dry Cows',
+						bind: '{dairy.dry}'
 					},{
-						fieldLabel: 'Heifers'
+						fieldLabel: 'Heifers',
+						bind: '{dairy.heifers}'
 					},{
-						fieldLabel: 'Youngstock'
+						fieldLabel: 'Youngstock',
+						bind: '{dairy.youngstock}'
 					}]
 				},{//----------------------------------------------------------------
 					xtype: 'component',
@@ -88,7 +92,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 					fieldLabel: 'Milk Yield (lb/day/Cow)',
 					labelAlign: 'right',
 					labelWidth: 148,
-					value: 60,
+					bind: '{dairy.daily-yield}',
 					minValue: 1,
 					step: 0.5,
 				},{ //------------------------------------------------------------
@@ -112,13 +116,12 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 							padding: 4,margin: '0 4',
 							width: 32,
 							style: 'border: 1px solid rgba(0,0,0,0.1); background-color: white; border-radius: 2px',
-							html: '6'
 						},{
 							xtype: 'slider',
 							width: 200,
 							minValue: 0,
 							maxValue: 12,
-							value: 6,
+							bind: '{dairy.lactating-confined}',
 							step: 1,
 							listeners: {
 								change: function(slider, newValue) {
@@ -143,7 +146,6 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 							padding: 4,margin: '0 4',
 							width: 32,
 							style: 'border: 1px solid rgba(0,0,0,0.1); background-color: white; border-radius: 2px',
-							html: '6'
 						}]
 					},{
 						xtype: 'container',
@@ -168,7 +170,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 					},{
 						xtype: 'numberfield',
 						dssID: 'if-grazed',
-						value: 24,
+						bind: '{dairy.lactating-graze-time}',
 						minValue: 0,
 						maxValue: 12,
 						step: 1,
@@ -189,7 +191,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 						store: rotationFreq,
 						displayField: 'label',
 						valueField: 'enum',
-						value: 'R2'
+						bind: '{dairy.lactating-rotation-freq}',
 					}]
 				},{ //------------------------------------------------------------
 					xtype: 'component',
@@ -212,13 +214,12 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 							padding: 4,margin: '0 4',
 							width: 32,
 							style: 'border: 1px solid rgba(0,0,0,0.1); background-color: white; border-radius: 2px',
-							html: '6'
 						},{
 							xtype: 'slider',
 							width: 200,
 							minValue: 0,
 							maxValue: 12,
-							value: 6,
+							bind: '{dairy.non-lactating-confined}',
 							step: 1,
 							listeners: {
 								change: function(slider, newValue) {
@@ -243,7 +244,6 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 							padding: 4,margin: '0 4',
 							width: 32,
 							style: 'border: 1px solid rgba(0,0,0,0.1); background-color: white; border-radius: 2px',
-							html: '6'
 						}]
 					},{
 						xtype: 'container',
@@ -268,7 +268,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 					},{
 						xtype: 'numberfield',
 						dssID: 'if-grazed',
-						value: 24,
+						bind: '{dairy.non-lactating-graze-time}',
 						minValue: 0,
 						maxValue: 12,
 						step: 1,
@@ -289,7 +289,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 						store: rotationFreq,
 						displayField: 'label',
 						valueField: 'enum',
-						value: 'R2'
+						bind: '{dairy.non-lactating-rotation-freq}',
 					}]
 				}]
 			}]
@@ -318,7 +318,6 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 					margin: 8,
 					defaults: {
 						xtype: 'numberfield',
-						value: 20,
 						minValue: 0,
 						step: 10,
 						labelAlign: 'right',
@@ -326,12 +325,15 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 						width: 200,
 					},
 					items: [{
-						fieldLabel: 'Beef Cows'
+						fieldLabel: 'Beef Cows',
+						bind: '{beef.cows}'
 					},{
-						fieldLabel: 'Stockers'
+						fieldLabel: 'Stockers',
+						bind: '{beef.stockers}'
 					},{
 						fieldLabel: 'Finishers',
-						margin: '0 0 34 0'
+						margin: '0 0 34 0',
+						bind: '{beef.finishers}'
 					}]
 				},{//----------------------------------------------------------------
 					xtype: 'component',
@@ -345,7 +347,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 					fieldLabel: 'Daily Gain (lb/day/AU)',
 					labelAlign: 'right',
 					labelWidth: 140,
-					value: 2,
+					bind: '{beef.daily-gain}',
 					minValue: 0.25,
 					step: 0.25,
 				},{ //-------------------------------------------------------------

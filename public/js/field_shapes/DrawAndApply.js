@@ -56,7 +56,6 @@ Ext.define('DSS.field_shapes.DrawAndApply', {
 					is_active: false,
 					extRecs: 100, // %
 					canManurePastures: true
-					
 				}
 			}
 		})

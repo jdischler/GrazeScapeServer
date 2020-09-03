@@ -127,6 +127,10 @@ Ext.define('DSS.view.AppViewport', {
 			floating: true, 
 			shadow: false,
 		}).showAt(-1,-1);
+		
+		setTimeout(function() {
+			Ext.create('DSS.results.ResultsMain').show().center().maximize(true);
+		}, 3000);
 	},
 	
 	doChartWorkPanel: function() {
