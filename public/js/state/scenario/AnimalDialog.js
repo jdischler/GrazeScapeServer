@@ -371,13 +371,12 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 							padding: 4,margin: '0 4',
 							width: 32,
 							style: 'border: 1px solid rgba(0,0,0,0.1); background-color: white; border-radius: 2px',
-							html: '6'
 						},{
 							xtype: 'slider',
 							width: 200,
 							minValue: 0,
 							maxValue: 12,
-							value: 6,
+							bind: '{beef.confined}',
 							step: 1,
 							listeners: {
 								change: function(slider, newValue) {
@@ -402,7 +401,6 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 							padding: 4,margin: '0 4',
 							width: 32,
 							style: 'border: 1px solid rgba(0,0,0,0.1); background-color: white; border-radius: 2px',
-							html: '6'
 						}]
 					},{
 						xtype: 'container',
@@ -427,7 +425,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 					},{
 						xtype: 'numberfield',
 						dssID: 'if-grazed',
-						value: 24,
+						bind: '{beef.graze-time}',
 						minValue: 0,
 						maxValue: 12,
 						step: 1,
@@ -448,7 +446,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 						store: rotationFreq,
 						displayField: 'label',
 						valueField: 'enum',
-						value: 'R2'
+						bind: '{beef.rotation-freq}',
 					}]
 				}]
 			}]

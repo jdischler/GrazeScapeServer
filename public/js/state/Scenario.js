@@ -148,7 +148,7 @@ Ext.define('DSS.state.Scenario', {
 					youngstock: 80,
 					// milk yield
 					'daily-yield': 50,
-					// lactating cows / confinement / grazing
+					// lactating cows / confinement in months / grazing
 					'lactating-confined': 12,
 					'lactating-graze-time': 20,
 					'lactating-rotation-freq': 'R4',
@@ -161,7 +161,12 @@ Ext.define('DSS.state.Scenario', {
 					cows: 20,
 					stockers: 40,
 					finishers: 80,
-					'daily-gain': 4
+					// average weight gain
+					'daily-gain': 4,
+					// confinement in months / grazing
+					'confined': 3,
+					'graze-time': 24,
+					'rotation-freq': 'R2',
 				}
 			}
 		})

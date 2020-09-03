@@ -175,7 +175,10 @@
 }
 
 .ol-control button {
-    background-color: rgba(50, 80, 166, .7);
+    background-color: rgba(10,110,190,0.7);
+}
+.ol-control button:focus, .ol-control button:hover {
+    background-color: rgba(20,130,210,0.8);
 }
 
 .ol-scale-bar {

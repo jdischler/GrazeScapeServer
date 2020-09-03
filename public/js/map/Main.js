@@ -4,8 +4,8 @@ DSS.utils.addStyle('.popup-eye:after { transform: rotate(-45deg); overflow: visi
 DSS.utils.addStyle('path.boundary { fill: #ff00001f; stroke: red;}');
 DSS.utils.addStyle('path.boundary:hover { fill: #ff00005f; stroke: red;}');
 
-DSS.utils.addStyle('.layer-menu { padding: 0.23rem; color: #27c; font-size: 1.25rem; cursor: pointer; text-shadow: 0 1px 0 rgba(0,0,0,0.5), -1px 0 rgba(0,0,0,0.3), 0 0 6px rgba(0,0,0,0.4)}');
-DSS.utils.addStyle('.layer-menu:hover { color: #48f; text-shadow: 0 2px 2px rgba(0,0,0,0.8), 1px 0 rgba(0,0,0,0.5), -1px 0 rgba(0,0,0,0.5), 0 0 6px rgba(0,0,0,0.4)}');
+DSS.utils.addStyle('.layer-menu {margin: 6px;background:rgba(0,0,0,0.4);border-radius: 4px;padding: 0.23rem; color: #27c; font-size: 1.25rem; cursor: pointer; text-shadow: 0 1px 0 rgba(0,0,0,0.5), -1px 0 rgba(0,0,0,0.3), 0 0 6px rgba(0,0,0,0.4)}');
+DSS.utils.addStyle('.layer-menu:hover {background:rgba(0,0,0,0.6);color: #48f; text-shadow: 0 2px 2px rgba(0,0,0,0.8), 1px 0 rgba(0,0,0,0.5), -1px 0 rgba(0,0,0,0.5), 0 0 6px rgba(0,0,0,0.4)}');
 
 /*
 // Grossly publicly shared OpenLayers access points...
@@ -87,11 +87,6 @@ Ext.define('DSS.map.Main', {
 						DSS.MapState.mapResize();
 						
 						AppEvents.triggerEvent('map_resize');
-/*						let cs = Ext.getCmp('crap-state');
-						let om = Ext.getCmp('ol_map');
-						if (cs && om) {
-							cs.setX(om.getX() + (om.getWidth() - cs.getWidth()) * 0.5);
-						}*/
 					}
 				}
 			}]
@@ -102,14 +97,14 @@ Ext.define('DSS.map.Main', {
 			floating: true,
 			shadow: false,
 			cls: 'layer-menu',
-			tooltip: 'Access map layers',
 			html: '<i class="far fa-layer-group"></i>',
 			listeners: {
 				render: function(c) {
-					c.getEl().getFirstChild().el.on({
+					c.getEl().set({'data-qtip': "Access map layers"});
+					c.getEl().on({
 						click: function(self) {
-							let rect = self.target.getBoundingClientRect();
-							Ext.create('DSS.map.LayerMenu').showAt(rect.left, rect.top);
+							let rect = c.el.dom.getBoundingClientRect();
+							Ext.create('DSS.map.LayerMenu').showAt(rect.left-2, rect.top-2);
 						}
 					});
 				}
@@ -117,7 +112,7 @@ Ext.define('DSS.map.Main', {
 		});
 		
 		setTimeout(function() {
-			me.DSS_LayerButton.showAt(me.getX() + 2,2);
+			me.DSS_LayerButton.showAt(me.getX(),0);
 		}, 100);
 		
 	},
