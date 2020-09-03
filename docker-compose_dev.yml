@@ -1,0 +1,76 @@
+## grazescape -- docker-compose.yml -- DEVELOPMENT
+
+# docker stack deploy -c <(docker-compose config) grazescape
+
+version: '3.8'
+
+services:
+
+  app:
+    image: "${app_image}:${app_image_tag}"
+    restart: always
+    env_file:
+    - .env
+    environment:
+      db_host: "${app_db_host}"
+      db_port: "${app_db_port}"
+      db_name: "${app_db_name}"
+      db_user: "${app_db_user}"
+      db_pass: "${app_db_pass}"
+      play_http_secret_key: "${app_play_http_secret_key}"
+    volumes:
+      - type: bind
+        source: "./layerData" ## dir must be prepopulated on host
+        target: "/opt/docker/layerData"
+    networks:
+      internal:
+        aliases:
+          - grazescape
+      external:
+    depends_on:
+      - "db"
+
+  db:
+    image: "${db_image}:${db_image_tag}"
+    restart: always
+    env_file:
+    - .env
+    environment:
+      POSTGRES_USER: "${app_db_user}"
+      POSTGRES_PASSWORD: "${app_db_pass}"
+      POSTGRES_DB: "${app_db_db}"
+    networks:
+      internal:
+        aliases:
+          - postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${app_db_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web: 
+    image: "${web_image}:${web_image_tag}"
+    restart: always
+    env_file:
+    - .env
+    ports:
+      - target: 80
+        published: ${web_port_http}
+        protocol: tcp
+    networks:
+      external:
+      internal:
+        aliases:
+          - nginx
+    volumes:
+      - type: bind
+        source: "./nginx/${web_nginx_conf}"
+        target: "/etc/nginx/nginx.conf"
+        read_only: true
+
+networks:
+  external:
+  internal:
+
+
