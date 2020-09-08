@@ -136,9 +136,9 @@ Ext.define('DSS.inspector.Main', {
 			timeout: 10000,
 			success: function(response, opts) {
 				var obj = JSON.parse(response.responseText);
-				me.DSS_isWorking = false;
 
-				modelResultsLayer.setSource(new ol.source.ImageStatic({
+				me.validateImageOL(obj, modelResultsLayer);
+/*				modelResultsLayer.setSource(new ol.source.ImageStatic({
 					url: obj.url,
 					imageExtent: obj.extent,
 					projection: 'EPSG:3071',
@@ -146,7 +146,7 @@ Ext.define('DSS.inspector.Main', {
 
 				}))
 				modelResultsLayer.setVisible(true);	
-				
+*/				
 				if (obj.key) {
 					DSS.MapState.showClassifiedLegend(obj.key)
 				}
@@ -165,6 +165,53 @@ Ext.define('DSS.inspector.Main', {
 		});
 	},
 	
+	//---------------------------------------------------------------------------------
+	validateImageOL: function(json, layer, tryCount) {
+		var me = this;
+		tryCount = (typeof tryCount !== 'undefined') ? tryCount : 0;
+		
+		Ext.defer(function() {
+				
+			var src = new ol.source.ImageStatic({
+				url: json.url,
+				crossOrigin: '',
+				imageExtent: json.extent,
+				projection: 'EPSG:3071',
+				imageSmoothing: false
+			});			
+			src.on('imageloadend', function() { // IMAGELOADEND: 'imageloadend',
+
+				layer.setSource(src);
+				layer.setVisible(true);	
+				me.DSS_isWorking = false;
+
+/*				Ext.getCmp('dss-selection-loading').animate({
+					duration: 250,
+					to: {
+						opacity: 0
+					}
+				});*/
+			});
+			src.on('imageloaderror', function() { // IMAGELOADERROR: 'imageloaderror'
+				tryCount++;
+				if (tryCount < 20) {
+					me.validateImageOL(json, layer, tryCount);
+				}
+				else {
+					//failed
+					me.DSS_isWorking = false;
+					/*Ext.getCmp('dss-selection-loading').animate({
+						duration: 250,
+						to: {
+							opacity: 0
+						}
+					});*/
+				}
+			});
+			src.image_.load(); // EVIL internal diggings...M is the secret internal ol.Image
+		}, 50 + tryCount * 50, me); //  
+	},
+		
 	extractData: function(data, crop, toDat) {
 		
 		let d = data['model-results'];

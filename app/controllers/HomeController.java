@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 import play.mvc.*;
 import play.mvc.Http.Session;
@@ -107,7 +108,7 @@ Farms:
 public class HomeController extends Controller {
 
     private static final Logger logger = LoggerFactory.getLogger("app");
-    private static Integer pngCounter = 1;
+    private static AtomicLong pngCounter = new AtomicLong(1l);
 
     private Cache<String,session.Session> mSessions = null;
     
@@ -245,13 +246,13 @@ public class HomeController extends Controller {
 		JsonNode node = request.body().asJson();
 		Extents ext = new Extents().fromJson((ArrayNode)node.get("extent")).toRasterSpace();
 		ObjectNode result = null;
-		File fp = new File(FileService.getDirectory() + "yes" + pngCounter + ".png");
+		Long idx = pngCounter.getAndIncrement();
+		File fp = new File(FileService.getDirectory() + "out" + idx + ".png");
 		result  = (ObjectNode)RasterToPNG.saveClassified(cdlData, cdl.getKey(), ext.width(), ext.height(), fp);
 		
-		Json.addToPack(result, "url", "renders/yes" + pngCounter + ".png", 
+		Json.addToPack(result, "url", "renders/out" + idx + ".png", 
 						"extent", ext.toJson());	
 		
-		pngCounter++;
 		return ok(result);
 	}
 	
@@ -498,10 +499,11 @@ public class HomeController extends Controller {
 			ext.mWidth = newW;
 		}
 */				
-		File fp = new File(FileService.getDirectory() + "yes" + pngCounter + ".png");
+		Long idx = pngCounter.getAndIncrement();
+		File fp = new File(FileService.getDirectory() + "out" + idx + ".png");
 		result  = (ObjectNode)RasterToPNG.save(clipped, ext.width(), ext.height(), fp);
 		
-		Json.addToPack(result, "url", "renders/yes" + pngCounter + ".png", 
+		Json.addToPack(result, "url", "renders/out" + idx + ".png", 
 						"extent", ext.toJson());	
 		
 		if (fieldStats != null) {
@@ -511,7 +513,6 @@ public class HomeController extends Controller {
 			Json.addToPack(result, "model-results", rr.clientData);
 	//	}
 		
-		pngCounter++;
 		return ok(result);
 	}
 
