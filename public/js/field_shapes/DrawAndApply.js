@@ -120,7 +120,7 @@ let getToggle = function(owner, stateRef, activatedHandler, deactivatedHandler) 
 		xtype: 'component',
 		style: 'right: 1px; top: 2px',
 		cls: 'accent-text fa-hover',
-		html: '<i class="far fa-plus-circle"></i>',
+		html: '<i class="fas fa-plus-circle"></i>',
 		listeners: {
 			afterrender: function(c) {
 				let vm = owner.lookupViewModel();

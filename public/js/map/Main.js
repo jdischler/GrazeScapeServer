@@ -97,7 +97,7 @@ Ext.define('DSS.map.Main', {
 			floating: true,
 			shadow: false,
 			cls: 'layer-menu',
-			html: '<i class="far fa-layer-group"></i>',
+			html: '<i class="fas fa-layer-group"></i>',
 			listeners: {
 				render: function(c) {
 					c.getEl().set({'data-qtip': "Access map layers"});

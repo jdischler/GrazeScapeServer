@@ -43,41 +43,40 @@ Ext.define('DSS.inspector.restrictors.ActiveOperation', {
 					itemId: 'dss-toggle-active',
 					style: 'right: 1px; top: 1px',
 					cls: 'accent-text fa-hover ' + (me.DSS_active ? 'to-close' : 'to-add'),
-					html: '<i class="far fa-plus-circle"></i>',
+					html: '<i class="fas fa-plus-circle"></i>',
 					listeners: {
 						render: function(c) {
-							c.getEl().getFirstChild().el.on({
-								click: function(self) {
-									if (c.hasCls('to-add')) {
-										c.removeCls('to-add')
-										c.addCls('to-close');
-										me.DSS_active = true;
-										let ct = me.down('#contents');
-										ct.animate({
-											duration: 300,
-											dynamic: true,
-											to: {
-												height: ct.DSS_height
-											}
-										});
-										DSS_RefilterDelayed(50);
-									}
-									else {
-										c.addCls('to-add')
-										c.removeCls('to-close');
-										me.DSS_active = false;
-										let ct = me.down('#contents');
-										ct.animate({
-											duration: 250,
-											dynamic: true,
-											to: {
-												height: 0
-											}
-										});
-										DSS_RefilterDelayed(50);
-									}	
+							let el = c.getEl().getFirstChild().el;
+							el.on('click', function() {
+								if (c.hasCls('to-add')) {
+									c.removeCls('to-add')
+									c.addCls('to-close');
+									me.DSS_active = true;
+									let ct = me.down('#contents');
+									ct.animate({
+										duration: 300,
+										dynamic: true,
+										to: {
+											height: ct.DSS_height
+										}
+									});
+									DSS_RefilterDelayed(50);
 								}
-							});
+								else {
+									c.addCls('to-add')
+									c.removeCls('to-close');
+									me.DSS_active = false;
+									let ct = me.down('#contents');
+									ct.animate({
+										duration: 250,
+										dynamic: true,
+										to: {
+											height: 0
+										}
+									});
+									DSS_RefilterDelayed(50);
+								}	
+							}, {passive: false});
 						}
 					}					
 				}]

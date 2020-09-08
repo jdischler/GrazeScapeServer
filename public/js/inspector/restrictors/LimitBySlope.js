@@ -40,7 +40,7 @@ Ext.define('DSS.inspector.restrictors.LimitBySlope', {
 					xtype: 'component',
 					style: 'right: 1px; top: 1px',
 					cls: 'accent-text fa-hover ' + (me.DSS_active ? 'to-close' : 'to-add'),
-					html: '<i class="far fa-plus-circle"></i>',
+					html: '<i class="fas fa-plus-circle"></i>',
 					listeners: {
 						render: function(c) {
 							c.getEl().getFirstChild().el.on({
