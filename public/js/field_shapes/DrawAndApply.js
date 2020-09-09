@@ -44,7 +44,7 @@ Ext.define('DSS.field_shapes.DrawAndApply', {
 				},
 				tillage: {
 					is_active: false,
-					value: 'spcu'
+					value: 'SCU'
 				},
 				graze_animals: {
 					is_active: false,

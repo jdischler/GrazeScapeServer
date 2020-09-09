@@ -11,7 +11,7 @@ Ext.define('DSS.field_shapes.apply.Tillage', {
 	
 	layout: DSS.utils.layout('vbox', 'start', 'center'),
 	
-	DSS_sectionHeight: 98,
+	DSS_sectionHeight: 148,
 	
 	//--------------------------------------------------------------------------
 	initComponent: function() {
@@ -44,13 +44,17 @@ Ext.define('DSS.field_shapes.apply.Tillage', {
 					name: 'tillage'
 				},
 				items: [{ 
-					boxLabel: 'No-till', 			inputValue: 'nt',
+					boxLabel: 'No-till', 			inputValue: 'NT',
 				},{
-					boxLabel: 'Spring-cultivation',	inputValue: 'spcu',
+					boxLabel: 'Spring Cultivation',	inputValue: 'SCU',
 				},{
-					boxLabel: 'Chisel + disk',		inputValue: 'chdsk',
+					boxLabel: 'Spring Chisel + Disk',inputValue: 'SCH',
 				},{
-					boxLabel: 'Moldboard plow', 	inputValue: 'mp'
+					boxLabel: 'Spring Moldboard', 	inputValue: 'SMB'
+				},{
+					boxLabel: 'Fall Chisel + Disk',inputValue: 'FCH',
+				},{
+					boxLabel: 'Fall Moldboard', 	inputValue: 'FMB'
 				}]
 			}]
 		});

@@ -42,8 +42,9 @@ public class Field extends Model {
     // Rotation and Tillage informs the PLoss model
     public Rotation rotation;
     public Tillage tillage;
-    public Season tillageSeason;
-    public Season fertSeason;
+//    public Season fertSeason;
+    public Boolean hasCoverCrop;
+    public Boolean onContour;
     
     // The yield model needs actual crop years and specific crops, particularly in the case of Pasture.
     //	Crop year can default to whatever specific grass species/mix but then be overridden in the 

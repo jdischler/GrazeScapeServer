@@ -31,14 +31,12 @@ create table field (
   soil_p                        float not null,
   om                            float,
   rotation                      varchar(2),
-  tillage                       varchar(2),
-  tillage_season                varchar(2),
-  fert_season                   varchar(2),
+  tillage                       varchar(3),
+  has_cover_crop                boolean,
+  on_contour                    boolean,
   rotational_density            float,
   constraint ck_field_rotation check ( rotation in ('CC','CG','D1','D2','DL','PS','PE')),
-  constraint ck_field_tillage check ( tillage in ('NT','CU','CD','MP')),
-  constraint ck_field_tillage_season check ( tillage_season in ('SP','FL')),
-  constraint ck_field_fert_season check ( fert_season in ('SP','FL')),
+  constraint ck_field_tillage check ( tillage in ('NT','SCU','SCH','FCH','SMB','FMB')),
   constraint pk_field primary key (id)
 );
 
