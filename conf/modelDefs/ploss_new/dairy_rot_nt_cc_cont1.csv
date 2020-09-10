@@ -1,0 +1,63 @@
+; Dairy Rotation (Corn Grain / Corn Silage / 3yrs Alfalfa)
+;	Cover Crop
+;	NoTill
+;	Contour=1
+;------------------------------------------------------
+(intercept),			-3.10673546
+
+; Stand-alone variables, with optional preprocessing steps listed after the coefficients
+;------------------------------------------------------
+initial_p,				0.006910333, clamp=25/175
+slope,					0.020103926, clamp=0/65
+om,						0.122345015, clamp=0.7/55
+total_p,				0.008948361, clamp=26/95
+manure_dm,				0.196002607, clamp=0/2.64
+slope_length,			0.005882591, clamp=18/76
+silt,					0.074117711, clamp=0/79.17
+k,						-2.949317473,clamp=0.02/0.57
+soil_depth,				-0.002835372,clamp=28/203
+ls,						0.301246084, clamp=0.17/11.71
+
+; Interacting variables - clamps, other transforms, etc. are not allowed here
+;------------------------------------------------------
+initial_p:slope,		-4.09E-05
+initial_p:om,			-3.23E-05
+initial_p:total_p,		-1.95E-05
+initial_p:manure_dm,	-0.000613653
+initial_p:slope_length,	2.21E-05
+initial_p:silt,			-1.05E-05
+initial_p:k,			0.000786538
+initial_p:soil_depth,	-1.86E-06
+initial_p:ls,			4.52E-05
+slope:om,				0.001369196
+slope:manure_dm,		-0.002870316
+slope:slope_length,		0.001457267
+slope:silt,				9.87E-05
+slope:k,				-0.018453323
+slope:soil_depth,		1.93E-05
+slope:ls,				-0.003007634
+om:total_p,				-4.71E-05
+om:manure_dm,			-0.002599153
+om:slope_length,		-0.000961002
+om:silt,				0.001432377
+om:k,					-0.092446502
+om:soil_depth,			-0.000104928
+om:ls,					-0.016777917
+total_p:manure_dm,		-0.000859106
+total_p:silt,			-4.25E-05
+total_p:k,				0.006524176
+total_p:ls,				-0.000163471
+manure_dm:slope_length,	0.001329098
+manure_dm:silt,			-0.000613309
+manure_dm:ls,			0.004240921
+slope_length:silt,		-0.000272144
+slope_length:soil_depth,6.58E-05
+slope_length:ls,		-0.003570003
+silt:k,					-0.039272935
+silt:soil_depth,		-0.000235397
+silt:ls,				-0.002129553
+k:soil_depth,			0.033968479
+k:ls,					0.172181226
+soil_depth:ls,			-0.000118989
+
+(result-transform), exp, clamp=0.33/14.11

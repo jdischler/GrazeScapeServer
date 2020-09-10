@@ -1,0 +1,63 @@
+; Pasture Establishment
+;	Spring Moldboard
+;	Contour=0
+;------------------------------------------------------
+(intercept),			-0.459414827
+
+; Stand-alone variables, with optional preprocessing steps listed after the coefficients
+;------------------------------------------------------
+initial_p,				0.004069662, clamp=25/175
+slope,					0.015610812, clamp=0/65
+om,						0.087981557, clamp=0.7/55
+total_p,				0.008415342, clamp=17.5/70
+manure_dm,				0.133011202, clamp=0/1.4
+slope_length,			-0.001988293,clamp=18/76
+silt,					0.087659559, clamp=0/79.17
+k,						-4.58552292, clamp=0.02/0.57
+soil_depth,				-0.008556573,clamp=28/203
+ls,						0.360092473, clamp=0.17/11.71
+
+; Interacting variables - clamps, other transforms, etc. are not allowed here
+;------------------------------------------------------
+initial_p:slope,		-2.78E-05
+initial_p:om,			-2.16E-05
+initial_p:total_p,		-1.77E-05
+initial_p:manure_dm,	-0.000325788
+initial_p:slope_length,	1.74E-05
+initial_p:silt,			-1.46E-05
+initial_p:k,			0.001601731
+initial_p:soil_depth,	-6.61E-07
+initial_p:ls,			2.44E-05
+slope:om,				0.00162642
+slope:manure_dm,		-0.001159395
+slope:slope_length,		0.002326126
+slope:silt,				5.46E-05
+slope:k,				-0.016058138
+slope:ls,				-0.003439397
+om:total_p,				-7.20E-05
+om:manure_dm,			-0.001542849
+om:slope_length,		-0.002033382
+om:silt,				0.00116502
+om:k,					-0.171687858
+om:soil_depth,			0.000734791
+om:ls,					-0.024738799
+total_p:manure_dm,		-0.001109933
+total_p:silt,			-4.55E-05
+total_p:k,				0.006774057
+total_p:soil_depth,		4.49E-06
+total_p:ls,				-0.000121074
+manure_dm:slope_length,	0.000568548
+manure_dm:silt,			-0.000781231
+manure_dm:k,			0.111049411
+slope_length:silt,		-0.00022647
+slope_length:k,			-0.011299224
+slope_length:soil_depth,7.38E-05
+slope_length:ls,		-0.005437259
+silt:k,					-0.047200876
+silt:soil_depth,		-0.000283643
+silt:ls,				-0.002377977
+k:soil_depth,			0.049854986
+k:ls,					0.125733299
+soil_depth:ls,			-3.63E-05
+
+(result-transform), exp, clamp=1.6/82

@@ -1,0 +1,51 @@
+; Pasture
+;	Rotational
+;------------------------------------------------------
+(intercept),			-0.504837632
+
+; Stand-alone variables, with optional preprocessing steps listed after the coefficients
+;------------------------------------------------------
+initial_p,				0.004410773,  clamp=25/175
+slope,					0.004041555,  clamp=0/65
+om,						0.087285377,  clamp=0.7/55
+total_p,				-0.00807151,  clamp=25/55
+manure_dm,				0.07333836,   clamp=1.8/2.4
+slope_length,			-0.014114531, clamp=18/76
+silt,					-0.007105213, clamp=0/79.17
+k,						4.001998621,  clamp=0.02/0.57
+soil_depth,				0.001329256,  clamp=28/203
+ls,						-0.099909211, clamp=0.17/11.71
+
+; Interacting variables - clamps, other transforms, etc. are not allowed here
+;------------------------------------------------------
+initial_p:om,			1.14E-05
+initial_p:total_p,		1.01E-05
+initial_p:slope_length,	1.19E-05
+initial_p:silt,			2.63E-05
+initial_p:k,			0.003599272
+initial_p:soil_depth,	-1.30E-05
+initial_p:ls,			8.52E-05
+slope:slope_length,		8.13E-05
+slope:silt,				-5.44E-05
+slope:k,				0.011575405
+om:total_p,				0.000102101
+om:slope_length,		0.001587781
+om:silt,				0.001065232
+om:k,					0.104364633
+om:soil_depth,			-0.001379965
+om:ls,					0.006020219
+total_p:manure_dm,		0.002754845
+total_p:slope_length,	-6.47E-05
+total_p:k,				0.020395913
+total_p:ls,				0.000287502
+manure_dm:ls,			-0.007381097
+slope_length:silt,		-0.000103606
+slope_length:soil_depth,9.63E-05
+slope_length:ls,		-0.001009627
+silt:k,					-0.022171626
+silt:soil_depth,		7.07E-05
+k:soil_depth,			-0.016702138
+k:ls,					-0.068986628
+soil_depth:ls,			0.000693349
+
+(result-transform), clamp=0.016/1.83

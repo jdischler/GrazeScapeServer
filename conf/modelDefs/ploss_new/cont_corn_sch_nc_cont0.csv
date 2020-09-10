@@ -1,0 +1,63 @@
+; Continuous Corn
+;	No Cover Crop
+;	Spring Chisel
+;	Contour=0
+;------------------------------------------------------
+(intercept),			-1.010656738
+
+; Stand-alone variables, with optional preprocessing steps listed after the coefficients
+;------------------------------------------------------
+initial_p,				0.004163007,  clamp=25/175
+slope,					0.017679781,  clamp=0/65
+om,						0.084686543,  clamp=0.7/55
+total_p,				0.006325881,  clamp=30/120
+manure_dm,				0.213122447,  clamp=0/2.4
+slope_length,			-0.007287826, clamp=18/76
+silt,					0.073889258,  clamp=0/79.17
+k,						-2.501548256, clamp=0.02/0.57
+soil_depth,				-0.006441439, clamp=28/203
+ls,						0.316580585,  clamp=0.17/11.71
+
+; Interacting variables - clamps, other transforms, etc. are not allowed here
+;------------------------------------------------------
+initial_p:slope,		-2.85E-05
+initial_p:om,			-1.54E-05
+initial_p:total_p,		-1.22E-05
+initial_p:manure_dm,	-0.000441292
+initial_p:slope_length,	1.67E-05
+initial_p:silt,			-8.60E-06
+initial_p:k,			0.000655297
+initial_p:ls,			3.38E-05
+slope:om,				0.001805134
+slope:total_p,			-1.52E-05
+slope:manure_dm	,		-0.001208749
+slope:slope_length,		0.002260818
+slope:silt,				8.51E-05
+slope:k,				-0.019374424
+slope:ls,				-0.00333677
+om:total_p,				-3.86E-05
+om:manure_dm,			-0.001862012
+om:slope_length,		-0.001302226
+om:silt,				0.001161421
+om:k,					-0.114602395
+om:soil_depth,			0.000339623
+om:ls,					-0.020845409
+total_p:manure_dm,		-0.000817935
+total_p:silt,			-3.83E-05
+total_p:k,				0.006312219
+total_p:soil_depth,		2.73E-06
+total_p:ls,				-5.56E-05
+manure_dm:slope_length,	0.0005848
+manure_dm:silt,			-0.000296515
+slope_length:silt,		-0.00023489
+slope_length:k,			-0.009554477
+slope_length:soil_depth,9.21E-05
+slope_length:ls,		-0.005340202
+silt:k,					-0.043190946
+silt:soil_depth,		-0.000230518
+silt:ls,				-0.002091531
+k:soil_depth,			0.037032218
+k:ls,					0.107250105
+soil_depth:ls,			8.59E-05
+
+(result-transform), exp, clamp=1.12/61.51
