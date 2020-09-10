@@ -1,0 +1,65 @@
+; Dairy Rotation (Corn Grain / Corn Silage / 3yrs Alfalfa)
+;	No Cover
+;	Spring moldboard	
+;	Contour=0
+;------------------------------------------------------
+(intercept),			-0.424090686
+
+; Stand-alone variables, with optional preprocessing steps listed after the coefficients
+;------------------------------------------------------
+initial_p,				0.004121363, clamp=25/175
+slope,					0.016981672, clamp=0/65
+om,						0.065845184, clamp=0.7/55
+total_p,				0.007653564, clamp=24.5/98
+manure_dm,				0.180888567, clamp=0/1.96
+slope_length,			-0.004261064, clamp=18/76
+silt,					0.079365764, clamp=0/79.17
+k,						-3.634120293,clamp=0.02/0.57
+soil_depth,				-0.008483333,clamp=28/203
+ls,						0.345938096, clamp=0.17/11.71
+
+; Interacting variables - clamps, other transforms, etc. are not allowed here
+;------------------------------------------------------
+initial_p:slope,		-3.26E-05
+initial_p:om,			-2.13E-05
+initial_p:total_p,		-1.65E-05
+initial_p:manure_dm,	-0.00033762
+initial_p:slope_length,	2.22E-05
+initial_p:silt,			-9.37E-06
+initial_p:k,			0.000650111
+initial_p:soil_depth,	-1.24E-06
+initial_p:ls,			5.61E-05
+slope:om,				0.0019096
+slope:manure_dm,		-0.001648769
+slope:slope_length,		0.002308893
+slope:silt,				9.38E-05
+slope:k,				-0.026847334
+slope:soil_depth,		2.32E-05
+slope:ls,				-0.003595424
+om:total_p,				-5.65E-05
+om:manure_dm,			-0.001815733
+om:slope_length,		-0.001570511
+om:silt,				0.001036432
+om:k,					-0.135559251
+om:soil_depth,			0.000614844
+om:ls,					-0.023348343
+total_p:manure_dm,		-0.001025475
+total_p:slope_length,	7.25E-06
+total_p:silt,			-4.64E-05
+total_p:k,				0.007734488
+total_p:soil_depth,		2.79E-06
+total_p:ls,				-7.38E-05
+manure_dm:slope_length,	0.000843619
+manure_dm:silt,			-0.000430868
+slope_length:silt,		-0.00023472
+slope_length:k,			-0.011123339
+slope_length:soil_depth,8.11E-05
+slope_length:ls,		-0.005202422
+silt:k,					-0.043398032
+silt:soil_depth,		-0.000247898
+silt:ls,				-0.002295454
+k:soil_depth,			0.043868202
+k:ls,					0.13117941
+soil_depth:ls,			-3.67E-05
+
+(result-transform), exp, clamp=1.6/86.2
