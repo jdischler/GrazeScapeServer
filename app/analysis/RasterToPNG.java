@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.node.*;
 
 import ar.com.hjg.pngj.chunks.*;
 import query.Layer_Integer;//.KeyItem;
+import raster.Extents;
 import utils.Png.RGB;
 
 //------------------------------------------------------------------------------
@@ -249,16 +250,18 @@ public class RasterToPNG {
 	}
 	
 	//--------------------------------------------------------------------------
-	private static byte [][] convertToIndexed(int [][]data, int width, int height) {
+	private static byte [][] extractToIndexed(int [][]data, Extents ext) {
 			
 		Map<Integer,Integer> deMask = new HashMap<>();
 		for (int i = 1; i < 31; i++) {
 			deMask.put((1 << (i-1)), i);
 		}
-		byte[][] idxs = new byte[height][width];
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				idxs[y][x] = deMask.get(data[y][x]).byteValue();
+		int w = ext.width(), h = ext.height();
+		int x1 = ext.x1(), y1 = ext.y2();
+		byte[][] idxs = new byte[h][w];
+		for (int y = 0; y < h; y++) {
+			for (int x = 0; x < w; x++) {
+				idxs[y][x] = deMask.get(data[y + y1][x + x1]).byteValue();
 			}
 		}
 		
@@ -266,11 +269,11 @@ public class RasterToPNG {
 	}
 
 	//--------------------------------------------------------------------------
-	public static JsonNode saveClassified(int [][]data, List<Layer_Integer.KeyItem> colorMap, int width, int height, File file) {
+	public static JsonNode saveClassified(int [][]data, List<Layer_Integer.KeyItem> colorMap, Extents ext, File file) {
 		
-		byte[][] idx = convertToIndexed(data, width, height);
+		byte[][] idx = extractToIndexed(data, ext);
 	
-		Png png = new Png(width, height, 8, 1, file.getPath());
+		Png png = new Png(ext.width(), ext.height(), 8, 1, file.getPath());
 		try {
 			makePalette(png, colorMap);
 		}

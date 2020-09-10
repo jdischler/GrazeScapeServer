@@ -62,7 +62,7 @@ import utils.ServerStartup;
 // 	• dynamic masking may be doable with: https://github.com/come/csg2d.js/
 
 //	• general design changes: store things like job keys, scenario keys, and similar in cookies?
-
+  
 /*GrazeScape 2.0 Design Considerations
 
 Performance / Resource Management:
@@ -240,6 +240,7 @@ public class HomeController extends Controller {
 
 	//-------------------------------------------------------
 	public Result processCategorical(Http.Request request) {
+		
 		Layer_Integer cdl = Layer_CDL.get();
 		int[][] cdlData = cdl.getIntData();
 		
@@ -248,7 +249,7 @@ public class HomeController extends Controller {
 		ObjectNode result = null;
 		Long idx = pngCounter.getAndIncrement();
 		File fp = new File(FileService.getDirectory() + "out" + idx + ".png");
-		result  = (ObjectNode)RasterToPNG.saveClassified(cdlData, cdl.getKey(), ext.width(), ext.height(), fp);
+		result  = (ObjectNode)RasterToPNG.saveClassified(cdlData, cdl.getKey(), ext, fp);
 		
 		Json.addToPack(result, "url", "renders/out" + idx + ".png", 
 						"extent", ext.toJson());	
