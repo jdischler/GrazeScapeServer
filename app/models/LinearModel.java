@@ -21,14 +21,14 @@ import utils.ServerStartup;
 //------------------------------------------------------------
 public class LinearModel {
 
-//    private static final Logger logger = LoggerFactory.getLogger("app");
+    private static final Logger logger = LoggerFactory.getLogger("app");
     public class Slogger {
     	public Slogger() {}
     	public void debug(String s) {}
     	public void warn(String s) {}
     	public void error(String s) {}
     };
-    private final Slogger logger = new Slogger();
+//    private final Slogger logger = new Slogger();
 	//------------------------------------------------------------
     public abstract class DataSource {
 		public ValidRange mValidRange = null;  
@@ -188,6 +188,7 @@ public class LinearModel {
 		return this;
 	}
 
+	// TODO: fixme...in some cases we need a fixed constant...in others, the input variable could really be a raster layer...
 	// Constants can be "bound" to the model with the '@' notation in the model file and then
 	//	specifying a value run-time. If bindRaster() is called first (before init) and the constant
 	//	name maps to a boundRaster, then that takes priority.
@@ -195,11 +196,11 @@ public class LinearModel {
 	//------------------------------------------------------------
 	public final void setConstant(String mappedConstant, Float value) throws Exception {
 		
-		if (mappedConstant.startsWith("@") == false) {
+/*		if (mappedConstant.startsWith("@") == false) {
 			logger.error("LinearModel: mappedConstant <" + mappedConstant + "> in setConstant should begin with '@'");
 			throw new Exception(" LinearModel: illegal mappedConstant in setConstant");
 		}
-		
+*/		
 		DataConstant dc = mMappedConstants.get(mappedConstant);
 		if (dc == null) {
 			throw new Exception(" LinearModel: mapped constant not found: " + mappedConstant);
@@ -229,7 +230,7 @@ public class LinearModel {
 				continue;
 			}
 			
-			//logger.debug(" Line: <" + s + ">");
+			logger.debug(" Line: <" + s + ">");
 			
 			// Split and minimally sanitize
 			String el[] = s.split(",");
@@ -259,7 +260,7 @@ public class LinearModel {
 			
 			Float coeff = Float.valueOf(el[COEFFICIENT]);
 			
-			// look for interaction specifiers, expected to have a ":" between but likely also enclosed in "`"
+			// look for interaction specifiers, expected to have a ":" between potentially also enclosed in "`"
 			String variable = el[VARIABLE].replace("`", "");
 			String interactingVariable []= variable.split(":");
 			int idx = mElements.size();
@@ -272,14 +273,22 @@ public class LinearModel {
 				iv0 = Layer_Base.resolveName(iv0, false);
 				InputData d = mDataMap.get(iv0);
 				if (d == null) {
-					throw new Exception("LinearModel: <" + iv0 + "> was not mapped to an InputData");
+					// may be a flex-bind variable, which could be a constant or a bound raster
+					d = mDataMap.get("@" + iv0);
+					if (d == null) {
+						throw new Exception("LinearModel: <" + iv0 + "> was not mapped to an InputData");
+					}
 				}
 				d.mAt.add(new Position(idx, 0));
 				
 				iv1 = Layer_Base.resolveName(iv1, false);
 				d = mDataMap.get(iv1);
 				if (d == null) {
-					throw new Exception("LinearModel: <" + iv0 + "> was not mapped to an InputData");
+					// may be a flex-bind variable, which could be a constant or a bound raster
+					d = mDataMap.get("@" + iv1);
+					if (d == null) {
+						throw new Exception("LinearModel: <" + iv1 + "> was not mapped to an InputData");
+					}
 				}
 				d.mAt.add(new Position(idx, 1));
 				
@@ -294,7 +303,10 @@ public class LinearModel {
 			// boundRasters will already have one of these allocated.. Other types will have to allocate one
 			InputData id = null; 
 			if (variable.startsWith("@")) {
-				// Will already be mapped to a boundRaster if found...
+				// In the case of a flex-bind variable, it has to be pre-bound to a raster before the model init step
+				//	if pre-bind is done, then this variable will already exist in the map below.
+				//	If not, then the @variable is treated as a constant variable that has to be programmatically changed
+				//		as needed
 				id = mDataMap.get(variable);
 				if (id == null) {
 					id = new InputData();					

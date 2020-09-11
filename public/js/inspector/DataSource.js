@@ -80,7 +80,7 @@ Ext.define('DSS.inspector.DataSource', {
 							plain: true,
 							//width: 160,
 							items: [{
-								text: 'Models', disabled: true,
+								text: 'GrazeScape / SmartScape Models', disabled: true,
 								style: 'border-bottom: 1px solid rgba(0,0,0,0.2);',
 							},
 								makeInspectionMode('Soil Loss', 	'soil-loss', 	true, 'inspector_ploss'),
@@ -90,7 +90,7 @@ Ext.define('DSS.inspector.DataSource', {
 								makeInspectionMode('Dry Matter', 	'dry-matter', 	false),
 								makeInspectionMode('Bird Habitat', 	'bird-habitat'),
 							{
-								text: 'Land Properties', disabled: true,
+								text: 'Land Properties (SSURGO)', disabled: true,
 								style: 'border-bottom: 1px solid rgba(0,0,0,0.2);padding-top: 4px'
 							}, 
 								makeInspectionMode('WiscLand 2.0', 	'cdl', 		false),

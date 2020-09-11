@@ -530,14 +530,16 @@ public class HomeController extends Controller {
 			float initialP = 32.0f;
 			float percManure = 50.0f;
 			float percSynth = 50.0f;
+			int onContour = 1;
 			
 			if (options != null) {
 				landcoverCode 	= Json.safeGetOptionalString(options, "landcover", 	"cc"); // cc, cg, dr
 				coverCropCode 	= Json.safeGetOptionalString(options, "cover-crop", "cc"); // cc or nc
-				tillageCode 	= Json.safeGetOptionalString(options, "tillage", 	"nt"); // nt, s_cd, f_cd, s_mp, f_mp
+				tillageCode 	= Json.safeGetOptionalString(options, "tillage", 	"nt"); // nt, scu, sch, fch, smb, fmb
 				initialP 		= Json.safeGetOptionalFloat(options, "soil-p", 		initialP);
-				percManure 		= Json.safeGetOptionalFloat(options, "perc-manure", percManure);
-				percSynth 		= Json.safeGetOptionalFloat(options, "perc-fertilizer", percSynth);
+				percManure 		= Json.safeGetOptionalFloat(options, "manure-dm", percManure);
+				percSynth 		= Json.safeGetOptionalFloat(options, "total-p", percSynth);
+				onContour 		= Json.safeGetOptionalInteger(options, "on-contour", 1);
 				applySnapPlusTransmission = Json.safeGetOptionalBoolean(options, "snap-plus-transmission", applySnapPlusTransmission);
 			}
 		
@@ -548,35 +550,87 @@ public class HomeController extends Controller {
 			String model = null;
 			switch(landcoverCode) {
 			case "cc":
-				model = "continuous_corn.csv";
-				break;
-			case "cg":
-				model = "cash_grain.csv";
+				model = "cont_corn";
+				// Cover crop doesn't have all tillage practices...redirect to spring cultivation
+				//	only no till cover crop (continuous corn) has onContour so otherwise force to zero...
+				if (coverCropCode.equalsIgnoreCase("cc")) {
+					switch(tillageCode) {
+						case "fmb":
+						case "smb":
+						case "fch":
+							tillageCode = "scu";
+							onContour = 0;
+							break;
+						case "scu":
+						case "sch":
+							onContour  = 0;
+							break;
+					}
+				}
+				else {
+					// No Cover crop has no cases where contour would be supported yet
+					onContour = 0;
+				}
 				break;
 			case "dr":
-				model = "dairy_rotation.csv";
+				model = "dairy_rot";
+				// Cover crop doesn't have all tillage practices...redirect to spring cultivation
+				//	only no till cover crop (dairy rotation) has onContour so otherwise force to zero...
+				if (coverCropCode.equalsIgnoreCase("cc")) {
+					switch(tillageCode) {
+						case "fmb":
+						case "smb":
+						case "fch":
+							tillageCode = "scu";
+							onContour = 0;
+							break;
+						case "scu":
+						case "sch":
+							onContour  = 0;
+							break;
+					}
+				}
+				else if (!tillageCode.equalsIgnoreCase("fch")) {
+					// Only fall chisel no cover can do contour so zero everything else
+					onContour = 0;
+				}
 				break;
-			case "cso":
-				model = "corn_soy_oats.csv";
+			case "ep":
+				model = "pasture_est";
+				if (!tillageCode.equalsIgnoreCase("fch")) {
+					// Only fall chisel no cover can do contour so zero everything else
+					onContour = 0;
+				}
 				break;
 			case "pr":
-				model = "pasture_rot.csv";
+				model = "pasture_rotational";
 				coverCropCode = null; tillageCode = null;
 				break;
 			case "pl":
-				model = "pasture_low.csv";
+				model = "pasture_cont_low";
 				coverCropCode = null; tillageCode = null;
 				break;
 			case "ph":
-				model = "pasture_high.csv";
+				model = "pasture_cont_high";
 				coverCropCode = null; tillageCode = null;
 				break;
 			}
-				
+			
+			if (coverCropCode != null && tillageCode != null) {
+				if (landcoverCode.equalsIgnoreCase("ep")) {
+					// prairie establishment has no cover crop option
+					model = String.format("%s_%s_cont%d", model, tillageCode, onContour);
+				}
+				else {
+					model = String.format("%s_%s_%s_cont%d", model, tillageCode, coverCropCode, onContour);
+				}
+			}
+			model += ".csv";
 			LinearModel lm = null;
 				
 			try {
-				String modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/" + model;
+				String modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss_new/" + model;
+				logger.error("model path is: " + modelPath);
 				lm = new LinearModel().init(modelPath);
 
 //					lm.debug();
@@ -585,12 +639,9 @@ public class HomeController extends Controller {
 				e.printStackTrace();
 			}
 				
-			lm.setConstant("@manure_app", percManure);
-			lm.setConstant("@synthetic_app", percSynth);
+			lm.setConstant("@manure_dm", percManure);
+			lm.setConstant("@total_p", percSynth);
 			lm.setConstant("@initial_p", initialP);
-			if (coverCropCode != null && tillageCode !=null) {
-				lm.setIntercept(coverCropCode + "_" + tillageCode);
-			}
 			
 			float[][] ploss = new float[s_layer.getHeight()][s_layer.getWidth()];
 			
@@ -599,7 +650,7 @@ public class HomeController extends Controller {
 					float value = lm.calculate(x, y).floatValue();
 							
 					if (applySnapPlusTransmission && !Layer_Float.isNoDataValue(value)) {
-						float fixedSlope = 1;
+						float fixedSlope = 1;// TODO: what is this value?
 						float distance = distanceToWater[y][x] * 3.281f; // convert meters to feet
 						float factor = 0.9415f + 
 								0.02122f * fixedSlope + -0.001345f * fixedSlope * fixedSlope + 
@@ -635,7 +686,7 @@ public class HomeController extends Controller {
 			int totalMask = cg | cc | dr | ps;
 			
 			float initialP = 32.0f;
-			float percManure = 20.0f;
+			float percManure = 2.0f;
 			float percSynth = 70.0f;
 		
 			Layer_Base s_layer = Layer_Base.getLayer("slope");
@@ -644,32 +695,30 @@ public class HomeController extends Controller {
 			LinearModel contCorn = null, dairyRotation = null, cashGrain = null, pastureLow = null;
 			
 			try {
-				String modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/continuous_corn.csv";
+				String modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss_new/cont_corn_scu_cc_cont0.csv";
 				contCorn = new LinearModel().init(modelPath);
-				contCorn.setConstant("@manure_app", percManure);
-				contCorn.setConstant("@synthetic_app", percSynth);
-				contCorn.setConstant("@initial_p", initialP);
-				contCorn.setIntercept("cc_nt");
+				contCorn.setConstant("@manure_dm", 1.0f);
+				contCorn.setConstant("@total_p", 40.0f);
+				contCorn.setConstant("@initial_p", 32.0f);
 
-				modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/dairy_rotation.csv";
+				modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss_new/dairy_rot_scu_cc_cont0.csv";
 		        dairyRotation = new LinearModel().init(modelPath);
-		        dairyRotation.setConstant("@manure_app", percManure);
-		        dairyRotation.setConstant("@synthetic_app", percSynth);
-		        dairyRotation.setConstant("@initial_p", initialP);
-		        dairyRotation.setIntercept("cc_nt");
+		        dairyRotation.setConstant("@manure_dm", 1.0f);
+		        dairyRotation.setConstant("@total_p", 40.0f);
+		        dairyRotation.setConstant("@initial_p", 32.0f);
 
 				modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/cash_grain.csv";
 		        cashGrain = new LinearModel().init(modelPath);
 		        cashGrain.setConstant("@manure_app", percManure);
 		        cashGrain.setConstant("@synthetic_app", percSynth);
 		        cashGrain.setConstant("@initial_p", initialP);
-		        cashGrain.setIntercept("cc_nt");
+		        cashGrain.setIntercept("nc_nt");
 				
-				modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss/pasture_rot.csv";
+				modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss_new/pasture_cont_low.csv";
 		        pastureLow = new LinearModel().init(modelPath);
-		        pastureLow.setConstant("@manure_app", 0.0f);
-		        pastureLow.setConstant("@synthetic_app", 80.0f);
-		        pastureLow.setConstant("@initial_p", 5.0f);
+		        dairyRotation.setConstant("@manure_dm", 2.4f);
+		        dairyRotation.setConstant("@total_p", 20.0f);
+		        dairyRotation.setConstant("@initial_p", 25.0f);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

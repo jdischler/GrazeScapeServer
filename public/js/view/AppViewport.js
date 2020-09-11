@@ -128,9 +128,9 @@ Ext.define('DSS.view.AppViewport', {
 			shadow: false,
 		}).showAt(-1,-1);
 		
-		setTimeout(function() {
+		/*setTimeout(function() {
 			Ext.create('DSS.results.ResultsMain').show().center().maximize(true);
-		}, 3000);
+		}, 3000);*/
 	},
 	
 	doChartWorkPanel: function() {

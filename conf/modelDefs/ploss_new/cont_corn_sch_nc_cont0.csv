@@ -7,11 +7,11 @@
 
 ; Stand-alone variables, with optional preprocessing steps listed after the coefficients
 ;------------------------------------------------------
-initial_p,				0.004163007,  clamp=25/175
+@initial_p,				0.004163007,  clamp=25/175
 slope,					0.017679781,  clamp=0/65
 om,						0.084686543,  clamp=0.7/55
-total_p,				0.006325881,  clamp=30/120
-manure_dm,				0.213122447,  clamp=0/2.4
+@total_p,				0.006325881,  clamp=30/120
+@manure_dm,				0.213122447,  clamp=0/2.4
 slope_length,			-0.007287826, clamp=18/76
 silt,					0.073889258,  clamp=0/79.17
 k,						-2.501548256, clamp=0.02/0.57

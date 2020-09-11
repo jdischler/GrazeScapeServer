@@ -5,11 +5,11 @@
 
 ; Stand-alone variables, with optional preprocessing steps listed after the coefficients
 ;------------------------------------------------------
-initial_p,				-0.010165514, clamp=25/175
+@initial_p,				-0.010165514, clamp=25/175
 slope,					-0.179268822, clamp=0/65
 om,						-0.052979725, clamp=0.7/55
-total_p,				-0.05323998,  clamp=20/65
-manure_dm,				-0.092958368, clamp=0.6/2.2
+@total_p,				-0.05323998,  clamp=20/65
+@manure_dm,				-0.092958368, clamp=0.6/2.2
 slope_length,			0.021180969,  clamp=18/76
 silt,					0.157738229,  clamp=0/79.17
 k,						-46.69876221, clamp=0.02/0.57
@@ -24,21 +24,21 @@ om:k,					-0.150624643
 initial_p:slope,		0.000305285
 initial_p:k,			0.025161159
 silt:k,					0.062896959
-om:total_depth,			-0.000937122
+om:soil_depth,			-0.000937122
 total_p:k,				0.097085369
 slope:total_p,			0.000824888
 slope_length:silt,		-0.000624171
 initial_p:om,			0.000220935
 om:silt,				0.004776868
-silt:total_depth,		-0.000889246
+silt:soil_depth,		-0.000889246
 slope_length:k,			0.159609336
-slope:total_depth,		-0.000127235
-slope_length:total_depth,-0.000254656
+slope:soil_depth,		-0.000127235
+slope_length:soil_depth,-0.000254656
 k:ls,					2.143726458
-total_depth:ls,			-0.003118958
+soil_depth:ls,			-0.003118958
 slope:om,				0.005800141
 slope:ls,				-0.003900159
-k:total_depth,			0.124834463
+k:soil_depth,			0.124834463
 silt:ls,				-0.006703261
 initial_p:silt,			4.59E-05
 slope:silt,				0.00099154

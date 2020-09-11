@@ -35,10 +35,13 @@ Ext.define('DSS.inspector.sourceParameters.PLoss', {
 		};
 		
 		Ext.applyIf(me, {
+			defaults: {
+				labelWidth: 50
+			},
 			items: [{
 				xtype: 'numberfield',
 				itemId: 'dss-soil-p',
-				fieldLabel: 'Soil P',
+				fieldLabel: 'Soil-Test P',
 				labelAlign: 'right',
 				labelWidth: 90,
 				maxWidth: 170,
@@ -48,19 +51,8 @@ Ext.define('DSS.inspector.sourceParameters.PLoss', {
 				listeners: numberListener
 			},{
 				xtype: 'numberfield',
-				itemId: 'dss-manure',
-				fieldLabel: '% Manure',
-				labelAlign: 'right',
-				labelWidth: 90,
-				maxWidth: 170,
-				minValue: 0, maxValue: 150,
-				value: 20, step: 10,
-				enableKeyEvents: true,
-				listeners: numberListener
-			},{
-				xtype: 'numberfield',
 				itemId: 'dss-fertilizer',
-				fieldLabel: '% Fert',
+				fieldLabel: 'Applied P',
 				labelAlign: 'right',
 				labelWidth: 90,
 				maxWidth: 170,
@@ -69,27 +61,39 @@ Ext.define('DSS.inspector.sourceParameters.PLoss', {
 				enableKeyEvents: true,
 				listeners: numberListener
 			},{
+				xtype: 'numberfield',
+				itemId: 'dss-manure',
+				fieldLabel: '% DM',
+				labelAlign: 'right',
+				labelWidth: 90,
+				maxWidth: 170,
+				minValue: 0, maxValue: 50,
+				value: 1, step: 0.1,
+				enableKeyEvents: true,
+				listeners: numberListener
+			},{
 				xtype: 'radiogroup',
 				itemId: 'dss-landcover',
 				fieldLabel: 'Crop',
 				labelAlign: 'right',
-				labelWidth: 40,
 				columns: 1,
 				vertical: true,
 				items: [{
+					boxLabel: 'Pasture - Est', name: 'landcover', inputValue: 'ep'
+				},{
 					boxLabel: 'Pasture - Rot', name: 'landcover', inputValue: 'pr', checked: true
 				},{
-					boxLabel: 'Pasture - Low', name: 'landcover', inputValue: 'pl'
+					boxLabel: 'Pasture - Cnt. Low', name: 'landcover', inputValue: 'pl'
 				},{
-					boxLabel: 'Pasture - Hi', name: 'landcover', inputValue: 'ph'
+					boxLabel: 'Pasture - Cnt. Hi', name: 'landcover', inputValue: 'ph'
 				},{
 					boxLabel: 'Continuous Corn', name: 'landcover', inputValue: 'cc'
 				},{
 					boxLabel: 'Dairy Rotation', name: 'landcover', inputValue: 'dr'
 				},{
-					boxLabel: 'Corn - Soy - Oats', name: 'landcover', inputValue: 'cso'
+					boxLabel: 'Corn - Soy - Oats', name: 'landcover', inputValue: 'cso', disabled: true
 				},{
-					boxLabel: 'Cash Grain', name: 'landcover', inputValue: 'cg'
+					boxLabel: 'Cash Grain', name: 'landcover', inputValue: 'cg', disabled: true
 				}],
 				listeners: {
 					change: function() {
@@ -101,7 +105,6 @@ Ext.define('DSS.inspector.sourceParameters.PLoss', {
 				itemId: 'dss-cover',
 				fieldLabel: 'Cover',
 				labelAlign: 'right',
-				labelWidth: 40,
 				columns: 2,
 				vertical: false,
 				items: [{
@@ -119,21 +122,37 @@ Ext.define('DSS.inspector.sourceParameters.PLoss', {
 				itemId: 'dss-tillage',
 				fieldLabel: 'Till',
 				labelAlign: 'right',
-				labelWidth: 40,
 				columns: 2,
 				vertical: false,
 				items: [{
 					boxLabel: 'No-till', name: 'tillage', inputValue: 'nt', checked: true
 				},{
-					xtype: 'component'
+					boxLabel: 'Sp Cult', name: 'tillage', inputValue: 'scu'
 				},{
-					boxLabel: 'Fall C,D', name: 'tillage', inputValue: 'fc'
+					boxLabel: 'Fall C+D', name: 'tillage', inputValue: 'fch'
 				},{
-					boxLabel: 'Sp C,D', name: 'tillage', inputValue: 'sc'
+					boxLabel: 'Sp C+D', name: 'tillage', inputValue: 'sch'
 				},{
-					boxLabel: 'Fall MP', name: 'tillage', inputValue: 'fm'
+					boxLabel: 'Fall MBP', name: 'tillage', inputValue: 'fmb'
 				},{
-					boxLabel: 'Sp MP', name: 'tillage', inputValue: 'sm'
+					boxLabel: 'Sp MBP', name: 'tillage', inputValue: 'smb'
+				}],
+				listeners: {
+					change: function() {
+						DSS_RefilterDelayed(50);
+					}
+				}
+			},{
+				xtype: 'radiogroup',
+				itemId: 'dss-contour',
+				fieldLabel: "Contour",
+				labelAlign: 'right',
+				columns: 2,
+				vertical: false,
+				items: [{
+					boxLabel: 'Yes', name: 'contour', inputValue: 1, checked: true
+				},{
+					boxLabel: 'No', name: 'contour', inputValue: 0
 				}],
 				listeners: {
 					change: function() {
@@ -143,7 +162,7 @@ Ext.define('DSS.inspector.sourceParameters.PLoss', {
 			},{
 				xtype: 'checkbox',
 				itemId: 'dss-snap-plus',
-				boxLabel: 'Apply S+ transmission...',
+				boxLabel: 'Apply S+ transmission function',
 				handler: function(self, checked) {
 					DSS_RefilterDelayed(50);
 				}
@@ -161,15 +180,19 @@ Ext.define('DSS.inspector.sourceParameters.PLoss', {
 		};
 		
 		options['soil-p'] = me.down('#dss-soil-p').getValue();
-		options['perc-manure'] = me.down('#dss-manure').getValue();
-		options['perc-fertilizer'] = me.down('#dss-fertilizer').getValue();
+		options['manure-dm'] = me.down('#dss-manure').getValue();
+		options['total-p'] = me.down('#dss-fertilizer').getValue();
 		options['landcover'] = me.down('#dss-landcover').getValue()['landcover'];
 		options['cover-crop'] = me.down('#dss-cover').getValue()['cover'];
 		options['tillage'] = me.down('#dss-tillage').getValue()['tillage'];
+		options['on-contour'] = me.down('#dss-contour').getValue()['contour'];
 		options['snap-plus-transmission'] = me.down('#dss-snap-plus').getValue();
 		
-		me.down('#dss-cover').setDisabled(options['landcover'][0] == 'p');
-		me.down('#dss-tillage').setDisabled(options['landcover'][0] == 'p');
+		let isPasture = (options['landcover'][0] == 'p');
+		let isPastureEst = (options['landcover'][0] == 'e');
+		me.down('#dss-cover').setDisabled(isPasture | isPastureEst);
+		me.down('#dss-tillage').setDisabled(isPasture);
+		me.down('#dss-contour').setDisabled(isPasture);
 		
 		return options;
 	}
