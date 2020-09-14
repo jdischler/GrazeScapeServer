@@ -4,7 +4,9 @@ import javax.inject.Inject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -192,6 +194,10 @@ public class HomeController extends Controller {
 	public Result modifyFields(Http.Request request) {
 		return ok(db.FieldGeometry.modifyFields(request));
 	}
+	
+	public Result deleteFields(Http.Request request) {
+		return ok(db.Farm.deleteFields(request));
+	}
 /*	
  	// Restriction options
  	restrict_by_value: 		{ compare: '<' || '>', 	value: # 			}
@@ -246,10 +252,44 @@ public class HomeController extends Controller {
 		
 		JsonNode node = request.body().asJson();
 		Extents ext = new Extents().fromJson((ArrayNode)node.get("extent")).toRasterSpace();
+		JsonNode restrictions = node.get("restrictions");
+		if (restrictions != null) {
+			logger.info("Has model restrictions:" + restrictions.toString());
+		}
+		
+		Map<Integer,Integer> deMask = new HashMap<>();
+		for (int i = 1; i < 31; i++) {
+			deMask.put((1 << (i-1)), i);
+		}
+		int w = ext.width(), h = ext.height();
+		int x1 = ext.x1(), y1 = ext.y2();
+		byte[][] data = new byte[h][w];
+		for (int y = 0; y < h; y++) {
+			for (int x = 0; x < w; x++) {
+				data[y][x] = deMask.get(cdlData[y + y1][x + x1]).byteValue();
+			}
+		}
+		
+		JsonNode slopeRestriction = restrictions.get("restrict_by_slope");
+		if (slopeRestriction != null) {
+			Float value = utils.Json.safeGetOptionalFloat(slopeRestriction, "value", 10.0f);
+			Boolean lessThan = utils.Json.safeGetOptionalString(slopeRestriction, "compare", "less-than").equalsIgnoreCase("less-than");
+			data = Filters.restrictToSlope(data, w, h, lessThan, value);
+		}
+		
+		JsonNode landcoverRestriction = restrictions.get("restrict_to_landcover");
+		if (landcoverRestriction != null) {
+			Boolean restrictToRowCrops = utils.Json.safeGetOptionalBoolean(landcoverRestriction, "row_crops", false);
+			Boolean restrictToGrasses = utils.Json.safeGetOptionalBoolean(landcoverRestriction, "grass_pasture", false);
+			if (restrictToRowCrops || restrictToGrasses) {
+				data = Filters.restrictToAgriculture(data, w, h, restrictToRowCrops, restrictToGrasses);
+			}
+		}
+		
 		ObjectNode result = null;
 		Long idx = pngCounter.getAndIncrement();
 		File fp = new File(FileService.getDirectory() + "out" + idx + ".png");
-		result  = (ObjectNode)RasterToPNG.saveClassified(cdlData, cdl.getKey(), ext, fp);
+		result  = (ObjectNode)RasterToPNG.saveClassified(data, cdl.getKey(), w, h, fp);
 		
 		Json.addToPack(result, "url", "renders/out" + idx + ".png", 
 						"extent", ext.toJson());	
@@ -305,10 +345,10 @@ public class HomeController extends Controller {
 				for (int y = ext.y2(); y < ext.y1(); y++) {
 					for (int x = ext.x1(); x < ext.x2(); x++) {
 						if (lessThan && modelResults[y][x] >= value) {
-							modelResults[y][x] = -9999.0f;
+							modelResults[y][x] = Layer_Float.getNoDataValue();
 						}
 						else if (!lessThan && modelResults[y][x] <= value) {
-							modelResults[y][x] = -9999.0f;
+							modelResults[y][x] = Layer_Float.getNoDataValue();
 						}
 					}
 				}
@@ -319,18 +359,7 @@ public class HomeController extends Controller {
 		if (slopeRestriction != null) {
 			Float value = utils.Json.safeGetOptionalFloat(slopeRestriction, "value", 10.0f);
 			Boolean lessThan = utils.Json.safeGetOptionalString(slopeRestriction, "compare", "less-than").equalsIgnoreCase("less-than");
-			float slope[][] = Layer_Base.getLayer("slope").getFloatData();
-			
-			for (int y = ext.y2(); y < ext.y1(); y++) {
-				for (int x = ext.x1(); x < ext.x2(); x++) {
-					if (lessThan && slope[y][x] >= value) {
-						modelResults[y][x] = -9999.0f;
-					}
-					else if (!lessThan && slope[y][x] <= value) {
-						modelResults[y][x] = -9999.0f;
-					}
-				}
-			}
+			modelResults = Filters.restrictToSlope(modelResults, ext, lessThan, value);
 		}
 		
 		JsonNode landcoverRestriction = restrictions.get("restrict_to_landcover");
@@ -338,7 +367,7 @@ public class HomeController extends Controller {
 			Boolean restrictToRowCrops = utils.Json.safeGetOptionalBoolean(landcoverRestriction, "row_crops", false);
 			Boolean restrictToGrasses = utils.Json.safeGetOptionalBoolean(landcoverRestriction, "grass_pasture", false);
 			if (restrictToRowCrops || restrictToGrasses) {
-				modelResults = FloatFilters.restrictToAgriculture(modelResults, ext, 
+				modelResults = Filters.restrictToAgriculture(modelResults, ext, 
 					restrictToRowCrops, restrictToGrasses);
 			}
 		}
@@ -374,7 +403,7 @@ public class HomeController extends Controller {
 			
 				for (int y = 0; y < rasterHeight; y++) {
 					for (int x = 0; x < rasterWidth; x++) {
-						if (layer[y][x] <= 0) modelResults[y][x] = -9999.0f;
+						if (layer[y][x] <= 0) modelResults[y][x] = Layer_Float.getNoDataValue();
 					}
 				}
 				
@@ -727,7 +756,7 @@ public class HomeController extends Controller {
 			
 			for (int y = ext.y2(); y < ext.y1(); y++) {
 				for (int x = ext.x1(); x < ext.x2(); x++) {
-					float value = -9999.0f;
+					float value = Layer_Float.getNoDataValue();
 					if ((wl_data[y][x] & cg) > 0) {
 						value = cashGrain.calculate(x, y).floatValue();
 					}

@@ -27,6 +27,7 @@ import io.ebean.Model;
 import io.ebean.SqlRow;
 import play.mvc.Http;
 import play.mvc.Http.Request;
+import play.twirl.api.Content;
 
 @Entity
 public class Farm extends Model {
@@ -288,5 +289,32 @@ public class Farm extends Model {
 		}
 		
 		return utils.Json.pack("f_id", field_id);
+	}
+	
+    //------------------------------------------------------
+	public static JsonNode deleteFields(Request request) {
+		JsonNode node = request.body().asJson();
+
+		Long farmId = utils.Json.safeGetLong(node, "farm_id");
+		ArrayNode ar = utils.Json.getArray(node, "fields");
+
+		db.Farm f = db.Farm.find.byId(farmId);
+		if (f != null) {
+			int sz = ar.size();
+			for (int i=0; i < sz; i++) {
+				Long f_id = ar.get(i).asLong();
+				List<db.Field> fieldsdb =Field.find.query().select("geometry").where().eq("id", f_id).findList();
+				for(db.Field dbf: fieldsdb) {
+					dbf.delete();
+				}
+				FieldGeometry fg = db.FieldGeometry.find.byId(f_id);
+				if (fg != null) {
+					fg.delete();
+				}
+			}
+			return utils.Json.pack("success", true);
+		}
+		
+		return utils.Json.pack("success", false);
 	}
 }

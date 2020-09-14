@@ -7,8 +7,19 @@ package query;
 //------------------------------------------------------------------------------
 public class Layer_CDL
 {
+	//------------------------------------------------------------------------------
 	public static Layer_Integer get() {
 		return (Layer_Integer)Layer_Base.getLayer("wisc_land_2"); 
+	}
+	
+	//------------------------------------------------------------------------------
+	public static Integer getWidth() {
+		return Layer_Base.getLayer("wisc_land_2").getWidth(); 
+	}
+	
+	//------------------------------------------------------------------------------
+	public static Integer getHeight() {
+		return Layer_Base.getLayer("wisc_land_2").getHeight(); 
 	}
 }
 

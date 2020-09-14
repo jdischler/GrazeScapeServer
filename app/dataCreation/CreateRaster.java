@@ -3,6 +3,7 @@ package dataCreation;
 import java.util.Map;
 
 import query.Layer_Float;
+import query.Layer_Integer;
 import raster.Extents;
 
 //---------------------------------------------------------------
@@ -14,7 +15,10 @@ public class CreateRaster {
 	private Map<Integer,Float> mFieldDataMap = null;
 	private Float mDefaultValue = null;
 	private float [][] mDefaultRaster = null;
-	private Float mNoDataValue = -9999.0f;
+	
+	// Not sure why but this was set up to allow overriding the nodata value.
+	// May be an unnecessary level of customization?
+	private Float mNoDataValue = Layer_Float.getNoDataValue();
 	
 	public CreateRaster(Extents ext) {
 		mExtents = ext;
@@ -75,7 +79,7 @@ public class CreateRaster {
 				for (int x = 0; x < mWidth; x++) {
 					int fid = mFieldIDs[y][x];
 					// if field id is no data or the field map doesn't contain a lookup value, should look up for backup data
-					if (fid == -9999 || !mFieldDataMap.containsKey(fid)) {
+					if (fid == Layer_Integer.getIntNoDataValue() || !mFieldDataMap.containsKey(fid)) {
 						// If there's no default raster or it has no-data, try a default value
 						if (mDefaultRaster == null || Layer_Float.isNoDataValue(mDefaultRaster[y][x])) {
 							raster[y][x] = mDefaultValue;

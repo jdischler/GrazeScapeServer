@@ -15,7 +15,7 @@ Ext.define('DSS.map.BoxModel', {
 		let me = this;
 		
 		DSS.dragBox = new ol.interaction.DragBox({
-			  condition: ol.events.condition.platformModifierKeyOnly
+			condition: ol.events.condition.platformModifierKeyOnly
 		});
 
 		map.addInteraction(DSS.dragBox);
@@ -28,22 +28,45 @@ Ext.define('DSS.map.BoxModel', {
 			return this.prepFrame(frameState); 
 		}
 
+		// raster image result
 		DSS.layer.ModelResult = new ol.layer.Image({
 			updateWhileAnimating: true,
 			updateWhileInteracting: true,
-			opacity: DSS.layer['inspector:opacity'],
-			visible: false, // DSS.layer['inspector:visibility'],
 			source: new ol.source.ImageStatic({
 				imageSmoothing: false,
 				projection: 'EPSG:3071',
-				// Something would be required here or there will be an exception whilst trying to dry this layer
+				// Something is required here or there will be an exception whilst trying to draw this layer
 				imageExtent: [
 					44240,328120,
 					448350,335420
 				],
 			})
+		});
+		//  box model outline, area of computation
+		DSS.layer.ModelBox = new ol.layer.Vector({
+			updateWhileAnimating: true,
+			updateWhileInteracting: true,
+			source: new ol.source.Vector(),
+			style: new ol.style.Style({
+				stroke: new ol.style.Stroke({
+					color: 'rgba(255,255,32,0.5)',
+					width: 1,
+					lineDash: [2,4]
+				}),
+				fill: new ol.style.Fill({
+					color: 'rgba(64,64,64,0.2)'
+				})
+			})
+		});
+		DSS.layer.ModelGroup = new ol.layer.Group({
+			opacity: DSS.layer['inspector:opacity'],
+			visible: DSS.layer['inspector:visibility'],
+			layers: [
+				DSS.layer.ModelBox,
+				DSS.layer.ModelResult,
+			]
 		})
-		map.addLayer(DSS.layer.ModelResult);
+		map.addLayer(DSS.layer.ModelGroup);
 		
 		DSS.dragBox.on('boxend', function() {
 

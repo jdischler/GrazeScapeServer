@@ -1,6 +1,8 @@
 package fileHandling;
 
 import play.*;
+import query.Layer_Integer;
+
 import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
@@ -31,7 +33,9 @@ import org.slf4j.LoggerFactory;
 */
 
 // Writer class for our DSS files...
+// WARNING: this could be used but it would need updates for SmartScape resolution, etc
 //------------------------------------------------------------------------------
+@Deprecated
 public class Binary_Writer {
 	
     private static final Logger logger = LoggerFactory.getLogger("app");
@@ -56,10 +60,11 @@ public class Binary_Writer {
 		mOutputFile = dssFile;
 		
 		// TODO: fixme...need a handy way to define these across the app...
+		
 		mCornerX = -10062652.65061f;
 		mCornerY = 5249032.6922889f;
 		mCellSize = 30.0f;
-		mNoDataValue = -9999;
+		mNoDataValue = Layer_Integer.getIntNoDataValue();
 		mWidth = width;
 		mHeight = height;
 	}

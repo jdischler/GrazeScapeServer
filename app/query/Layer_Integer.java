@@ -19,7 +19,10 @@ import com.fasterxml.jackson.databind.node.*;
 public class Layer_Integer extends Layer_Base
 {
     private static final Logger logger = LoggerFactory.getLogger("app");
-	
+
+	public static final byte BYTE_NO_DATA_VALUE = 0;
+	public static final Integer INT_NO_DATA_VALUE = -9999;// TODO: load from file...
+    
 	// Count at which we switch to using a hashset vs. a standard array list...
 	private static final int RAW_BREAK_EVEN_COUNT = 10;
 	
@@ -232,8 +235,7 @@ public class Layer_Integer extends Layer_Base
 	
 	private Layer_Key mLayerKey = new Layer_Key();
 	protected int[][] mIntData;
-	protected int mNoDataValue = -9999;// TODO: load from file...
-	protected int mConvertedNoDataValue;
+	protected int mConvertedNoDataValue = 0; // applies in cases where -9999 should be turned into zero
 	protected EType mLayerDataFormat;
 	protected boolean mbInitedMinMaxCache;
 	protected int mMin, mMax;
@@ -246,10 +248,7 @@ public class Layer_Integer extends Layer_Base
 		
 		// if raw, don't convert the no-data value...otherwise it isn't really raw anymore...
 		if (layerType == EType.ERaw) {
-			mConvertedNoDataValue = mNoDataValue;
-		}
-		else {
-			mConvertedNoDataValue = 0; // default to turning -9999 into a zero value...
+			mConvertedNoDataValue = INT_NO_DATA_VALUE;
 		}
 		mLayerDataFormat = layerType;
 	}
@@ -260,7 +259,17 @@ public class Layer_Integer extends Layer_Base
 		this(name, EType.ELoadShiftedIndex); // default to a pre-shifted (load time) index
 	}
 
-	// Call after constructor...But before Layer.init...if default conversion of -9999 to 0
+	//--------------------------------------------------------------------------
+	public static byte getByteNoDataValue() {
+		return BYTE_NO_DATA_VALUE;
+	}
+	
+	//--------------------------------------------------------------------------
+	public static Integer getIntNoDataValue() {
+		return INT_NO_DATA_VALUE;
+	}
+	
+	// Call after constructor - but before Layer.init - when default conversion of internal NoData to zero
 	//	is not ok.	
 	//--------------------------------------------------------------------------
 	public Layer_Integer setNoDataConversion(int newConversionValue) {
@@ -348,7 +357,7 @@ public class Layer_Integer extends Layer_Base
 	//--------------------------------------------------------------------------
 	final private void cacheMinMax(int value) {
 		
-		if (value != mNoDataValue) {
+		if (value != INT_NO_DATA_VALUE) {
 			if (!mbInitedMinMaxCache) {
 				mbInitedMinMaxCache = true;
 				mMin = value;
@@ -598,5 +607,6 @@ public class Layer_Integer extends Layer_Base
 		
 		return false;//selection;
 	}
+
 }
 

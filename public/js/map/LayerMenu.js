@@ -164,7 +164,7 @@ Ext.define('DSS.map.LayerMenu', {
 			},{ //-------------------------------------------
 				text: 'Inspector <i class="fas fa-search accent-text text-drp-50"></i>',
                 checked: true,
-                menu: makeOpacityMenu("inspector", DSS.layer.ModelResult, 50),
+                menu: makeOpacityMenu("inspector", DSS.layer.ModelGroup, 50),
                 listeners: {
                 	afterrender: function(self) {
                 		self.setChecked(DSS.layer.ModelResult.getVisible());

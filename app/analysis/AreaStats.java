@@ -4,6 +4,7 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import query.Layer_CDL;
 import raster.Extents;
 
 //------------------------------------------------------------------------------
@@ -18,14 +19,17 @@ public class AreaStats
     private int[][] 	mFieldIDs = null;
     private float[][]	mData = null;
     private int 		mAtX = 0, mAtY = 0;
-    private int			mWidth = 1500, mHeight = 2600;
+    private int			mWidth, mHeight;
     
     //----------------------------------------------------------------
     public AreaStats(float[][] data) {
     	mFieldStats = new HashMap<>();
     	mData = data;
     	
-    	// set default analysis extents
+    	mWidth = Layer_CDL.getWidth();
+    	mHeight = Layer_CDL.getHeight();
+    	
+    	// set default analysis extents?
     }
     
     //----------------------------------------------------------------

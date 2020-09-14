@@ -43,6 +43,7 @@ DSS.popupContainer
 //-----------------------------
 */
 
+
 //------------------------------------------------------------------------------
 Ext.define('DSS.map.Main', {
 //------------------------------------------------------------------------------
@@ -58,10 +59,11 @@ Ext.define('DSS.map.Main', {
 		'DSS.map.DrawAndModify',
 		'DSS.map.BoxModel',
 		'DSS.map.LayerMenu',
-		'DSS.map.RotationLayer'
+		'DSS.map.RotationLayer',
+		'DSS.field_grid.FieldGrid',
 	],
 	
-	layout: 'fit', // border
+	layout: DSS.utils.layout('vbox', 'start', 'stretch'),
 	listeners: {
 		afterrender: function(self) {
 			self.instantiateMap()
@@ -79,6 +81,7 @@ Ext.define('DSS.map.Main', {
 		Ext.applyIf(me, {
 			items: [{
 				xtype: 'component',
+				flex: 1,
 				region: 'center',
 				id: 'ol_map',
 				listeners: {
@@ -89,13 +92,14 @@ Ext.define('DSS.map.Main', {
 						AppEvents.triggerEvent('map_resize');
 					}
 				}
-			}]
+			},DSS.FieldGrid]
 		});
 		me.callParent(arguments);
 		
-		me.DSS_LayerButton = Ext.create('Ext.Component', {
+		DSS.LayerButton = Ext.create('Ext.Component', {
 			floating: true,
 			shadow: false,
+			x: 280, // FIXME
 			cls: 'layer-menu',
 			html: '<i class="fas fa-layer-group"></i>',
 			listeners: {
@@ -112,7 +116,7 @@ Ext.define('DSS.map.Main', {
 		});
 		
 		setTimeout(function() {
-			me.DSS_LayerButton.showAt(me.getX(),0);
+			DSS.LayerButton.showAt(DSS.LayerButton.x,0);
 		}, 100);
 		
 	},
@@ -120,7 +124,7 @@ Ext.define('DSS.map.Main', {
 	//-------------------------------------------------------------------------
 	showLayerButton() {
 		let me = this;
-		me.DSS_LayerButton.animate({
+		DSS.LayerButton.animate({
 			to: {
 				y: 2
 			}
@@ -130,7 +134,7 @@ Ext.define('DSS.map.Main', {
 	//-------------------------------------------------------------------------
 	hideLayerButton() {
 		let me = this;
-		me.DSS_LayerButton.animate({
+		DSS.LayerButton.animate({
 			to: {
 				y: -32
 			}
@@ -471,7 +475,7 @@ Ext.define('DSS.map.Main', {
 		});
 
 		DSS.layer.mask = new ol.layer.Vector({
-			source: new ol.source.Vector(),
+			source: new ol.source.Vector(),//{projection: 'EPSG:3071'}),
 			style: spotStyle,
 			opacity: 0.7,
 			// these potentially reduce performance but looks better
@@ -481,11 +485,11 @@ Ext.define('DSS.map.Main', {
 		
 		let multiPoly = [[ 
 			[
-				[ -10220000, 5280000 ], 
-				[ -10220000, 5470000 ], 
-				[ -10000000, 5470000 ], 
-				[ -10000000, 5280000 ], 
-				[ -10220000, 5280000 ] 
+				[ -10400000, 5100000 ], 
+				[ -10400000, 5600000 ], 
+				[ -9800000,  5600000 ], 
+				[ -9800000,  5100000 ], 
+				[ -10400000, 5100000 ] 
 			],[ // inner - counter-clockwise
 				[ -10128539.23, 5356917.38 ], 
 				[ -10128962.9, 5392788.13 ], 
@@ -496,7 +500,7 @@ Ext.define('DSS.map.Main', {
 		]];
 		
 		var spot = new ol.geom.MultiPolygon(multiPoly);
-	    
+	    console.log(spot);
 		DSS.layer.mask.getSource().addFeature(new ol.Feature(spot));
 		map.addLayer(DSS.layer.mask);                        
 	},

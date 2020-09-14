@@ -126,7 +126,7 @@ public class DryMatter implements RasterModel {
 		
 		float[][] dmOut = new float[height][width];
 		for (float[] row: dmOut) {
-			Arrays.fill(row, -9999.0f);
+			Arrays.fill(row, Layer_Float.getNoDataValue());
 		}
 		
 		for (CropData cd: cropMap.values()) {
@@ -137,7 +137,7 @@ public class DryMatter implements RasterModel {
 			
 			for (int y = ext.y2(); y < ext.y1(); y++) {
 				for (int x = ext.x1(); x < ext.x2(); x++) {
-					float value = -9999.0f;
+					float value = Layer_Float.getNoDataValue();
 					if (fieldIdKey[y][x] > 0 && (cropBitKey[y][x] & cd.crop.bitEncoding) > 0) {
 						Long key = Long.valueOf(fieldIdKey[y][x]);
 						Float ratio = cd.perFieldRatio.get(key);

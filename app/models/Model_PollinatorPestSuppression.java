@@ -1,6 +1,7 @@
 package models;
 
 import query.Layer_CDL;
+import query.Layer_Float;
 import query.Layer_Integer;
 import utils.PerformanceTimer;
 
@@ -83,8 +84,8 @@ public class Model_PollinatorPestSuppression extends Model_Base {
 				pestData[point.mY][point.mX] = pestSuppression;
 			}
 			else {
-				pollinatorData[point.mY][point.mX] = -9999.0f;
-				pestData[point.mY][point.mX] = -9999.0f;
+				pollinatorData[point.mY][point.mX] = Layer_Float.getNoDataValue();
+				pestData[point.mY][point.mX] = Layer_Float.getNoDataValue();
 			}
 
 			

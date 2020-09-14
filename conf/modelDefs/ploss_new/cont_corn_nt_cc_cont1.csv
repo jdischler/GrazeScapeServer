@@ -36,7 +36,7 @@ slope:silt,				0.000167736
 slope:k,				-0.026235667
 slope:soil_depth,		2.33E-05
 slope:ls,				-0.003503301
-om:totalP,				-4.22E-05
+om:total_p,				-4.22E-05
 om:manure_dm,			-0.002025024
 om:slope_length,		-0.001063893
 om:silt,				0.00165195

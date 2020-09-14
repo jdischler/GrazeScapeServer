@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import play.libs.Json;
+import query.Layer_CDL;
+import query.Layer_Integer;
 import raster.Extents;
 
 import org.slf4j.Logger;
@@ -62,7 +64,8 @@ public class RasterizeFeatures {
     //-----------------------------------------------------------------------------
     public static int[][] toInt(boolean someInputs) {
 
-		int rasterWidth = 1500, rasterHeight = 2600;
+		int rasterWidth = Layer_CDL.getWidth(), rasterHeight = Layer_CDL.getHeight();
+
 		BufferedImage bi = new BufferedImage(rasterWidth, rasterHeight, BufferedImage.TYPE_INT_RGB); 
 		Graphics g = bi.getGraphics();
     	
@@ -133,7 +136,7 @@ public class RasterizeFeatures {
 		for (int pixel = 0, y = 0, x = 0; pixel < bufferSz; pixel += stride) {
 			Integer argb = pixels[pixel]; argb &= 0x00ffffff;
 			
-			if (argb < 1) argb = -9999;
+			if (argb < 1) argb = Layer_Integer.getIntNoDataValue();
 			array[y][x] = argb;
 			x++;
 			if (x == width) {
@@ -147,7 +150,10 @@ public class RasterizeFeatures {
     //-----------------------------------------------------------------------------
     public static int[][] withIntProperty(List<JsonNode> geoJsonFeatures, String key) {
 
-		int rasterWidth = 1500, rasterHeight = 2600;
+    	// FIXME: TODO: needed some sort of width/height reference.
+    	Layer_Integer reference = Layer_CDL.get();
+		int rasterWidth = reference.getWidth(), rasterHeight = reference.getHeight();
+		
 		BufferedImage bi = new BufferedImage(rasterWidth, rasterHeight, BufferedImage.TYPE_INT_RGB);//BufferedImage.TYPE_INT_RGB); 
 		Graphics g = bi.getGraphics();
     	
@@ -194,7 +200,7 @@ public class RasterizeFeatures {
 		for (int pixel = 0, y = 0, x = 0; pixel < bufferSz; pixel += stride) {
 			Integer argb = pixels[pixel]; argb &= 0x00ffffff;
 			
-			if (argb < 1) argb = -9999;
+			if (argb < 1) argb = Layer_Integer.getIntNoDataValue();
 			array[y][x] = argb;
 			x++;
 			if (x == width) {
@@ -236,7 +242,6 @@ public class RasterizeFeatures {
 	public static float[][] toInt(boolean someInputs) {
 	    //# Define pixel_size and NoData value of new raster
 	    int pixel_size = 10;
-	    float NoData_value = -9999.0f;
 	
 	    gdal.AllRegister();
 	    org.gdal.ogr.ogr.RegisterAll();
@@ -264,7 +269,7 @@ public class RasterizeFeatures {
 	    org.gdal.gdal.Dataset target_ds = gdal.GetDriverByName("GTiff").Create(output, xCor, yCor, 1, gdalconst.GDT_Float32);// GDT_Int32);
 	    target_ds.SetGeoTransform(new double[]{extent[0], pixel_size, 0, extent[2], 0, -pixel_size});
 	    Band band = target_ds.GetRasterBand(1);
-	    band.SetNoDataValue(NoData_value);
+	    band.SetNoDataValue(Layer_Float.getNoDataValue());
 	    band.FlushCache();
 	
 	    int[] intArr = {1};

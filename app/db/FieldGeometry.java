@@ -27,6 +27,8 @@ public class FieldGeometry extends Model {
 	@Id
     public Long id;
 	
+	public String fieldName;
+	
     @ManyToOne
     public Farm farm;
     

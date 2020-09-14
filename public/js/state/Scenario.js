@@ -91,10 +91,10 @@ Ext.define('DSS.state.Scenario', {
 					text: 'Field Properties',
 					toggleHandler: function(self, pressed) {
 						if (pressed) {
-							AppEvents.triggerEvent('show_crop_nutrient_mode')
+							AppEvents.triggerEvent('show_field_grid')
 						}
 						else {
-							AppEvents.triggerEvent('hide_crop_nutrient_mode')
+							AppEvents.triggerEvent('hide_field_grid')
 						}
 //						DSS.ApplicationFlow.instance.showNewOperationPage();
 					}

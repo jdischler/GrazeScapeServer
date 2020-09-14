@@ -81,7 +81,11 @@ Ext.define('DSS.state.operation.FieldShapeMode', {
 				width: 78,
 				toggleHandler: function(self, pressed) {
 					if (pressed) {
-						DSS.DeleteFieldShapes.addModeControl()
+						DSS.DeleteFieldShapes.addModeControl(me)
+					}
+					else {
+						DSS.mouseMoveFunction = undefined;
+						DSS.mapClickFunction = undefined;
 					}
 				}
 			},{
@@ -160,7 +164,6 @@ Ext.define('DSS.state.operation.FieldShapeMode', {
 				console.log('fieldShape.addField failure');
 			}
 		});
-		
 	},
 
 	// segments are an array [changed,changed,...] where each "changed" is an array of items [object, 0], [object, 1]
@@ -199,6 +202,40 @@ Ext.define('DSS.state.operation.FieldShapeMode', {
 			
 			failure: function(respose, opts) {
 				console.log('fieldShape.modifyField failure');
+			}
+		});
+		
+	},
+	
+	// Takes an array of fields in [fID#, fID#, fID#...] format
+	//-----------------------------------------------------
+	deleteFields: function(fields, farm_id) {
+		
+		let wkt = new ol.format.WKT();
+		
+		let d_fields = [];
+		Ext.each(fields, function(item) {
+			d_fields.push(item.f_id);
+		})
+		console.log(d_fields);
+		
+		var obj = Ext.Ajax.request({
+			url: location.origin + '/delete_fields',
+			jsonData: {
+				farm_id: farm_id,
+				fields: d_fields
+			},
+			timeout: 30 * 1000, // 30 seconds
+			
+			success: function(response, opts) {
+				DSS.layerSource.fields.refresh();
+//				DSS.layerSource.fields.refresh();
+//				DSS.layer.cropOverlay.changed(); //needs to be "poked" after add??
+			},
+			
+			failure: function(respose, opts) {
+				console.log('fieldShape.deleteField failure');
+				alert("Delete error");
 			}
 		});
 		

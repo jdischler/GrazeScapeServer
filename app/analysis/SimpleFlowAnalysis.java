@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import query.Layer_Base;
+import query.Layer_Float;
 
 //------------------------------------------------------------------------------
 public class SimpleFlowAnalysis
@@ -38,7 +39,7 @@ public class SimpleFlowAnalysis
 		//initialize
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				data[y][x] = -9999.0f;
+				data[y][x] = Layer_Float.getNoDataValue();
 				mDistances.add(new Dist(d2w[y][x], x, y));
 			}
 		}

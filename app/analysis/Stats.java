@@ -25,9 +25,6 @@ public class Stats {
 	float mMin = Float.POSITIVE_INFINITY, mMax = Float.NEGATIVE_INFINITY;
 	double mSum = 0.0;
 	
-	//FIXME: this always seems broken...
-	float mNoDataValue = -9999.0f;
-	
 	boolean mbForFullStats = false; // such as ability to histogram at the end of data collection
 	List<Float> mValues = null; 
 

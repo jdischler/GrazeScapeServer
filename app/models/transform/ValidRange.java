@@ -10,7 +10,7 @@ public class ValidRange {
 	private Boolean mHasMinLegalValue= false, mHasMaxLegalValue = false;
 	private Float mMinValue, mMaxValue;
 	
-	private Float mNoDataValue = -9999.0f;
+	private Float mNoDataValue = Layer_Float.getNoDataValue();
 
 	//------------------------------------------------------------
 	public ValidRange(String value) {
@@ -37,7 +37,8 @@ public class ValidRange {
 	
 	//------------------------------------------------------------
 	public final Boolean isValid(Float input) {
-		if (Layer_Float.isNoDataValue(input)) return false;
+		// Given that a custom no data value/override can be specified, we have to check that way...
+		if (Layer_Float.isCustomNoDataValue(mNoDataValue, input)) return false;
 		if (mHasMinLegalValue && input < mMinValue) {
 			return false;
 		}
@@ -49,12 +50,13 @@ public class ValidRange {
 	
 	//------------------------------------------------------------
 	public final Float apply(Float input) {
-		if (Layer_Float.isNoDataValue(input)) return input;
+		// Given that a custom no data value/override can be specified, we have to check that way...
+		if (Layer_Float.isCustomNoDataValue(mNoDataValue, input)) return input;
 		if (mHasMinLegalValue && input < mMinValue) {
 			return mNoDataValue;
 		}
 		else if (mHasMaxLegalValue && input > mMaxValue) {
-			input = mNoDataValue;
+			return mNoDataValue;
 		}
 		return input;
 	}

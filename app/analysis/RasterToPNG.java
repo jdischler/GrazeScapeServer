@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.*;
 
 import ar.com.hjg.pngj.chunks.*;
+import query.Layer_Float;
 import query.Layer_Integer;//.KeyItem;
 import raster.Extents;
 import utils.Png.RGB;
@@ -160,20 +161,23 @@ public class RasterToPNG {
 		return pal;
 	}
 
+	// was 6 colors and 7 was transp
 	//--------------------------------------------------------------------------
 	private static PngChunkPLTE makeBlueToRed(PngChunkPLTE pal) {
 		
-		pal.setEntry(0, 62,  117, 178);	// blue
-		pal.setEntry(1, 144, 185, 228);
-		pal.setEntry(2, 210, 240, 250);
+		pal.setEntry(0, 32,  68, 132);	// blue
+		pal.setEntry(1, 62,  117, 178);	
+		pal.setEntry(2, 144, 185, 228);
+		pal.setEntry(3, 210, 240, 250);
 		
-		pal.setEntry(3, 252, 255, 216); // yellow
+		pal.setEntry(4, 252, 255, 216); // yellow
 		
-		pal.setEntry(4, 255, 218, 160);
-		pal.setEntry(5, 235, 145,  89);
-		pal.setEntry(6, 210,  92,  52); // red
+		pal.setEntry(5, 255, 218, 160);
+		pal.setEntry(6, 235, 145,  89);
+		pal.setEntry(7, 210,  92,  52); 
+		pal.setEntry(8, 165,  45,  24); // red
 		
-		pal.setEntry(7, 255, 0, 0);// red, but transparent
+		pal.setEntry(9, 255, 0, 0);// red, but transparent
 		
 		return pal;
 	}
@@ -181,7 +185,7 @@ public class RasterToPNG {
 	//--------------------------------------------------------------------------
 	public static JsonNode save(float [][]data, int width, int height, File file) {
 		
-		final int numColorEntries = 7;
+		final int numColorEntries = 9;
 		
 		MinMax minMax = getMinMax(data, width, height);
 		
@@ -250,30 +254,10 @@ public class RasterToPNG {
 	}
 	
 	//--------------------------------------------------------------------------
-	private static byte [][] extractToIndexed(int [][]data, Extents ext) {
-			
-		Map<Integer,Integer> deMask = new HashMap<>();
-		for (int i = 1; i < 31; i++) {
-			deMask.put((1 << (i-1)), i);
-		}
-		int w = ext.width(), h = ext.height();
-		int x1 = ext.x1(), y1 = ext.y2();
-		byte[][] idxs = new byte[h][w];
-		for (int y = 0; y < h; y++) {
-			for (int x = 0; x < w; x++) {
-				idxs[y][x] = deMask.get(data[y + y1][x + x1]).byteValue();
-			}
-		}
-		
-		return idxs;
-	}
-
-	//--------------------------------------------------------------------------
-	public static JsonNode saveClassified(int [][]data, List<Layer_Integer.KeyItem> colorMap, Extents ext, File file) {
-		
-		byte[][] idx = extractToIndexed(data, ext);
+	public static JsonNode saveClassified(byte [][]data, List<Layer_Integer.KeyItem> colorMap, 
+			Integer width, Integer height, File file) {
 	
-		Png png = new Png(ext.width(), ext.height(), 8, 1, file.getPath());
+		Png png = new Png(width, height, 8, 1, file.getPath());
 		try {
 			makePalette(png, colorMap);
 		}
@@ -281,7 +265,7 @@ public class RasterToPNG {
 			logger.error(e.toString());
 		}
 		
-		png.mPngWriter.writeRowsByte(idx);
+		png.mPngWriter.writeRowsByte(data);
 		png.mPngWriter.end();
 		
 		return getPaletteKey(colorMap); 
@@ -341,7 +325,7 @@ public class RasterToPNG {
 		for (int y=0; y < newHeight; y++) {
 			for (int x=0; x < newWidth; x++) {
 				float data = resampled[y][x];
-				if (data > -9999.0f || data < -9999.1f) { // FIXME: boo, hate these NoData check...
+				if (!Layer_Float.isNoData(data))
 					int binIndex = (int)((data - min)/(max - min) * binCount);
 					if (binIndex > binCount - 1) binIndex = binCount - 1;
 					bins[binIndex]++;
@@ -381,7 +365,7 @@ public class RasterToPNG {
 		for (int y = 0; y < newHeight; y++) {
 			for (int x = 0; x < newWidth; x++) {
 				float data = resampled[y][x];
-				if (data > -9999.0f || data < -9999.1f) { // BOO...hate these NoData checks!
+				if (!LayerFloat.isNoDataValue(data)) {
 					int index = (int)((data - min)/(max - min) * binCount);
 					if (index > binCount - 1) index = binCount - 1;
 					int palIndex = bins[index];
@@ -416,7 +400,7 @@ public class RasterToPNG {
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				float val = data[y][x];
-				if (val > -9999.0f || val < -9999.1f) {
+				if (!Layer_Float.isNoDataValue(val)) {
 					if (!minMax.mbHasValues) {
 						minMax.initialize(val, val);
 					}
@@ -443,7 +427,7 @@ public class RasterToPNG {
 			for (int x = 0; x < width; x++) {
 				
 				float val = data[y][x];
-				if (val > -9999.0f || val < -9999.1f) {
+				if (!Layer_Float.isNoDataValue(val)) {
 					int bin = Math.round((val - min) / (max - min) * numVals);
 					if (bin < 0) 
 						bin = 0;

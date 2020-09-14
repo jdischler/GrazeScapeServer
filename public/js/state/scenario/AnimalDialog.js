@@ -52,7 +52,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 				items: [{
 					xtype: 'component',
 					cls: 'information accent-text box-underline',
-					html: 'Configure the size of the Dairy herd',
+					html: 'Configure the <b>size of the dairy herd</b>',
 					margin: '0 32',
 				},{
 					xtype: 'container',
@@ -83,7 +83,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 				},{//----------------------------------------------------------------
 					xtype: 'component',
 					cls: 'information accent-text box-underline',
-					html: 'Specify the Average Daily Milk Yield',
+					html: 'Specify the <b>average daily milk yield</b>',
 					margin: '0 32',
 				},{
 					xtype: 'numberfield',
@@ -98,7 +98,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 				},{ //------------------------------------------------------------
 					xtype: 'component',
 					cls: 'information accent-text box-underline',
-					html: 'How are the Lactating cattle managed?',
+					html: 'How are the <b>lactating</b> cattle managed?',
 					margin: '0 32',
 				},{
 					xtype: 'container',
@@ -154,7 +154,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 						items: [{
 							xtype: 'component',
 							width: 64,
-							cls: 'information accent-text bold',
+							cls: 'information med-text bold',
 							html: 'Grazed'
 						},{
 							xtype: 'component',
@@ -164,7 +164,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 						},{
 							xtype: 'component',
 							width: 64,
-							cls: 'information accent-text bold',
+							cls: 'information med-text bold',
 							html: 'Confined'
 						}]
 					},{
@@ -196,7 +196,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 				},{ //------------------------------------------------------------
 					xtype: 'component',
 					cls: 'information accent-text box-underline',
-					html: 'How are the Non-Lactating cattle managed?',
+					html: 'How are the <b>non-lactating</b> cattle managed?',
 					margin: '0 32',
 				},{
 					xtype: 'container',
@@ -252,7 +252,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 						items: [{
 							xtype: 'component',
 							width: 64,
-							cls: 'information accent-text bold',
+							cls: 'information med-text bold',
 							html: 'Grazed'
 						},{
 							xtype: 'component',
@@ -262,7 +262,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 						},{
 							xtype: 'component',
 							width: 64,
-							cls: 'information accent-text bold',
+							cls: 'information med-text bold',
 							html: 'Confined'
 						}]
 					},{
@@ -310,7 +310,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 				items: [{
 					xtype: 'component',
 					cls: 'information accent-text box-underline',
-					html: 'Configure the size of the Beef herd',
+					html: 'Configure the <b>size of the beef herd</b>',
 					margin: '0 32',
 				},{
 					xtype: 'container',
@@ -338,7 +338,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 				},{//----------------------------------------------------------------
 					xtype: 'component',
 					cls: 'information accent-text box-underline',
-					html: 'Specify the Average Daily Weight Gain',
+					html: 'Specify the <b>average daily weight gain</b>',
 					margin: '0 32',
 				},{
 					xtype: 'numberfield',
@@ -353,7 +353,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 				},{ //-------------------------------------------------------------
 					xtype: 'component',
 					cls: 'information accent-text box-underline',
-					html: 'How are the Beef cattle managed?',
+					html: 'How are the <b>beef</b> cattle managed?',
 					margin: '0 32',
 				},{
 					xtype: 'container',
@@ -409,7 +409,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 						items: [{
 							xtype: 'component',
 							width: 64,
-							cls: 'information accent-text bold',
+							cls: 'information med-text bold',
 							html: 'Grazed'
 						},{
 							xtype: 'component',
@@ -419,7 +419,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 						},{
 							xtype: 'component',
 							width: 64,
-							cls: 'information accent-text bold',
+							cls: 'information med-text bold',
 							html: 'Confined'
 						}]
 					},{
@@ -457,7 +457,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 				xtype: 'component',
 				padding: 4,
 				cls: 'information med-text',
-				html: 'Click to choose the types of animals present at this operation'
+				html: 'Click to choose any <b>types</b> of animals present at this operation'
 					
 			},{
 				xtype: 'container',

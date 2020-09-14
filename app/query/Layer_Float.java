@@ -24,6 +24,7 @@ public class Layer_Float extends Layer_Base
 	protected float[][] mFloatData;
 	protected int mCountNoDataCells;
 	public static final Float EPSILON = (float) 1e-3;
+	public static final Float NO_DATA_VALUE = -9999.0f;
 	
 	//--------------------------------------------------------------------------
 	public Layer_Float(String name) {
@@ -57,10 +58,23 @@ public class Layer_Float extends Layer_Base
 		return mFloatData;
 	}
 
+	// Erf, certain systems and data imports may need to handle No Data values which are
+	//	different than the SmartScape / GrazeScape defaults...
+	//--------------------------------------------------------------------------
+	public static final Boolean isCustomNoDataValue(float customNoDataValue, float testValue) {
+		return (Math.abs(testValue - customNoDataValue) < EPSILON);
+	}
+	
 	//--------------------------------------------------------------------------
 	public static final Boolean isNoDataValue(float value) {
-		return (Math.abs(value - -9999.0f) < EPSILON);
+		return (Math.abs(value - getNoDataValue()) < EPSILON);
 	}
+	
+	//--------------------------------------------------------------------------
+	public static final Float getNoDataValue() {
+		return NO_DATA_VALUE;
+	}
+	
 	//--------------------------------------------------------------------------
 	protected void allocMemory() {
 		

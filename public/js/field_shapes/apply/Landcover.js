@@ -13,7 +13,7 @@ Ext.define('DSS.field_shapes.apply.Landcover', {
 	
 	layout: DSS.utils.layout('vbox', 'start', 'center'),
 	
-	DSS_sectionHeight: 178,
+	DSS_sectionHeight: 150,
 	
 	//--------------------------------------------------------------------------
 	initComponent: function() {
@@ -74,9 +74,9 @@ Ext.define('DSS.field_shapes.apply.Landcover', {
 					boxLabel: 'Dry Lot', 			inputValue: 'dl',
 				},{
 					boxLabel: 'Pasture', 			inputValue: 'ps',
-				},{
+			/*	},{
 					xtype: 'component',
-					style: 'border-bottom: 1px solid rgba(0,0,0,0.1); margin: 2px -32px'
+					style: 'border-bottom: 1px solid rgba(0,0,0,0.1); margin: 2px -32px'*/
 				},{
 					boxLabel: 'Continuous Corn',	inputValue: 'cc',
 				},{
@@ -88,9 +88,6 @@ Ext.define('DSS.field_shapes.apply.Landcover', {
 				},{
 					boxLabel: 'Dairy Rotation 2', 	inputValue: 'd2',
 					boxLabelAttrTpl: 'data-qtip="Three-year rotation: Corn Silage, Soybeans, Oats"',
-				},{
-					xtype: 'checkbox',
-					boxLabel: 'Plant/Till on Contour',
 				}]
 			}]
 		});

@@ -9,6 +9,7 @@ GET		/get_fields					controllers.HomeController.getFields(farm: Long)
 POST	/create_operation			controllers.HomeController.createOperation(request: Request)
 POST	/add_field					controllers.HomeController.addField(request: Request)
 POST 	/modify_fields				controllers.HomeController.modifyFields(request: Request)
+POST	/delete_fields				controllers.HomeController.deleteFields(request: Request)
 
 GET		/get_options				controllers.HomeController.getOptions(type: String)
 

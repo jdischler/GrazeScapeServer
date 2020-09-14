@@ -52,11 +52,11 @@ Ext.define('DSS.field_shapes.DrawAndApply', {
 					'dairy-nonlactating': true,
 					beef: false
 				},
-				fertilizer: {
+				/*fertilizer: {
 					is_active: false,
 					extRecs: 100, // %
 					canManurePastures: true
-				}
+				}*/
 			}
 		})
 		
@@ -89,8 +89,8 @@ Ext.define('DSS.field_shapes.DrawAndApply', {
 					xtype: 'field_shapes_apply_tillage'
 				},{
 					xtype: 'field_shapes_apply_soil_p'
-				},{
-					xtype: 'field_shapes_apply_fertilizer'
+				/*},{
+					xtype: 'field_shapes_apply_fertilizer'*/
 				}]
 			}]
 		});

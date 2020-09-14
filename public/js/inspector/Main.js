@@ -12,6 +12,12 @@ var DSS_RefilterDelayed = function(msDelay) {
 	filter_task.delay(msDelay);
 }
 
+DSS.utils.addStyle('.fa-spin-fast {-webkit-animation: fa-spin 1s linear infinite;animation:fa-spin 1s linear infinite}')
+DSS.utils.addStyle('.spinner-working { color: #d41; display: block}')//#3892d4
+DSS.utils.addStyle('.spinner-working-lt { color: #f87; display: block}')//#0ff
+DSS.utils.addStyle('.spinner-working-dk { color: #000; display: block}')
+DSS.utils.addStyle('.spinner-working-shdw { color: rgba(0,0,0,0.1); text-shadow: 0 0 2px rgba(0,0,0,0.1); display: block}')
+
 //------------------------------------------------------------------------------
 Ext.define('DSS.inspector.Main', {
 //------------------------------------------------------------------------------
@@ -29,6 +35,50 @@ Ext.define('DSS.inspector.Main', {
     
     scrollable: 'y',
 
+    listeners: {
+    	afterrender: function(self) {
+    		self.DSS_InspectorWorking = Ext.create('Ext.container.Container', {
+    			floating: true,
+    			shadow: false,
+    			width: 36, height: 36,
+    			x: DSS.LayerButton.x,
+    			y: 36,
+    			layout: 'absolute',
+    			items: [{
+    				xtype: 'component',
+    				x: 4, y: 8,
+    				cls: 'spinner-working-shdw',
+    				html: '<i class="fas fa-2x fa-spinner fa-spin-fast"></i>',
+    			},{
+    				xtype: 'component',
+    				x: 4, y: 0,
+    				cls: 'spinner-working-lt',
+    				html: '<i class="fas fa-2x fa-spinner fa-spin-fast"></i>',
+    			},{
+    				xtype: 'component',
+    				x: 4, y: 1,
+    				cls: 'spinner-working-dk',
+    				html: '<i class="fas fa-2x fa-spinner fa-spin-fast"></i>',
+    			},{
+    				xtype: 'component',
+    				x: 4, y: 0.5,
+    				cls: 'spinner-working',
+    				html: '<i class="fas fa-2x fa-spinner fa-spin-fast"></i>',
+    			}]
+    		});
+    		self.DSS_InspectorWorking.show();
+    		self.DSS_InspectorWorking.animate({
+    			from: {
+    				opacity: 1
+    			},
+    			to: {
+    				opacity: 0
+    			},
+    			duration: 10
+    		});
+    	}
+    },
+    
 	//--------------------------------------------------------------------------
 	initComponent: function() {
 		let me = this;
@@ -61,7 +111,6 @@ Ext.define('DSS.inspector.Main', {
 				me.computeResults(extents,DSS.layer.ModelResult);
 			}
 		})
-		
 	},
 	
 	//--------------------------------------------------------------------------
@@ -96,6 +145,30 @@ Ext.define('DSS.inspector.Main', {
 	},
 	
 	//-------------------------------------------------------------------------------------------------
+	startWorkerAnimation: function() {
+		let me = this;
+		me.DSS_isWorking = true;
+		me.DSS_InspectorWorking.stopAnimation().animate({
+			to: {
+				opacity: 1
+			},
+			duration: 100
+		});
+	},
+	
+	//-------------------------------------------------------------------------------------------------
+	stopWorkerAnimation: function() {
+		let me = this;
+		me.DSS_isWorking = false;
+		me.DSS_InspectorWorking.stopAnimation().animate({
+			to: {
+				opacity: 0
+			},
+			duration: 400
+		});
+	},
+	
+	//-------------------------------------------------------------------------------------------------
 	computeResults: function(extents, modelResultsLayer) {
 		let me = this;
 		
@@ -116,8 +189,7 @@ Ext.define('DSS.inspector.Main', {
 		if (!me.DSS_mode) me.DSS_mode = 'slope';//crop-yield';
 		
 		me['DSS_extents'] = extents;
-	
-		me.DSS_isWorking = true;
+		me.startWorkerAnimation();
 		
 		let options = me.down('#dss-data-source').getOptions();
 		let restrictions = me.down('#dss-resrictor').getRestrictions();
@@ -128,7 +200,6 @@ Ext.define('DSS.inspector.Main', {
 			"options": options,
 			"restrictions": restrictions,
 		};
-	//	console.log(data);
 		
 		var obj = Ext.Ajax.request({
 			url: location.origin + '/fetch_image',
@@ -137,16 +208,22 @@ Ext.define('DSS.inspector.Main', {
 			success: function(response, opts) {
 				var obj = JSON.parse(response.responseText);
 
+				let e = obj.extent;
+				let pt1 = ol.proj.transform([e[0],e[3]], 'EPSG:3071', 'EPSG:3857'),
+				pt2 = ol.proj.transform([e[2],e[3]], 'EPSG:3071', 'EPSG:3857');
+				pt3 = ol.proj.transform([e[2],e[1]], 'EPSG:3071', 'EPSG:3857');
+				pt4 = ol.proj.transform([e[0],e[1]], 'EPSG:3071', 'EPSG:3857');
+				
+				let p = new ol.geom.Polygon([
+					[pt1, pt2, pt3, pt4, pt1]
+				]);
 				me.validateImageOL(obj, modelResultsLayer);
-/*				modelResultsLayer.setSource(new ol.source.ImageStatic({
-					url: obj.url,
-					imageExtent: obj.extent,
-					projection: 'EPSG:3071',
-					imageSmoothing: false
-
-				}))
-				modelResultsLayer.setVisible(true);	
-*/				
+				let s = DSS.layer.ModelBox.getSource();
+				s.clear();
+				s.addFeature(new ol.Feature({
+					geometry: p
+				}));
+				
 				if (obj.key) {
 					DSS.MapState.showClassifiedLegend(obj.key)
 				}
@@ -160,7 +237,7 @@ Ext.define('DSS.inspector.Main', {
 			},
 			
 			failure: function(response, opts) {
-				me.DSS_isWorking = false;
+				me.stopWorkerAnimation();
 			}
 		});
 	},
@@ -179,39 +256,27 @@ Ext.define('DSS.inspector.Main', {
 				projection: 'EPSG:3071',
 				imageSmoothing: false
 			});			
-			src.on('imageloadend', function() { // IMAGELOADEND: 'imageloadend',
+			src.on('imageloadend', function() {
 
 				layer.setSource(src);
 				layer.setVisible(true);	
-				me.DSS_isWorking = false;
-
-/*				Ext.getCmp('dss-selection-loading').animate({
-					duration: 250,
-					to: {
-						opacity: 0
-					}
-				});*/
+				me.stopWorkerAnimation();
 			});
-			src.on('imageloaderror', function() { // IMAGELOADERROR: 'imageloaderror'
+			src.on('imageloaderror', function() {
 				tryCount++;
 				if (tryCount < 20) {
 					me.validateImageOL(json, layer, tryCount);
 				}
 				else {
 					//failed
-					me.DSS_isWorking = false;
-					/*Ext.getCmp('dss-selection-loading').animate({
-						duration: 250,
-						to: {
-							opacity: 0
-						}
-					});*/
+					me.stopWorkerAnimation();
 				}
 			});
-			src.image_.load(); // EVIL internal diggings...M is the secret internal ol.Image
-		}, 50 + tryCount * 50, me); //  
+			src.image_.load();
+		}, 50 + tryCount * 50, me);  
 	},
 		
+	//---------------------------------------------------------------------------------
 	extractData: function(data, crop, toDat) {
 		
 		let d = data['model-results'];

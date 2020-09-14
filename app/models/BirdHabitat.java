@@ -10,6 +10,7 @@ import analysis.windowing.Moving_CDL_Window;
 import analysis.windowing.Moving_CDL_Window_Z;
 import analysis.windowing.Moving_Window;
 import query.Layer_CDL;
+import query.Layer_Float;
 import query.Layer_Integer;
 import raster.Extents;
 
@@ -45,14 +46,15 @@ public class BirdHabitat implements RasterModel {
 					float lambda = -4.47f + (2.95f * proportionAg) + (5.17f * proportionGrass); 
 					float habitatIndex = (float)((1.0f / (1.0f / Math.exp(lambda) + 1.0f )) / 0.67f);
 	
+					// TODO: Verify that turning very low values into No Data is useful...
 					if (habitatIndex < 0.1f) {
-						habitatIndex = -9999.0f;
+						habitatIndex = Layer_Float.getNoDataValue();
 					}
 			
 					habitatData[point.mY][point.mX] = habitatIndex;
 				}
 				else {
-					habitatData[point.mY][point.mX] = -9999.0f; // NO DATA
+					habitatData[point.mY][point.mX] = Layer_Float.getNoDataValue();
 				}
 				
 				moreCells = win.advance();

@@ -8,7 +8,7 @@ Ext.define('DSS.map.Legend', {
 	layout: 'absolute',
 
 	width: 54,
-	height: 256,
+	height: 290,
 	floating: true,
 	shadow: false,
 
@@ -48,6 +48,11 @@ Ext.define('DSS.map.Legend', {
 	
 			atY = /*3*/usableHeight + 3;
 			Ext.each(me.DSS_values, function(it) {
+				let fmt = '0.0#'
+				if (it < 1) {fmt += "#"}
+				else if (it > 999) fmt = "0";
+				else if (it > 99) fmt = "0.#";
+				
 				elements.push({
 					xtype: 'component',
 					style: 'color: white; text-shadow: 1px 0 0 black, -1px 0 0 black, 0 1px 0 black, 0 -1px 0 rgba(0,0,0,0.5), 0 2px 4px black; text-align: right; font-weight: bold',
@@ -55,7 +60,7 @@ Ext.define('DSS.map.Legend', {
 					y: atY,
 					width: usableWidth-2,
 					height: chipHeight,
-					html: Ext.util.Format.number(it, '0.0#')
+					html: Ext.util.Format.number(it, fmt)
 				});
 				atY -= chipHeight;
 			})

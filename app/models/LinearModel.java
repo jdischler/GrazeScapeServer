@@ -33,9 +33,10 @@ public class LinearModel {
     public abstract class DataSource {
 		public ValidRange mValidRange = null;  
 		public List<Transform> mTransforms = new ArrayList<>();
+		
     	public final Boolean canComputeValue(int rasterX, int rasterY) {
 			float data = fetchData(rasterX, rasterY);
-			if (Layer_Float.isNoDataValue(data)) {
+			if (Layer_Float.isCustomNoDataValue(mNoDataValue, data)) {
 				return false;
 			}
 			else if (mValidRange == null) {
@@ -57,6 +58,7 @@ public class LinearModel {
     
 	//------------------------------------------------------------
     public final class DataConstant extends DataSource {
+    	
     	public Float mValue = 1.0f;
     	protected final float fetchData(int rasterX, int rasterY) {
     		return mValue;
@@ -68,6 +70,7 @@ public class LinearModel {
     
 	//------------------------------------------------------------
     public final class DataLayer extends DataSource {
+    	
 		public Layer_Float mDataLayer; 	// can be null
 		public float mDataSource[][];	// should not be null
     	protected final float fetchData(int rasterX, int rasterY) {
@@ -146,7 +149,7 @@ public class LinearModel {
 	}
 	
 	private Boolean mbInitialized = false;
-	private Float mNoDataValue = -9999.0f;
+	private Float mNoDataValue = Layer_Float.getNoDataValue();
 	private Float mIntercept = 0.0f;
 	private Map<String,Float> mVariableIntercept = new HashMap<>();
 

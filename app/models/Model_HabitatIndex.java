@@ -2,6 +2,7 @@ package models;
 
 import play.*;
 import query.Layer_CDL;
+import query.Layer_Float;
 import query.Layer_Integer;
 import utils.PerformanceTimer;
 
@@ -62,7 +63,7 @@ public class Model_HabitatIndex extends Model_Base
 				habitatData[point.mY][point.mX] = habitatIndex;
 			}
 			else {
-				habitatData[point.mY][point.mX] = -9999.0f; // NO DATA
+				habitatData[point.mY][point.mX] = Layer_Float.getNoDataValue();
 			}
 			
 			moreCells = win.advance();

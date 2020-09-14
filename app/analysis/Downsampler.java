@@ -3,6 +3,8 @@ package analysis;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import query.Layer_Float;
+
 // TODO: consider some way to capture the Min and Max value and return that??
 //------------------------------------------------------------------------------
 public class Downsampler {
@@ -37,11 +39,11 @@ public class Downsampler {
 	private static class ComputeMean implements Computable {
 		public final float compute(float[][] data, int fromX, int fromY, int toX, int toY) {
 			
-			float sum = 0, ave = -9999.0f;
+			float sum = 0, ave = Layer_Float.getNoDataValue();
 			int ct = 0;
 			for (int y = fromY; y < toY; y++) {
 				for (int x = fromX; x < toX; x++) {
-					if (data[y][x] > -9999.0f || data[y][x] < -9999.1f) {
+					if (!Layer_Float.isNoDataValue(data[y][x])) {
 						sum += data[y][x];
 						ct++;
 					}
@@ -59,12 +61,12 @@ public class Downsampler {
 	private static class ComputeMax implements Computable {
 		public final float compute(float[][] data, int fromX, int fromY, int toX, int toY) {
 			
-			float max = -9999.0f;
+			float max = Layer_Float.getNoDataValue();
 			boolean mbHasMax = false;
 			for (int y = fromY; y <= toY; y++) {
 				for (int x = fromX; x <= toX; x++) {
 					float result = data[y][x];
-					if (result > -9999.0f || result < -9999.1f) {
+					if (!Layer_Float.isNoDataValue(result)) {
 						if (!mbHasMax) {
 							max = result;
 							mbHasMax = true;
@@ -89,13 +91,13 @@ public class Downsampler {
 			for (int y = fromY; y <= toY; y++) {
 				for (int x = fromX; x <= toX; x++) {
 					float result = data[y][x];
-					if (result > -9999.0f || result < -9999.1f) {
+					if (!Layer_Float.isNoDataValue(result)) {
 						values.add(result);
 					}
 				}
 			}
 			int size = values.size();
-			if (size <= 0) return -9999.0f;
+			if (size <= 0) return Layer_Float.getNoDataValue();
 			Collections.sort(values);
 			
 			if (size % 2 > 0) { // odd, return the middle

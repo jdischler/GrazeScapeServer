@@ -48,7 +48,7 @@ Ext.define('DSS.field_shapes.Delete', {
 	},
 	
 	//--------------------------------------------------------------------------
-	addModeControl: function() {
+	addModeControl: function(owner) {
 		let me = this;
 		let c = DSS_viewport.down('#DSS-mode-controls');
 		
@@ -58,27 +58,18 @@ Ext.define('DSS.field_shapes.Delete', {
 				c.add(me);
 			Ext.resumeLayouts(true);
 		}
-		me.mouseMoveDeleteHandler();
-		me.clickDeleteFieldHandler();
+		me.mouseMoveDeleteHandler(owner);
+		me.clickDeleteFieldHandler(owner);
 	},
 	
     //-------------------------------------------------------------
 	mouseMoveDeleteHandler: function() {
 		
-		// NOTE: this mouseover layer is not added currently (commented out)
-	//	DSS.layer.MouseOver.setVisible(true);
 		DSS.mouseMoveFunction = function(evt) {
-			let pixel = DSS.map.getEventPixel(evt.originalEvent);
-			let fs = DSS.map.getFeaturesAtPixel(pixel, undefined, {layerFilter: function(candidate) {
-				// FIXME: Note that map.getFeaturesAtPixel() will match every visible layer so
-				//	duplicates may happen via the stock field layer + the crop overlay both being visible...
-				// implement a check that looks at the candidate layer coming in and returns true if that
-				//	layer should be inspected...
-				return true;
-			}});
+			let coordinate  =  DSS.map.getEventCoordinate(evt.originalEvent);
+			let fs = DSS.layer.fields.getSource().getFeaturesAtCoordinate(coordinate);
 			let cursor = '';
 			let mouseList = [];
-		//	DSS.layer.MouseOver.getSource().clear(true);
 			fs.forEach(function(f) {
 				let g = f.getGeometry();
 				if (g && g.getType() === "Polygon") {
@@ -91,34 +82,26 @@ Ext.define('DSS.field_shapes.Delete', {
 					center = g.getClosestPoint(center);
 				}
 			})
-			if (mouseList.length > 0) {
-		//		DSS.layer.MouseOver.getSource().addFeatures(mouseList);
-			}
 			DSS.map.getViewport().style.cursor = cursor;
 		}		
 	},
 	
     //-------------------------------------------------------------
-    clickDeleteFieldHandler: function(evt) {
+    clickDeleteFieldHandler: function(owner) {
     	
     	DSS.mapClickFunction = function(evt) {
-			let pixel = DSS.map.getEventPixel(evt.originalEvent);
-			let fs = DSS.map.getFeaturesAtPixel(pixel, undefined, {layerFilter: function(candidate) {
-				// FIXME: Note that map.getFeaturesAtPixel() will match every visible layer so
-				//	duplicates may happen via the stock field layer + the crop overlay both being visible...
-				// implement a check that looks at the candidate layer coming in and returns true if that
-				//	layer should be inspected...
-				return true;
-			}});
+			let coordinate  =  DSS.map.getEventCoordinate(evt.originalEvent);
+			let fs = DSS.layer.fields.getSource().getFeaturesAtCoordinate(coordinate);
 			let deleteList = [];
 			fs.forEach(function(f) {
 				let g = f.getGeometry();
 				if (g && g.getType() === "Polygon") {
 					deleteList.push({'f':f, 'f_id': f.getProperties().f_id});
+//					deleteList.push(f.getProperties().f_id);
 				}
 			})
 			if (deleteList.length > 0) {
-				console.log(deleteList);
+				owner.deleteFields(deleteList,DSS.activeFarm);
 			}
 		}		
     },

@@ -42,6 +42,7 @@ create table field (
 
 create table field_geometry (
   id                            bigserial not null,
+  field_name                    varchar(255),
   farm_id                       bigint,
   geom                          TEXT,
   constraint pk_field_geometry primary key (id)

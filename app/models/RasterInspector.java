@@ -9,6 +9,7 @@ import models.transform.PassThrough;
 import models.transform.SlopePercentToAngle;
 import models.transform.Transform;
 import query.Layer_Base;
+import query.Layer_Float;
 import raster.Extents;
 import utils.Json;
 
@@ -68,7 +69,7 @@ public class RasterInspector implements RasterModel {
 						dataOut[y][x] = data;
 					}
 					else { // filter it out
-						dataOut[y][x] = -9999.0f;
+						dataOut[y][x] = Layer_Float.getNoDataValue();
 					}
 				}
 			}
