@@ -171,7 +171,7 @@ Ext.define('DSS.inspector.Main', {
 		
 		// TODO: busy feedback
 		if (me.DSS_isWorking) {
-			DSS_RefilterDelayed(500);
+			DSS_RefilterDelayed(250);
 			return;
 		}
 		
@@ -180,7 +180,7 @@ Ext.define('DSS.inspector.Main', {
 		}
 		
 		if (!extents) {
-			console.log("nothing to do right now?");
+			console.log("Compute results called but no extent set");
 			return;
 		}
 		if (!me.DSS_mode) me.DSS_mode = 'slope';//crop-yield';

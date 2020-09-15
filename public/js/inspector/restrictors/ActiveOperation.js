@@ -91,7 +91,7 @@ Ext.define('DSS.inspector.restrictors.ActiveOperation', {
 					xtype: 'checkbox',
 					itemId: 'aggregate',
 					boxLabel: 'aggregate fields',
-					checked: true,
+					checked: false,
 					handler: function() {
 						DSS_RefilterDelayed(50);
 					}
@@ -109,14 +109,6 @@ Ext.define('DSS.inspector.restrictors.ActiveOperation', {
 			me.setHidden(true);
 			DSS_RefilterDelayed(50);
 		})
-		AppEvents.registerListener("set_inspector_bounds", function() {
-			if (me.DSS_active && !me.isHidden()) {
-//				console.log(me.down("#dss-toggle-active").getEl());
-//				console.log(me.down("#dss-toggle-active").getEl().getFirstChild().el);
-				
-				me.down("#dss-toggle-active").getEl().getFirstChild().el.fireEvent('click');
-			}
-		})
 	},
 	
 	//------------------------------------------------------------
@@ -125,15 +117,11 @@ Ext.define('DSS.inspector.restrictors.ActiveOperation', {
 		
 		if (me.DSS_active && !me.isHidden()) {
 			return {
-				restrict_to_fields: {
-					// FIXME:
-					farm_id: DSS.activeFarm,
+				restrict_to_operation: {
 					aggregate: me.down('#aggregate').getValue()
 				}
 			}
 		};
-		
-//		return {};
 	}
 	
 });

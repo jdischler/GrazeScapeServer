@@ -78,8 +78,6 @@ Ext.define('DSS.map.BoxModel', {
 			ex = [pt1[0], pt1[1], pt2[0], pt2[1]];
 			
 			AppEvents.triggerEvent('set_inspector_bounds', ex);
-			// FIXME:
-			//DSS.StatsPanel.computeResults(ex, DSS.layer.ModelResult);
 		});
 		
 		return me;

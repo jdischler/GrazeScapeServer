@@ -312,6 +312,8 @@ public class HomeController extends Controller {
 	
 		JsonNode node = request.body().asJson();
 
+		Long farmId = utils.Json.safeGetOptionalLong(node, "farm_id", null); 
+
 		JsonNode restrictions = node.get("restrictions");
 		JsonNode options = node.get("options");
 		if (DETAILED_LOG) {
@@ -387,15 +389,11 @@ public class HomeController extends Controller {
 			}
 		}
 		
-		Long farmId = null;
-		JsonNode fieldRestriction = restrictions.get("restrict_to_fields");
-		if (fieldRestriction != null) {
-			farmId = utils.Json.safeGetOptionalLong(fieldRestriction, "farm_id"); 
-		}
-		
 		AreaStats fs = null;
 		ObjectNode fieldStats = null;
-		if (farmId != null) {
+		
+		JsonNode fieldRestriction = restrictions.get("restrict_to_operation");
+		if (farmId != null && fieldRestriction != null) {
 			Boolean aggregate = utils.Json.safeGetOptionalBoolean(fieldRestriction, "aggregate", false);
 			
 			db.Farm f = db.Farm.find.byId(farmId);
