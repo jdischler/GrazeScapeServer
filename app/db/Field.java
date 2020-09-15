@@ -18,7 +18,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.ebean.Ebean;
 import io.ebean.Finder;
 import io.ebean.Model;
-import io.ebean.annotation.DbArray;
 import utils.Json;
 
 @Entity
@@ -42,9 +41,14 @@ public class Field extends Model {
     // Rotation and Tillage informs the PLoss model
     public Rotation rotation;
     public Tillage tillage;
+    
 //    public Season fertSeason;
     public Boolean hasCoverCrop;
     public Boolean onContour;
+    public Boolean grazeDairyLactating;
+    public Boolean grazeDairyNonLactating;
+    public Boolean grazeBeefCattle;
+    public Boolean spreadConfinedManureOnPastures;
     
     // The yield model needs actual crop years and specific crops, particularly in the case of Pasture.
     //	Crop year can default to whatever specific grass species/mix but then be overridden in the 
@@ -63,6 +67,7 @@ public class Field extends Model {
 	
 		Ebean.beginTransaction();
 		try {
+			logger.info(settings.toString());
 			if (Json.isActive(settings, "soil_p")) {
 				soilP = Json.safeGetOptionalFloat(settings.get("soil_p"), "value", 32.0f);
 			}
@@ -77,6 +82,7 @@ public class Field extends Model {
 					cropYears = Rotation.toCropYears(rotationCode);
 				} catch (Exception e) {
 					logger.error(e.toString());
+					e.printStackTrace();
 				}
 			}
 		}

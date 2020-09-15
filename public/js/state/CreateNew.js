@@ -107,6 +107,8 @@ Ext.define('DSS.state.CreateNew', {
 									var obj = JSON.parse(action.response.responseText);
 									
 									DSS.activeFarm = obj.farm.id;
+									DSS.activeScenario = obj.farm.scenario;
+									
 									DSS.ApplicationFlow.instance.showManageOperationPage();
 									AppEvents.triggerEvent('activate_operation')
 									// TODO: centralize

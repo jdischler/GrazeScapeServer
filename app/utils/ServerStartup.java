@@ -42,7 +42,7 @@ public class ServerStartup {
         systemReport("  Server is ready!");
 
 //		GenerateLS.go();
-        GenerateLS.validateLS_Function();
+ //       GenerateLS.validateLS_Function();
         
         // TODO: I want a callback for when the evolution is actually done.
 /*		as.scheduler()

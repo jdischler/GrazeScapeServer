@@ -20,11 +20,11 @@ Ext.define('DSS.inspector.DataBounds', {
 			items: [{
 				xtype: 'component',
 				cls: 'information light-text text-drp-20',
-				html: 'Inspection Area'
+				html: 'Inspection Mode'
 			},{//------------------------------------------------------------------
 				xtype: 'radiogroup',
 				vertical: true,
-				minWidth: 130, // awful resize / hidden workaround
+				minWidth: 190, // awful resize / hidden workaround
 				columns: 1,
 				listeners: {
 					change: function(self, newValue, oldValue) {
@@ -34,8 +34,9 @@ Ext.define('DSS.inspector.DataBounds', {
 					}
 				},
 				items: [{
+					width: 190,
 					boxLabelCls: 'x-form-cb-label x-form-cb-label-default x-form-cb-label-after box-label-cls',
-					boxLabel: 'Active operation', name: 'bounds', inputValue: 'true', checked: true,
+					boxLabel: 'Operation (as configured)', name: 'bounds', inputValue: 'true', checked: true,
 				},{
 					boxLabelCls: 'x-form-cb-label x-form-cb-label-default x-form-cb-label-after box-label-cls',
 					boxLabel: 'Custom bounds', name: 'bounds', inputValue: 'false',

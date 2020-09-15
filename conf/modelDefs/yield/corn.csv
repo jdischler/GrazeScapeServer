@@ -11,6 +11,7 @@
 ;		- adjust for modern yields (1.5x)
 ;		- convert to MG/ha (0.053)
 ;		- and clamp to a sane output (0.2 to 13) MG/ha
+;		- and lastly to tons/acre (x 0.44609)
 ; 
 ; ------------------------------------------------------------
 (intercept),	22.0
@@ -22,4 +23,4 @@ soil_depth,			0.19, 		clamp=? / 95
 cec,				1.32
 
 ; Final result transform
-(result-transform), multiply=1.5, multiply=0.053, clamp=0 / 13
+(result-transform), multiply=1.5, multiply=0.053, clamp=0 / 13, multiply=0.44609

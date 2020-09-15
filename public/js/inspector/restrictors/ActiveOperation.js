@@ -111,8 +111,8 @@ Ext.define('DSS.inspector.restrictors.ActiveOperation', {
 		})
 		AppEvents.registerListener("set_inspector_bounds", function() {
 			if (me.DSS_active && !me.isHidden()) {
-				console.log(me.down("#dss-toggle-active").getEl());
-				console.log(me.down("#dss-toggle-active").getEl().getFirstChild().el);
+//				console.log(me.down("#dss-toggle-active").getEl());
+//				console.log(me.down("#dss-toggle-active").getEl().getFirstChild().el);
 				
 				me.down("#dss-toggle-active").getEl().getFirstChild().el.fireEvent('click');
 			}

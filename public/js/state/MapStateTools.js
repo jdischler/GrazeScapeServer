@@ -236,23 +236,25 @@ Ext.define('DSS.state.MapStateTools', {
 				let g = f.getGeometry();
 				if (g && g.getType() === "Point") {
 					DSS.activeFarm = f.get("id");
+					DSS.activeScenario = f.get("scenario");
 					
 					let pos = g.getFirstCoordinate()
 					me.setPinMarker(pos);
 					let ex = ol.extent;
 					let extent = [pos[0], pos[1], pos[0], pos[1]];
 					DSS.layer.fields.getSource().forEachFeature(function(f) {
-						console.log(f.getGeometry().getExtent());
 						extent = ex.extend(extent, f.getGeometry().getExtent());
 					});
 					ex.buffer(extent, 250, extent);
 					me.zoomToRealExtent(extent);
-					//me.zoomToExtent(g.getFirstCoordinate(),15);
+					
 					// if results were already being computed (extents chosen and model), then trigger a recompute
 				//	DSS.StatsPanel.computeResults(undefined, DSS.layer.ModelResult);
+//					AppEvents.triggerEvent('set_inspector_bounds', extent);
+					
 					DSS.map.getViewport().style.cursor = '';
 					AppEvents.triggerEvent('activate_operation')
-					console.log(DSS.layer.fields.getSource());
+//					console.log(DSS.layer.fields.getSource());
 					DSS.ApplicationFlow.instance.showManageOperationPage(f.get("name"));
 					break;
 				}
@@ -274,7 +276,6 @@ Ext.define('DSS.state.MapStateTools', {
     
     zoomToRealExtent: function(extent) {
     	DSS.map.getView().fit(extent, {size: DSS.map.getSize(), duration: 1000});
-    	console.log(extent);
     },
     
     //-------------------------------------------------------------

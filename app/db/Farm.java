@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import utils.Json;
+import utils.RandomString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -98,8 +99,12 @@ public class Farm extends Model {
 		
 		f.save();
 		
+		Scenario s = Scenario.createBaseline();
+		f.scenarios.add(s);
+		f.save();
+		
 		// Must return "success": true for extjs form submission framework...
-		return Json.pack("success",true, "farm", Json.pack("id", f.id));
+		return Json.pack("success",true, "farm", Json.pack("id", f.id, "scenario", s.id));
     }
     
     //------------------------------------------------------
@@ -194,7 +199,17 @@ public class Farm extends Model {
     
     //----------------------------------------------------
 	public JsonNode getProperties() {
+		
+		// FIXME: use proper finder techniques...
+		Long s_id = -1l;
+		for (Scenario s: this.scenarios)  {
+			if (s.isBaseline) {
+				s_id = s.id;
+				break;
+			}
+		}
 		return Json.pack("id",this.id,
+			"scenario", s_id,
 			"name", this.farmName,
 			"owner", this.farmOwner,
 			"address", this.farmAddress
@@ -271,9 +286,12 @@ public class Farm extends Model {
 		
 		db.Farm f = db.Farm.find.byId(farmId);
 		if (f != null) {
+			Integer fgCount = f.fieldGeometry.size() + 1;
 			FieldGeometry fg = new FieldGeometry();
 			fg.fromWKT(wkt);
 			fg.farm = f;
+			// FIXME: TODO: eh, a better random naming scheme could be wanted
+			fg.fieldName = "field_" + fgCount + RandomString.get(2); 
 			f.fieldGeometry.add(fg);
 			f.save();
 			field_id = fg.id;

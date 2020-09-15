@@ -21,7 +21,9 @@ import analysis.Stats;
 import db.CropYear;
 import db.Field;
 import db.Landcover;
+import db.Rotation;
 import db.Scenario;
+import db.Tillage;
 import io.ebean.Ebean;
 import io.ebean.SqlRow;
 import query.Layer_CDL;
@@ -73,6 +75,10 @@ public class PLoss implements RasterModel {
 			Integer landcoverBitCode = 0;
 			if (f.geometry == null) continue;
 			Long f_id = f.geometry.id;
+			Rotation r = f.rotation;
+			Tillage til = f.tillage;
+			Boolean hasCover = f.hasCoverCrop;
+			
 			for (CropYear cy: f.cropYears) {
 				logger.info("CropYearId: " + cy.id);
 				if (cy.dominantCrop == null) {
@@ -110,7 +116,7 @@ public class PLoss implements RasterModel {
 			LinearModel lm = null;
 			try {
 				String modelPath = ServerStartup.getApplicationRoot() + cd.crop.yieldModel;
-				logger.debug("DryMatter:test -> loading model: " + modelPath);
+				logger.debug("PLoss:test -> loading model: " + modelPath);
 				cd.modelInstance = new LinearModel().init(modelPath);
 			} catch (Exception e) {
 				logger.error(e.toString());
@@ -126,7 +132,7 @@ public class PLoss implements RasterModel {
 		
 		float[][] dmOut = new float[height][width];
 		for (float[] row: dmOut) {
-			Arrays.fill(row, -9999.0f);
+			Arrays.fill(row, Layer_Float.getNoDataValue());
 		}
 		
 		for (CropData cd: cropMap.values()) {
@@ -137,7 +143,7 @@ public class PLoss implements RasterModel {
 			
 			for (int y = ext.y2(); y < ext.y1(); y++) {
 				for (int x = ext.x1(); x < ext.x2(); x++) {
-					float value = -9999.0f;
+					float value = Layer_Float.getNoDataValue();
 					if (fieldIdKey[y][x] > 0 && (cropBitKey[y][x] & cd.crop.bitEncoding) > 0) {
 						Long key = Long.valueOf(fieldIdKey[y][x]);
 						Float ratio = cd.perFieldRatio.get(key);

@@ -20,6 +20,7 @@ public abstract class Layer_Base
     private static final Logger logger = LoggerFactory.getLogger("app");
 
 	//--------------------------------------------------------------------------
+    protected static Boolean SHOW_LAYER_LOAD_STATS = false;
 	private static boolean DETAILED_DEBUG_LOGGING = true;
 	protected static void detailedLog(String detailedMessage) {
 		
@@ -280,7 +281,8 @@ public abstract class Layer_Base
 			}
 		}
 		catch (Exception e) {
-			logger.info(e.toString());
+			logger.error(e.toString());
+			logger.error(e.getStackTrace().toString());
 		}
 	}
 	
@@ -330,7 +332,8 @@ public abstract class Layer_Base
 			}
 		}
 		catch (Exception e) {
-			logger.info(e.toString());
+			logger.error(e.toString());
+			e.printStackTrace();
 		}
 		
 		onLoadEnd();
@@ -460,6 +463,18 @@ public abstract class Layer_Base
 	public static void cacheLayers() {
 		
 		PerformanceTimer timer = new PerformanceTimer();
+		
+		// Some convenience helpers...
+		// NOTE: layer synonyms must exist first as layer caching will attempt to do a lookup, which
+		//	first relies on a synonym table...
+		mLayerSynonyms = new HashMap<>();
+		mLayerSynonyms.put("sand", "sand_perc");
+		mLayerSynonyms.put("clay", "clay_perc");
+		mLayerSynonyms.put("silt", "silt_perc");
+		mLayerSynonyms.put("slopelen", "slope_length");
+		mLayerSynonyms.put("ls", "ls_2");
+//		mLayerSynonyms.put("slope", "ssurgo_slope");
+		
 		try {
 			logger.info("Caching all data layers");
 			
@@ -495,15 +510,6 @@ public abstract class Layer_Base
 		}
 		newFloatLayer("ls_2").init();				// SSURGO: ls
 
-		// Some convenience helpers...
-		mLayerSynonyms = new HashMap<>();
-		mLayerSynonyms.put("sand", "sand_perc");
-		mLayerSynonyms.put("clay", "clay_perc");
-		mLayerSynonyms.put("silt", "silt_perc");
-		mLayerSynonyms.put("slopelen", "slope_length");
-		mLayerSynonyms.put("ls", "ls_2");
-//		mLayerSynonyms.put("slope", "ssurgo_slope");
-		
 		logger.info("┌───────────────────────────────────────────────────────┼");
 		logger.info("» Layers are loaded:");
 		

@@ -1,7 +1,5 @@
 package models;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,18 +13,14 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import analysis.AreaStats;
-import analysis.RasterizeFeatures;
-import analysis.Stats;
+import analysis.*;
+import query.*;
 import db.CropYear;
 import db.Field;
 import db.Landcover;
 import db.Scenario;
 import io.ebean.Ebean;
 import io.ebean.SqlRow;
-import query.Layer_CDL;
-import query.Layer_Float;
-import query.Layer_Integer;
 import raster.Extents;
 import utils.Json;
 import utils.ServerStartup;
@@ -107,7 +101,6 @@ public class DryMatter implements RasterModel {
 		
 		// Create needed model instances
 		for (CropData cd: cropMap.values()) {
-			LinearModel lm = null;
 			try {
 				String modelPath = ServerStartup.getApplicationRoot() + cd.crop.yieldModel;
 				logger.debug("DryMatter:test -> loading model: " + modelPath);

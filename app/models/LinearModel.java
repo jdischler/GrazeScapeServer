@@ -21,14 +21,14 @@ import utils.ServerStartup;
 //------------------------------------------------------------
 public class LinearModel {
 
-    private static final Logger logger = LoggerFactory.getLogger("app");
+  //  private static final Logger logger = LoggerFactory.getLogger("app");
     public class Slogger {
     	public Slogger() {}
     	public void debug(String s) {}
     	public void warn(String s) {}
     	public void error(String s) {}
     };
-//    private final Slogger logger = new Slogger();
+    private final Slogger logger = new Slogger();
 	//------------------------------------------------------------
     public abstract class DataSource {
 		public ValidRange mValidRange = null;  

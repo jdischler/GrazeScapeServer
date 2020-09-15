@@ -110,6 +110,8 @@ Farms:
 public class HomeController extends Controller {
 
     private static final Logger logger = LoggerFactory.getLogger("app");
+    private static Boolean DETAILED_LOG = true;
+    
     private static AtomicLong pngCounter = new AtomicLong(1l);
 
     private Cache<String,session.Session> mSessions = null;
@@ -118,7 +120,7 @@ public class HomeController extends Controller {
 	@Inject
 	public HomeController(ServerStartup startup) {
 		mSessions = Caffeine.newBuilder().expireAfterAccess(8, TimeUnit.DAYS).build();
-	}
+	} 
 	
 	//------------------------------------------------------------------
 	public Result app(Http.Request request) {
@@ -142,7 +144,9 @@ public class HomeController extends Controller {
 	public Result getOptions(String type) {
 		
 		JsonNode js = null;
-		logger.debug(type);
+		if (DETAILED_LOG) {
+			logger.debug("Get options type: " + type);
+		}
 		if (type.equalsIgnoreCase("rotationalFrequency")) {
 			js = RotationalFrequency.toJson();
 		}
@@ -208,7 +212,7 @@ public class HomeController extends Controller {
 		
 		JsonNode node = request.body().asJson();
 		String mode = Json.safeGetOptionalString(node, "model", "bird-habitat");
-		JsonNode options = node.get("options");
+		//JsonNode options = node.get("options");
 		
 		RasterModel mc = null;
 		if (mode.equalsIgnoreCase("bird-habitat")) mc = new BirdHabitat();
@@ -253,8 +257,14 @@ public class HomeController extends Controller {
 		JsonNode node = request.body().asJson();
 		Extents ext = new Extents().fromJson((ArrayNode)node.get("extent")).toRasterSpace();
 		JsonNode restrictions = node.get("restrictions");
-		if (restrictions != null) {
-			logger.info("Has model restrictions:" + restrictions.toString());
+		JsonNode options = node.get("options");
+		if (DETAILED_LOG) {
+			if (restrictions != null) {
+				logger.info("Has model restrictions:" + restrictions.toPrettyString());
+			}
+			if (options != null) {
+				logger.debug("Has model options:" + options.toPrettyString());
+			}
 		}
 		
 		Map<Integer,Integer> deMask = new HashMap<>();
@@ -304,8 +314,13 @@ public class HomeController extends Controller {
 
 		JsonNode restrictions = node.get("restrictions");
 		JsonNode options = node.get("options");
-		if (restrictions != null) {
-			logger.info("Has model restrictions:" + restrictions.toString());
+		if (DETAILED_LOG) {
+			if (restrictions != null) {
+				logger.info("Has model restrictions:" + restrictions.toPrettyString());
+			}
+			if (options != null) {
+				logger.debug("Has model options:" + options.toPrettyString());
+			}
 		}
 		// Extent array node can be missing, in which case we get a clipper that extracts the entire area
 		Extents ext = new Extents().fromJson((ArrayNode)node.get("extent")).toRasterSpace();
@@ -440,21 +455,25 @@ public class HomeController extends Controller {
 							Float mid = (min + max) * 0.5f;
 							Float mean = stats.getMean();
 							Float median = stats.getMedian();
-							results += " »FIELD CELLS: " + ct + "\n";
-							results += String.format("  Area: %.2f(ac)   %.2f(km2) \n", area / 4047.0f, area / 1000000.0f);
-							results += " »YIELD STATS \n";
-							results += String.format("  Total Yield: %.2f\n", sum);
-							results += String.format("  Min: %.2f  Mid: %.2f  Max: %.2f \n", min, mid, max);
-							results += String.format("  Mean: %.2f\n", mean);
-							results += String.format("  Median: %.2f\n", median);
-							results += " »HISTOGRAM (" + histogramCt + " bins) \n";
-							results += hs.toString();
+							if (DETAILED_LOG) {
+								results += " »FIELD CELLS: " + ct + "\n";
+								results += String.format("  Area: %.2f(ac)   %.2f(km2) \n", area / 4047.0f, area / 1000000.0f);
+								results += " »YIELD STATS \n";
+								results += String.format("  Total Yield: %.2f\n", sum);
+								results += String.format("  Min: %.2f  Mid: %.2f  Max: %.2f \n", min, mid, max);
+								results += String.format("  Mean: %.2f\n", mean);
+								results += String.format("  Median: %.2f\n", median);
+								results += " »HISTOGRAM (" + histogramCt + " bins) \n";
+								results += hs.toString();
+							}
 							
 							Json.addToPack(fieldStats, fs_idx.toString(), Json.pack("area", area, "mean", mean));
 						}
-						results += "─────────────────────────────────────────────────────\n";
 						
-					//	logger.info(results);
+						if (DETAILED_LOG) {
+							results += "─────────────────────────────────────────────────────\n";
+							logger.info(results);
+						}
 					}
 				}
 				catch(Exception e) {
@@ -659,7 +678,9 @@ public class HomeController extends Controller {
 				
 			try {
 				String modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss_new/" + model;
-				logger.error("model path is: " + modelPath);
+				if (DETAILED_LOG) {
+					logger.error("model path is: " + modelPath);
+				}
 				lm = new LinearModel().init(modelPath);
 
 //					lm.debug();

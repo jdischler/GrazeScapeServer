@@ -228,6 +228,7 @@ Ext.define('DSS.state.operation.FieldShapeMode', {
 			timeout: 30 * 1000, // 30 seconds
 			
 			success: function(response, opts) {
+				DSS_RefilterDelayed(25);
 				DSS.layerSource.fields.refresh();
 //				DSS.layerSource.fields.refresh();
 //				DSS.layer.cropOverlay.changed(); //needs to be "poked" after add??

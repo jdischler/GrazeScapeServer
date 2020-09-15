@@ -155,7 +155,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 							xtype: 'component',
 							width: 64,
 							cls: 'information med-text bold',
-							html: 'Grazed'
+							html: 'Pastured'
 						},{
 							xtype: 'component',
 							cls: 'information-compact med-text',
@@ -253,7 +253,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 							xtype: 'component',
 							width: 64,
 							cls: 'information med-text bold',
-							html: 'Grazed'
+							html: 'Pastured'
 						},{
 							xtype: 'component',
 							cls: 'information-compact med-text',
@@ -410,7 +410,7 @@ Ext.define('DSS.state.scenario.AnimalDialog', {
 							xtype: 'component',
 							width: 64,
 							cls: 'information med-text bold',
-							html: 'Grazed'
+							html: 'Pastured'
 						},{
 							xtype: 'component',
 							cls: 'information-compact med-text',

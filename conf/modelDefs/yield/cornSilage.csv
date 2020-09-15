@@ -8,6 +8,7 @@
 ; Model Output Details
 ; 	Results are bushels per acres, however the results are transformed in the (result-transform) step:
 ;		- and clamp to a sane output (0.2 to 25) MG/ha
+;		- and lastly to tons/acre (x 0.44609)
 ; 
 ; ------------------------------------------------------------
 (intercept),	22.0
@@ -19,4 +20,4 @@ soil_depth,			0.19, 		clamp=? / 150
 cec,				1.32
 
 ; Final result transform
-(result-transform), quadratic=2.0393/0.157/0.0001, clamp=0 / 25
+(result-transform), quadratic=2.0393/0.157/0.0001, clamp=0 / 25, multiply=0.44609

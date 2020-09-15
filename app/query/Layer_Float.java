@@ -135,40 +135,42 @@ public class Layer_Float extends Layer_Base
 	//--------------------------------------------------------------------------
 	protected void onLoadEnd() {
 		
-		AreaStats fs = new AreaStats(mFloatData).compute();
+		if (SHOW_LAYER_LOAD_STATS) {
+			try {
+				AreaStats fs = new AreaStats(mFloatData).compute();
+				Stats stats = fs.getAreaStats();
+				Integer noDataCt = stats.getNoDataCount();
+				Float noDataPerc = stats.getFractionNoData();
 		
-		try {
-			Stats stats = fs.getAreaStats();
-			Integer noDataCt = stats.getNoDataCount();
-			Float noDataPerc = stats.getFractionNoData();
-	
-			String results = "\n" + //─────────────────────────────────────────────────────\n" +
-					"¤STATISTICS\n" +
-					"  NoDataCells: " + noDataCt + "\n" +
-					"  NoData%:     " + String.format("%.1f%%", noDataPerc * 100) + "\n";
-	
-			
-			if (stats.hasStatistics()) {
-				Integer histogramCt = 40;
-				Histogram hs = stats.getHistogram(histogramCt, stats.getMin(), stats.getMax()); 
-				mMin = stats.getMin();
-				mMax = stats.getMax();
-				float mid = (mMin + mMax) * 0.5f;
-				Float mean = stats.getMean();
-				Float median = stats.getMedian();
-				results += " »Value STATS \n";
-				results += String.format("  Min: %.2f  Mid: %.2f  Max: %.2f \n", mMin, mid, mMax);
-				results += String.format("  Mean: %.2f\n", mean);
-				results += String.format("  Median: %.2f\n", median);
-				results += " »HISTOGRAM (" + histogramCt + " bins) \n";
-				results += hs.toString();
+				String results = "\n" + //─────────────────────────────────────────────────────\n" +
+						"¤STATISTICS\n" +
+						"  NoDataCells: " + noDataCt + "\n" +
+						"  NoData%:     " + String.format("%.1f%%", noDataPerc * 100) + "\n";
+		
+				
+				if (stats.hasStatistics()) {
+					Integer histogramCt = 40;
+					Histogram hs = stats.getHistogram(histogramCt, stats.getMin(), stats.getMax()); 
+					mMin = stats.getMin();
+					mMax = stats.getMax();
+					float mid = (mMin + mMax) * 0.5f;
+					Float mean = stats.getMean();
+					Float median = stats.getMedian();
+					results += " »Value STATS \n";
+					results += String.format("  Min: %.2f  Mid: %.2f  Max: %.2f \n", mMin, mid, mMax);
+					results += String.format("  Mean: %.2f\n", mean);
+					results += String.format("  Median: %.2f\n", median);
+					results += " »HISTOGRAM (" + histogramCt + " bins) \n";
+					results += hs.toString();
+				}
+				results += "─────────────────────────────────────────────────────\n";
+				
+				logger.info(results);
 			}
-			results += "─────────────────────────────────────────────────────\n";
-			
-			logger.info(results);
-		}
-		catch(Exception e) {
-			
+			catch(Exception e) {
+				logger.error(e.toString());
+				e.printStackTrace();
+			}
 		}
 	}
 	

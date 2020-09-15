@@ -19,7 +19,7 @@ public class AreaStats
     private int[][] 	mFieldIDs = null;
     private float[][]	mData = null;
     private int 		mAtX = 0, mAtY = 0;
-    private int			mWidth, mHeight;
+    private Integer		mWidth, mHeight;
     
     //----------------------------------------------------------------
     public AreaStats(float[][] data) {
@@ -28,7 +28,6 @@ public class AreaStats
     	
     	mWidth = Layer_CDL.getWidth();
     	mHeight = Layer_CDL.getHeight();
-    	
     	// set default analysis extents?
     }
     

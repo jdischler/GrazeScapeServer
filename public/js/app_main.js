@@ -22,7 +22,6 @@ Ext.application({
 		);
 	},
 	
-
 	// Routes handling....
     routes: {
     	'browse_or_create': 'browse_or_create'

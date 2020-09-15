@@ -150,10 +150,10 @@ Ext.define('DSS.state.Scenario', {
 					'daily-yield': 50,
 					// lactating cows / confinement in months / grazing
 					'lactating-confined': 12,
-					'lactating-graze-time': 20,
-					'lactating-rotation-freq': 'R4',
+					'lactating-graze-time': 24,
+					'lactating-rotation-freq': 'R2',
 					// non-lactating cows / confinement / grazing
-					'non-lactating-confined': 3,
+					'non-lactating-confined': 12,
 					'non-lactating-graze-time': 24,
 					'non-lactating-rotation-freq': 'R2',
 				},
@@ -164,7 +164,7 @@ Ext.define('DSS.state.Scenario', {
 					// average weight gain
 					'daily-gain': 4,
 					// confinement in months / grazing
-					'confined': 3,
+					'confined': 12,
 					'graze-time': 24,
 					'rotation-freq': 'R2',
 				}

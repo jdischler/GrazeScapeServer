@@ -27,6 +27,13 @@ public class Scenario extends Model {
     @OneToMany(cascade = CascadeType.ALL)
     public List<Field> mFields = new ArrayList<>();
 
+    //------------------------------------------
+    public static Scenario createBaseline() {
+    	Scenario s = new Scenario();
+    	s.isBaseline = true;
+    	s.scenarioName = "Baseline";
+    	return s;
+    }
     public static final Finder<Long, Scenario> find = new Finder<>(Scenario.class);
     
 }

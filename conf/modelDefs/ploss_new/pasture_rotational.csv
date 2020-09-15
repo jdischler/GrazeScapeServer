@@ -7,7 +7,8 @@
 ;------------------------------------------------------
 @initial_p,				0.004410773,  clamp=25/175
 slope,					0.004041555,  clamp=0/65
-om,						0.087285377,  clamp=0.7/55
+; note, there is a small muck area with a om value of 55. Everything else is sub-12
+om,						0.087285377,  clamp=0.7/12 
 @total_p,				-0.00807151,  clamp=25/55
 @manure_dm,				0.07333836,   clamp=1.8/2.4
 slope_length,			-0.014114531, clamp=18/76

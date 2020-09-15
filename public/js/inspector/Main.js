@@ -28,7 +28,6 @@ Ext.define('DSS.inspector.Main', {
     autoDestroy: false,
 	
     requires: [
-    	'DSS.inspector.DataBounds',
     	'DSS.inspector.DataSource',
     	'DSS.inspector.RestrictResults'    	
     ],
@@ -91,8 +90,6 @@ Ext.define('DSS.inspector.Main', {
 				cls: 'section-title light-text text-drp-20',
 				html: 'Inspector <i class="fas fa-search font-10 accent-text text-drp-50"></i>',
 				height: 35				
-			},{
-				xtype: 'inspector_data_bounds',
 			},{
 				xtype: 'inspector_data_source',
 				itemId: 'dss-data-source',
@@ -195,6 +192,8 @@ Ext.define('DSS.inspector.Main', {
 		let restrictions = me.down('#dss-resrictor').getRestrictions();
 		
 		let data = {
+			"farm_id": DSS.activeFarm,
+			"scenario_id": DSS.activeScenario,
 			"extent": extents,
 			"model": me.DSS_mode,
 			"options": options,

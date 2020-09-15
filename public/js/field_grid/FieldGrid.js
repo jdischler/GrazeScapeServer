@@ -5,17 +5,23 @@ Ext.create('Ext.data.Store', {
 	storeId: 'rotationList',
 	fields:[ 'display', 'value'],
 	data: [{
-		value: 'cc',
-		display: 'Continuous Corn'
-	},{ 
 		value: 'ep',
 		display: 'Pasture - Establish'
 	},{ 
 		value: 'ps',
 		display: 'Pasture - 30% Legumes'
 	},{ 
+		value: 'cc',
+		display: 'Continuous Corn'
+	},{ 
+		value: 'cg',
+		display: 'Cash Grain (cg/sb)'
+	},{ 
 		value: 'dr1',
-		display: 'Dairy Rotation (cg/cs/3x-al)'
+		display: 'Dairy Rotation (cg/cs/alf_x3)'
+	},{ 
+		value: 'dr2',
+		display: 'Dairy Rot. alt (cs/sb/oat)'
 	}]
 });
 
@@ -63,24 +69,19 @@ Ext.create('Ext.data.Store', {
 
 Ext.create('Ext.data.Store', {
 	storeId: 'fieldStore',
-	fields:[ 'name', 'soilP', 'rotationVal', 'rotationDisp', 'tillageVal', 'tillageDisp', 'coverCrop', 
+	fields:[ 'name', 'soilP', 'soilOM', 'rotationVal', 'rotationDisp', 'tillageVal', 'tillageDisp', 'coverCrop', 
 		'onContour', 'manurePastures', 'grazeDairyLactating', 'grazeDairyNonLactating', 'grazeBeefCattle',
 		'grassVal', 'grassDisp'],
 	data: [{ 
-		name: 'East 40 - DR', soilP: 35,
-		rotationVal: 'cc', rotationDisp: 'Continuous Corn', 
+		name: 'East 50', soilP: 35, soilOM: 1.4,
+		rotationVal: 'dr1', rotationDisp: 'Dairy Rotation (cg/cs/alf_3x)', 
 		tillageVal: 'scu', tillageDisp: 'Spring Cultivation',
-		coverCrop: true, onContour: true, manurePastures: false
+		coverCrop: false, onContour: false, manurePastures: false
 	},{ 
-		name: 'West 30', soilP: 38,
-		rotationVal: 'dr1', rotationDisp: 'Dairy Rotation 1', 
-		tillageVal: 'nt', tillageDisp: 'No-Till',
-		onContour: true, manurePastures: false
-	},{ 
-		name: 'Back 30', soilP: 20,
-		rotationVal: 'ps', rotationDisp: 'Pasture - 30% Legumes', 
-		tillageVal: null, tillageDisp: 'N/A',
-		onContour: false, manurePastures: false, grassVal: 'bw', grassDisp: 'Bluegrass - White Clover'
+		name: 'West 50', soilP: 35, soilOM: 1.4,
+		rotationVal: 'dr1', rotationDisp: 'Dairy Rotation (cg/cs/alf_3x)', 
+		tillageVal: 'nt', tillageDisp: 'Spring Cultivation',
+		onContour: false, manurePastures: false
 	}]
 });
 
@@ -128,6 +129,13 @@ Ext.define('DSS.field_grid.FieldGrid', {
 			xtype: 'numbercolumn', format: '0.0',editor: {
 				xtype:'numberfield', minValue: 25, maxValue: 175, step: 5
 			}, text: 'Soil-P', dataIndex: 'soilP', width: 80, 
+			hideable: false, enableColumnHide: false, lockable: false, minWidth: 24
+		};
+    	//------------------------------------------------------------------------------
+    	let soilOM_Column = {
+			xtype: 'numbercolumn', format: '0.0',editor: {
+				xtype:'numberfield', minValue: 0, maxValue: 60, step: 0.5
+			}, text: 'Soil-OM', dataIndex: 'soilOM', width: 80, 
 			hideable: false, enableColumnHide: false, lockable: false, minWidth: 24
 		};
     	//------------------------------------------------------------------------------
@@ -250,9 +258,10 @@ Ext.define('DSS.field_grid.FieldGrid', {
 			columns: [
 				fieldNameColumn,
 				soilP_Column,
+				soilOM_Column,
 				cropRotationColumn,
-				coverCropColumn,
 				tillageColumn,
+				coverCropColumn,
 				onContourColumn,
 				grassComposition,
 				grazeDairyLactating,
