@@ -35,8 +35,9 @@ public class RasterInspector implements RasterModel {
 	// ext is the computation extent
 	// options can contain a filter object. That filter object (if exists) can contain
 	//	compare: (greater-than, less-than) and value: #
-	public RasterResult compute(Extents ext, JsonNode options) throws Exception  { 
+	public RasterResult compute(Extents ext, JsonNode settings) throws Exception  { 
 		
+		JsonNode options = settings.get("options");
 		if (options != null && !utils.Json.safeGetOptionalBoolean(options, "slope_as_percent", true)) {
 			this.setTransform(new SlopePercentToAngle());
 		}

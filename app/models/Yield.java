@@ -20,9 +20,9 @@ public class Yield implements RasterModel {
     private static final Logger logger = LoggerFactory.getLogger("app");
 
 	@Override
-	public RasterResult compute(Extents ext, JsonNode options) throws Exception {
-		
-		logger.error(options.toString());
+	public RasterResult compute(Extents ext, JsonNode settings) throws Exception {
+	
+		JsonNode options = settings.get("options");
 		String cropModel = Json.safeGetOptionalString(options, "crop", "corn");
 		LinearModel lm = null;
 		

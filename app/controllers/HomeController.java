@@ -310,12 +310,12 @@ public class HomeController extends Controller {
 	//-------------------------------------------------------
 	public Result computeModel(Http.Request request, RasterModel modelFunction) {
 	
-		JsonNode node = request.body().asJson();
+		JsonNode settings = request.body().asJson();
 
-		Long farmId = utils.Json.safeGetOptionalLong(node, "farm_id", null); 
+		Long farmId = utils.Json.safeGetOptionalLong(settings, "farm_id", null); 
 
-		JsonNode restrictions = node.get("restrictions");
-		JsonNode options = node.get("options");
+		JsonNode restrictions = settings.get("restrictions");
+		JsonNode options = settings.get("options");
 		if (DETAILED_LOG) {
 			if (restrictions != null) {
 				logger.info("Has model restrictions:" + restrictions.toPrettyString());
@@ -325,7 +325,7 @@ public class HomeController extends Controller {
 			}
 		}
 		// Extent array node can be missing, in which case we get a clipper that extracts the entire area
-		Extents ext = new Extents().fromJson((ArrayNode)node.get("extent")).toRasterSpace();
+		Extents ext = new Extents().fromJson((ArrayNode)settings.get("extent")).toRasterSpace();
 		
 		final Integer rasterHeight = 2600, rasterWidth = 1500;
 		ObjectNode result = null;
@@ -333,7 +333,7 @@ public class HomeController extends Controller {
 		float[][] modelResults = null;
 		RasterResult rr = null;
 		try {
-			rr = modelFunction.compute(ext, options); 
+			rr = modelFunction.compute(ext, settings); 
 			modelResults = rr.rasterOut;
 		} catch (Exception e1) {
 			e1.printStackTrace();

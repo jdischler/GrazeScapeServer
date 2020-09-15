@@ -50,9 +50,10 @@ public class PLoss implements RasterModel {
     };
     
 	@Override
-	public RasterResult compute(Extents ext, JsonNode options) throws Exception {
+	public RasterResult compute(Extents ext, JsonNode settings) throws Exception {
 
-		Long farmId = 1L;
+		Long farmId = utils.Json.safeGetOptionalLong(settings, "farm_id", 1L); 
+//		JsonNode options = settings.get("options");
 		
 		db.Farm farm = db.Farm.find.byId(farmId);
 		if (farm == null) {
@@ -63,7 +64,8 @@ public class PLoss implements RasterModel {
 			logger.error("No scenarios found");
 			return null;
 		}
-		// TODO: support arbitrary scenario
+		// TODO: actually use the scenario id instead of taking the first entry...
+//		Long scenarioId = utils.Json.safeGetOptionalLong(settings, "scenario_id", 1L); 
 		Scenario scen = farm.scenarios.get(0);
 		
 		List<JsonNode> features = new ArrayList<>();
