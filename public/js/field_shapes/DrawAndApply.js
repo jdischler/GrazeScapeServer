@@ -36,7 +36,7 @@ Ext.define('DSS.field_shapes.DrawAndApply', {
 			data: {
 				soil_p: {
 					is_active: true,
-					value: 32,
+					value: 35,
 				},
 				crop: {
 					is_active: true,

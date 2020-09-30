@@ -203,7 +203,7 @@ Ext.define('DSS.inspector.Main', {
 		var obj = Ext.Ajax.request({
 			url: location.origin + '/fetch_image',
 			jsonData: data,
-			timeout: 10000,
+			timeout: 90 * 1000,
 			success: function(response, opts) {
 				var obj = JSON.parse(response.responseText);
 

@@ -376,7 +376,7 @@ Ext.define('DSS.map.Main', {
 				center: [-10118000,5375100],
 				zoom: 12,
 				maxZoom: 19,
-				minZoom: 10,
+				minZoom: 8,//10,
 			//	constrainRotation: false,
 			//	rotation: 0.009,
 				constrainOnlyCenter: true,
@@ -486,8 +486,8 @@ Ext.define('DSS.map.Main', {
 		let multiPoly = [[ 
 			[
 				[ -10400000, 5100000 ], 
-				[ -10400000, 5600000 ], 
-				[ -9800000,  5600000 ], 
+				[ -10400000, 5700000 ], 
+				[ -9800000,  5700000 ], 
 				[ -9800000,  5100000 ], 
 				[ -10400000, 5100000 ] 
 			],[ // inner - counter-clockwise
