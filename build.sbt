@@ -29,9 +29,11 @@ libraryDependencies ++= Seq(
   "org.geotools" % "gt-main" % "22.4" ,
   "org.postgresql" % "postgresql" % "42.2.10",  
   "io.ebean" % "ebean" % "11.45.1",
-  "io.ebean" % "ebean-agent" % "11.45.1"
+  "io.ebean" % "ebean-agent" % "11.45.1",
+  "org.jpmml" % "pmml-evaluator" % "1.5.3",
+  "org.jpmml" % "pmml-evaluator-extension" % "1.5.3",
 )
-
+	
 lazy val myProject = (project in file("."))
   .enablePlugins(PlayJava, PlayEbean)
  
