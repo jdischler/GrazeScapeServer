@@ -103,10 +103,10 @@ public class Model_CropYield extends Model_Base
 		
 		debugLog(" >> Computing Yield");
 
-		float slope[][] = Layer_Base.getLayer("slope").getFloatData();
-		float silt[][] 	= Layer_Base.getLayer("silt_perc").getFloatData();
-		float depth[][] = Layer_Base.getLayer("soil_depth").getFloatData();
-		float cec[][]	= Layer_Base.getLayer("cec").getFloatData();
+		float slope[][] = Layer_Base.getFloatData("slope");
+		float silt[][] 	= Layer_Base.getFloatData("silt_perc");
+		float depth[][] = Layer_Base.getFloatData("soil_depth");
+		float cec[][]	= Layer_Base.getFloatData("cec");
 		
 		final float cornCoefficient = 1.30f 	// correction for technological advances 
 								* 0.053f; 		// conversion to Mg per Ha  TODO: verify

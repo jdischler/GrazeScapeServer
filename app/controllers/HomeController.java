@@ -566,7 +566,7 @@ public class HomeController extends Controller {
 	//-------------------------------------------------------------------------------------
 	public class PLossModel implements RasterModel {
 		
-		public RasterResult compute(Extents ext, JsonNode options) throws Exception { 
+		public RasterResult compute(Extents ext, JsonNode settings) throws Exception { 
 			
 			String landcoverCode = "cc";
 			String coverCropCode = "cc";
@@ -578,6 +578,7 @@ public class HomeController extends Controller {
 			float percSynth = 50.0f;
 			int onContour = 1;
 			
+			JsonNode options = settings.get("options");
 			if (options != null) {
 				landcoverCode 	= Json.safeGetOptionalString(options, "landcover", 	"cc"); // cc, cg, dr
 				coverCropCode 	= Json.safeGetOptionalString(options, "cover-crop", "cc"); // cc or nc
@@ -590,7 +591,7 @@ public class HomeController extends Controller {
 			}
 		
 			Layer_Base s_layer = Layer_Base.getLayer("slope");
-			float distanceToWater[][] = Layer_Base.getLayer("distance_to_water").getFloatData();
+			float distanceToWater[][] = Layer_Base.getFloatData("distance_to_water");
 			
 			// Continuous Corn
 			String model = null;
@@ -686,7 +687,8 @@ public class HomeController extends Controller {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-				
+			
+			//lm.bindRaster("@manure_dm", myRasterizedManureDM);
 			lm.setConstant("@manure_dm", percManure);
 			lm.setConstant("@total_p", percSynth);
 			lm.setConstant("@initial_p", initialP);
@@ -721,24 +723,25 @@ public class HomeController extends Controller {
 	//-------------------------------------------------------------------------------------
 	public class AwePLossModel implements RasterModel {
 		
-		public RasterResult compute(Extents ext, JsonNode options) throws Exception { 
+		public RasterResult compute(Extents ext, JsonNode settings) throws Exception { 
 			
 			Layer_Integer wl = Layer_CDL.get();
 			int [][] wl_data = wl.getIntData();
+			//JsonNode options = settings.get("options");
 			
 			int cg = wl.stringToMask("Cash Grain");
 			int cc = wl.stringToMask("Continuous Corn");
 			int dr = wl.stringToMask("Dairy Rotation");
 			int ps = wl.stringToMask("Hay", "Pasture","Cool-season Grass","Warm-season Grass", "Reed Canary Grass");
 			
-			int totalMask = cg | cc | dr | ps;
+			//int totalMask = cg | cc | dr | ps;
 			
 			float initialP = 32.0f;
 			float percManure = 2.0f;
 			float percSynth = 70.0f;
 		
 			Layer_Base s_layer = Layer_Base.getLayer("slope");
-			float distanceToWater[][] = Layer_Base.getLayer("distance_to_water").getFloatData();
+//			float distanceToWater[][] = Layer_Base.getLayer("distance_to_water").getFloatData();
 
 			LinearModel contCorn = null, dairyRotation = null, cashGrain = null, pastureLow = null;
 			

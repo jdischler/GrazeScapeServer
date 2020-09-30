@@ -42,7 +42,7 @@ public class Filters {
 	//--------------------------------------------------------------------------------------------
 	public static final float[][] restrictToSlope(float [][]data, Extents ext, Boolean compareAsLessThan, Float slopeValue) {
 		
-		float slope[][] = Layer_Base.getLayer("slope").getFloatData();
+		float slope[][] = Layer_Base.getFloatData("slope");
 		
 		for (int y = ext.y2(); y < ext.y1(); y++) {
 			for (int x = ext.x1(); x < ext.x2(); x++) {
@@ -166,7 +166,7 @@ public class Filters {
 	public static final byte[][] restrictToSlope(byte [][]data, Integer x1, Integer x2, Integer y1, Integer y2,
 			Boolean compareAsLessThan, Float slopeValue) {
 		
-		float slope[][] = Layer_Base.getLayer("slope").getFloatData();
+		float slope[][] = Layer_Base.getFloatData("slope");
 		
 		for (int y = y1; y < y2; y++) {
 			for (int x = x1; x < x2; x++) {

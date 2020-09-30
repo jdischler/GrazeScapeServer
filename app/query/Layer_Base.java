@@ -104,6 +104,22 @@ public abstract class Layer_Base
 		return null;
 	}
 
+	//--------------------------------------------------------------------------
+	public static float[][] getFloatData(String layerName) {
+		
+		layerName = resolveName(layerName);
+		if (!mLayers.containsKey(layerName)) {
+			logger.error("LayerBase: getFloatData by layer failed.");
+			return null;
+		}
+		Layer_Float lb = (Layer_Float)mLayers.get(layerName);
+		if (lb  == null) {
+			logger.error("LayerBase: getFloatData by layer, layer is not a float.");
+			return null;
+		}
+		return lb.mFloatData;
+	}	
+	
 	// NOTE: this is only for Query/Selection access restrictions.
 	//--------------------------------------------------------------------------
 	public void setAccessRestrictions(int restrictionMask) {
@@ -472,16 +488,14 @@ public abstract class Layer_Base
 		mLayerSynonyms.put("clay", "clay_perc");
 		mLayerSynonyms.put("silt", "silt_perc");
 		mLayerSynonyms.put("slopelen", "slope_length");
-		mLayerSynonyms.put("ls", "ls_2");
-//		mLayerSynonyms.put("slope", "ssurgo_slope");
 		
 		try {
 			logger.info("Caching all data layers");
 			
 			newIntegerLayer("wisc_land_2").init();	// Wisc Land 2.0 - 2016
 			
-			newIntegerLayer("road_mask").init();	
-			newIntegerLayer("water_mask").init();	
+			newIntegerLayer("road_mask").init();    // WiscDOT road data?	
+			newIntegerLayer("water_mask").init();	// 24k Hydro Waterbodies, WI DNR: Merged Open Water + Streams [including ephemeral streams]
 			
 			newFloatLayer("dem").init();				// Derived from the US Geological Survey's 10-meter National Elevation Dataset (NED)
 			newFloatLayer("slope").init();				// Derived from the US Geological Survey's 10-meter National Elevation Dataset (NED)
@@ -499,16 +513,24 @@ public abstract class Layer_Base
 			newFloatLayer("cec").init();			// SSURGO: cec7_r
 			newFloatLayer("om").init();				// SSURGO: om_r
 			newFloatLayer("k").init();				// SSURGO: kffact
-			newFloatLayer("ls").init();				// SSURGO: ls
 			newFloatLayer("t").init();				// SSURGO: t (acceptable soil loss)
 			newFloatLayer("ksat").init();			// SSURGO: ksat_r
 			newFloatLayer("ph").init();				// SSURGO: ph1to1h2o_r
 			newFloatLayer("albedo").init();			// SSURGO: ?
+			
+			// NOTE: LS from SSURGO or SnapPlus uses SSURGO slope which is coarser than we want
+			//	use ls_dem instead and redirect any attempts to use LS data to the ls_dem data
+			mLayerSynonyms.put("ls", "ls_dem");
+//			newFloatLayer("ls").init();				// SSURGO: ls
+			
+			// LS computed from DEM slope and SSURGO SlopeLength
+			// let factor = ifelse(between(slope.r, 3.01, 4), 0.4, ifelse(between(slope.r, 1, 3), 0.3, ifelse(slope.r < 1, 0.2, 0.5))))
+			// let ls = (((slope.r/((10000+(slope.r^2))^0.5))*4.56)+(slope.r/(10000+(slope.r^2))^0.5)^2*(65.41)+0.065)*((slopelenusle.r*3.3)/72.6)^(factor) 			
+			newFloatLayer("ls_dem").init();			// QGIS: 
 		}
 		catch (Exception e) {
 			logger.error(e.toString());
 		}
-		newFloatLayer("ls_2").init();				// SSURGO: ls
 
 		logger.info("┌───────────────────────────────────────────────────────┼");
 		logger.info("» Layers are loaded:");
