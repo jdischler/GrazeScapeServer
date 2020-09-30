@@ -78,7 +78,7 @@ public class Layer_Float extends Layer_Base
 	//--------------------------------------------------------------------------
 	protected void allocMemory() {
 		
-		logger.debug("  Allocating FLOAT work array");
+		logger.debug("  Allocating memory");
 		mFloatData = new float[mHeight][mWidth];
 	}
 	

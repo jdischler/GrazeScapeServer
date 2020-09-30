@@ -297,7 +297,7 @@ public class Layer_Integer extends Layer_Base
 	//--------------------------------------------------------------------------
 	protected void allocMemory() {
 		
-		logger.debug("  Allocating INT work array");
+		logger.debug("  Allocating memory");
 		mIntData = new int[mHeight][mWidth];
 	}
 	
