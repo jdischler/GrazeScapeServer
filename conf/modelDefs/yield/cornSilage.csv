@@ -1,13 +1,16 @@
 ; Fit of SSURGO representative CORN yields from the greater Dane county area
 ;
+; Result is transformed to Corn silage as per: http://corn.agronomy.wisc.edu/AA/pdfs/A045.pdf
+;  > The Relationship between Corn Grain Yield and Forage Yield, Joe Lauer
+;
 ; Model Input Details
-;	- Slopes: slopes above 25 (which corresponds to ~14 degrees) are not computed (result in NoData)
 ; 	- Soil Depth: Row crop roots can't exploit soil depths greater than 150cm so the max depth is  
 ;		clamped/limited to that value
 ;
 ; Model Output Details
 ; 	Results are bushels per acres, however the results are transformed in the (result-transform) step:
-;		- and clamp to a sane output (0.2 to 25) MG/ha
+;		- quadratic transform from Corn Grain to Corn Silage
+;		- and clamp to a sane output (0 to 25) MG/ha
 ;		- and lastly to tons/acre (x 0.44609)
 ; 
 ; ------------------------------------------------------------

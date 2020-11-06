@@ -21,19 +21,15 @@ import utils.ServerStartup;
 //------------------------------------------------------------
 public class LinearModel {
 
-  //  private static final Logger logger = LoggerFactory.getLogger("app");
-    public class Slogger {
-    	public Slogger() {}
-    	public void debug(String s) {}
-    	public void warn(String s) {}
-    	public void error(String s) {}
-    };
-    private final Slogger logger = new Slogger();
+	private static final Logger logger = LoggerFactory.getLogger("app");
+	
 	//------------------------------------------------------------
     public abstract class DataSource {
 		public ValidRange mValidRange = null;  
 		public List<Transform> mTransforms = new ArrayList<>();
-		
+	
+		// Computation needs to avoid No_Data raster cells and may optionally need to avoid
+		//	computing models if there is a valid_range specification for a given input variable
     	public final Boolean canComputeValue(int rasterX, int rasterY) {
 			float data = fetchData(rasterX, rasterY);
 			if (Layer_Float.isCustomNoDataValue(mNoDataValue, data)) {
@@ -56,6 +52,7 @@ public class LinearModel {
 		public abstract String debug();
     }
     
+    // Simple constant data source
 	//------------------------------------------------------------
     public final class DataConstant extends DataSource {
     	
@@ -68,10 +65,11 @@ public class LinearModel {
 		}
     }
     
+    // Data Source that originates from a raster data set 
 	//------------------------------------------------------------
     public final class DataLayer extends DataSource {
     	
-		public Layer_Float mDataLayer; 	// can be null
+		public Layer_Float mDataLayer; 	// can be null, only currently needed for debug information
 		public float mDataSource[][];	// should not be null
     	protected final float fetchData(int rasterX, int rasterY) {
 			return mDataSource[rasterY][rasterX];
@@ -86,6 +84,8 @@ public class LinearModel {
 		}
     }
     
+    // InputData has a source (which can be constant, raster) and then given the model definition,
+    //	a list of positions (variables places) where that data should be injected
 	//------------------------------------------------------------
 	private final class InputData {
 		
@@ -115,6 +115,7 @@ public class LinearModel {
 		}
 	}
 	
+	// Elements have a coefficient and at least one variable. For interactions, there may be two variables.
 	//------------------------------------------------------------
 	private final class Element {
 		public Float mValue[] = {1.0f,1.0f};
@@ -124,6 +125,7 @@ public class LinearModel {
 			mCoefficient = coefficient; 
 			mbInteracting = interacting;
 		}
+		
 		public final Float apply() {
 			if (mbInteracting) {
 				return mValue[0] * mValue[1] * mCoefficient;
@@ -136,6 +138,10 @@ public class LinearModel {
 			return " > Coef: " + mCoefficient + "  interacts:" + mbInteracting;
 		}
 	}
+	
+	// Basically a tuple to map the data to the right element and the right "slot" in that element.
+	//	The Slot specifically is used for model lines that specify interacting variables, otherwise
+	//	the slot is always 1
 	//------------------------------------------------------------
 	private final class Position {
 		public Integer mIndex;
@@ -211,6 +217,7 @@ public class LinearModel {
 		dc.mValue = value;
 	}
 	
+	// Certain types of model files had multiple intercepts that could be chosen by name.
 	//------------------------------------------------------------
 	public final void setIntercept(String interceptVariable) throws Exception {
 		
@@ -220,6 +227,7 @@ public class LinearModel {
 		}
 		mIntercept = intercept;
 	}
+	
 	//------------------------------------------------------------
 	public final LinearModel init(String modelPath) throws Exception {
 		
@@ -358,7 +366,7 @@ public class LinearModel {
 				}
 				
 				// TODO: OPTIMIZE: inspect any adjacent transforms to see if they can be collapsed
-				//	Example: two multiplies can turn into a single one
+				//	Example: two multiplies next to each other could safely be pre-multiplied and thus combined into a single step 
 			}
 			id.mAt.add(new Position(idx, 0));
 			logger.debug("LinearModel: adding variable <" + variable + "> to map");
@@ -387,12 +395,13 @@ public class LinearModel {
 	//------------------------------------------------------------
 	public final Float calculate(int rasterX, int rasterY) {
 		
-		// populate data
+		// populate data from the bound data sources
 		for(InputData d: mData) {
 			if (!d.canComputeValue(rasterX, rasterY)) {
 				return mNoDataValue;
 			}
-			// This data may have been transformed
+			
+			// Get the data, which may have been transformed as per the model-spec
 			final float val = d.getData(rasterX, rasterY);
 			for(Position p: d.mAt) {
 				// put the final data result into all needed element slots...

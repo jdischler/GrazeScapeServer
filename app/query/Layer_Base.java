@@ -20,7 +20,7 @@ public abstract class Layer_Base
     private static final Logger logger = LoggerFactory.getLogger("app");
 
 	//--------------------------------------------------------------------------
-    protected static Boolean SHOW_LAYER_LOAD_STATS = false;
+    protected static Boolean SHOW_LAYER_LOAD_STATS = true;
 	private static boolean DETAILED_DEBUG_LOGGING = true;
 	protected static void detailedLog(String detailedMessage) {
 		

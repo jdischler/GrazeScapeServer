@@ -40,6 +40,7 @@ import models.RasterModel;
 import models.RasterModel.RasterResult;
 import models.Yield;
 import utils.Json;
+import utils.PerformanceTimer;
 import utils.RandomString;
 import utils.ServerStartup;
 
@@ -674,7 +675,9 @@ public class HomeController extends Controller {
 			}
 			model += ".csv";
 			LinearModel lm = null;
-				
+			
+			PerformanceTimer pt = new PerformanceTimer();
+			pt.restartTimer();			
 			try {
 				String modelPath = ServerStartup.getApplicationRoot() + "/conf/modelDefs/ploss_new/" + model;
 				if (DETAILED_LOG) {
@@ -687,7 +690,8 @@ public class HomeController extends Controller {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+			logger.info("Linear load: " + pt.stringSeconds(3));pt.restartTimer();
+
 			//lm.bindRaster("@manure_dm", myRasterizedManureDM);
 			lm.setConstant("@manure_dm", percManure);
 			lm.setConstant("@total_p", percSynth);
@@ -716,6 +720,7 @@ public class HomeController extends Controller {
 				}
 			}
 			
+			logger.info("Linear process: " + pt.stringSeconds(3));pt.restartTimer();
 			return new RasterResult(ploss); 
 		}
 	}

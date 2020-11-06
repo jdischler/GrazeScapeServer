@@ -1,8 +1,9 @@
 ; Model -> Yield for Orchardgrass alsike
 ;
 ; Fit of SSURGO representative yields from Crawford and Vernon counties
-; Slopes above 45 (which corresponds to ~24 degrees) are not computed
+;
 ; All variables are clamped to ranges present in the training data
+;
 ; Output is clamped to a reasonable range
 ; ------------------------------------------------------------
 (Intercept),	46.75238357

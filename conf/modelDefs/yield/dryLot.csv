@@ -1,23 +1,19 @@
-; Fake model that scales Generic grass down to make a Dry Lot result...
+; Dry Lot Yield
+;
+; All applied landcovers must be evaluated by the system, which includes dry lot. Just output zero
+;
+; TODO: Validate if this the correct behavior
 ;
 ; Model Input Details
-;	- soil_depth: fake but assuming compacted soils and overgrazing prevents root development that
-;		can exploit deep soils. Clamping soil depth is meant to simulate this root development limitation
-;		I chose 60cm or 2 feet
+;	- use a zero coefficient to generate a zero output
 ;
 ; Model Output Details
-; 	Results are short tons per acres, however the results are transformed in the (result-transform) step:
-;		- adjust for fake (terrible yields) 0.05x
-;		- and clamp to a sane output (0.1 to 0.5) MG/ha
+; 	- results should always be zero
 ; 
 ; ------------------------------------------------------------
-(intercept),	0.77
+(intercept),	0.0
 
 ; Raster Data Layer	// Coeff	// Special Input Data Constraints 
-slope,			-0.031
-silt_perc,		0.029
-soil_depth,		0.008, clamp=? / 60
-cec,			0.038
+slope,			0.0
 
-; Final result transform
-(result-transform), multiply=0.05, clamp=0 / 0.5
+; Final result transform (no transforms needed, just output zero)

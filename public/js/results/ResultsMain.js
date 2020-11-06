@@ -1,3 +1,15 @@
+// General D3 links (gallery)
+// https://www.d3-graph-gallery.com/index.html
+
+// Way to visualize Solvers and Input types
+// https://observablehq.com/@d3/animated-treemap
+
+// Ways to visualize line graphs, including some interactivity links
+// https://www.d3-graph-gallery.com/line.html
+
+// Good practices
+// https://www.data-to-viz.com/caveats.html
+
 let theData = [
 {datax_cg: 1.36535, 'datay_cg':0},
 {datax_cg: 1.86535, 'datay_cg':21.83},
